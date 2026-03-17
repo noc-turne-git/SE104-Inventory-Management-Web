@@ -1,52 +1,56 @@
-# Prerequisites
-*.d
+## Build results
+bin/
+obj/
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+## Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-# Linker output
-*.ilk
-*.map
-*.exp
+## Rider / VS Code
+.idea/
+.vscode/
 
-# Precompiled Headers
-*.gch
-*.pch
+## Logs
+*.log
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+## OS files
+.DS_Store
+Thumbs.db
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+## .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
+## Entity Framework
+*.mdf
+*.ldf
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+## User secrets
+secrets.json
+
+## Publish output
+publish/
+
+## NuGet
+*.nupkg
+.nuget/
+packages/
+
+## IIS Express
+iisexpress/
+
+## Coverage / Test
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+
+## dotenv (nếu có)
+.env
