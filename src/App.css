@@ -1,0 +1,12 @@
+.layout-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f9fafb;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0; /* Để ProductScreen tự quản lý padding */
+}
