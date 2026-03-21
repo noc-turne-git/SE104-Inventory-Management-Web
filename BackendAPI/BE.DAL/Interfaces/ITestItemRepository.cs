@@ -1,6 +1,6 @@
 using BackendAPI.BE.DAL.Entities;
 
-namespace BackendAPI.BE.BLL.Interfaces;
+namespace BackendAPI.BE.DAL.Interfaces;
 
 public interface ITestItemRepository
 {

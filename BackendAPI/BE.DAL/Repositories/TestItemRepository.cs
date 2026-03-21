@@ -1,4 +1,4 @@
-using BackendAPI.BE.BLL.Interfaces;
+using BackendAPI.BE.DAL.Interfaces;
 using BackendAPI.BE.DAL.Entities;
 using BackendAPI.BE.DAL.Data;
 using Microsoft.EntityFrameworkCore;

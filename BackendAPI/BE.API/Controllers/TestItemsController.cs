@@ -1,4 +1,4 @@
-using BackendAPI.BE.BLL.Interfaces;
+using BackendAPI.BE.DAL.Interfaces;
 using BackendAPI.BE.API.DTO;
 using Microsoft.AspNetCore.Mvc;
 using TestItemModel = BackendAPI.BE.DAL.Entities.TestItem;
