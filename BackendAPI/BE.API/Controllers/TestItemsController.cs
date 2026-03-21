@@ -9,9 +9,9 @@ namespace BackendAPI.Controllers;
 [ApiController]
 public class TestItemsController : ControllerBase
 {
-    private readonly ITestItemRepository _repository;
+    private readonly IRepository<TestItemModel> _repository;
 
-    public TestItemsController(ITestItemRepository repository)
+    public TestItemsController(IRepository<TestItemModel> repository)
     {
         _repository = repository;
     }
