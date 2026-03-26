@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using BackendAPI.BE.DAL.Entities;
 using BackendAPI.BE.BLL.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -36,23 +35,16 @@ public class AuthController : ControllerBase
         return Ok(new { Success = true, AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
     }   
 
-    [HttpPost("signup-manager")]
+    [HttpPost("signup")]
     public async Task<IActionResult> Signup(SignupDTO model)
     {
-        var result = await _authService.SignupManagerAsync(model);
+        var result = await _authService.SignupAsync(model);
         if (!result)
             return BadRequest(new { Success = false, Message = "Username already exists." });
         return Ok(new { Success = result });
     }
 
-    [HttpPost("signup-warehouse-staff")]
-    public async Task<IActionResult> SignupWarehouseStaff(SignupDTO model)
-    {
-        var result = await _authService.SignupWarehouseStaffAsync(model);
-        if (!result)
-            return BadRequest(new { Success = false, Message = "Username already exists." });
-        return Ok(new { Success = result });
-    }
+
 
     [HttpPost("ForgotPassword")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO model)
@@ -85,7 +77,6 @@ public class AuthController : ControllerBase
         return Ok(new { Success = true });
     }
  
-    //[AllowAnonymous]
     [HttpPost("refresh-token")]
     public async Task<IActionResult> RefreshToken(RefreshTokenRequestDTO model)
     {
