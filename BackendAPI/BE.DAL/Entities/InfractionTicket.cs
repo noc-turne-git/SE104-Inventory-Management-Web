@@ -2,6 +2,7 @@ namespace BackendAPI.BE.DAL.Entities;
 public class InfractionTicket
 {
     public int InfractionTicketId { get; set; }
+    public int OrganizationId { get; set; } // FK to Organization
 
     public int UserId { get; set; } // FK
 

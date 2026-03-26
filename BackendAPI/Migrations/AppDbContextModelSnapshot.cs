@@ -93,6 +93,9 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Penalty")
                         .HasColumnType("decimal(18,2)");
 
@@ -122,6 +125,9 @@ namespace BackendAPI.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -133,6 +139,8 @@ namespace BackendAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("NoteId");
+
+                    b.HasIndex("OrganizationId");
 
                     b.HasIndex("UserId");
 
@@ -173,6 +181,47 @@ namespace BackendAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OTPs");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Organization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Organizations");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.OrganizationMember", b =>
+                {
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OrganizationId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrganizationMembers");
                 });
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.PasswordResetToken", b =>
@@ -233,6 +282,9 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("SellPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -240,6 +292,8 @@ namespace BackendAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Products");
                 });
@@ -332,6 +386,9 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -339,6 +396,8 @@ namespace BackendAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ShiftId");
+
+                    b.HasIndex("OrganizationId");
 
                     b.HasIndex("UserId");
 
@@ -357,6 +416,9 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -366,6 +428,8 @@ namespace BackendAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SupplierId");
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Suppliers");
                 });
@@ -401,7 +465,7 @@ namespace BackendAPI.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -411,15 +475,14 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -523,6 +586,12 @@ namespace BackendAPI.Migrations
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Note", b =>
                 {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -533,6 +602,38 @@ namespace BackendAPI.Migrations
                         .WithMany("Notes")
                         .HasForeignKey("UserId1");
 
+                    b.Navigation("Organization");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Organization", b =>
+                {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.OrganizationMember", b =>
+                {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Organization", "Organization")
+                        .WithMany("OrganizationMembers")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
+                        .WithMany("OrganizationMembers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
+
                     b.Navigation("User");
                 });
 
@@ -541,6 +642,17 @@ namespace BackendAPI.Migrations
                     b.HasOne("BackendAPI.BE.DAL.Entities.User", null)
                         .WithMany("PasswordResetTokens")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Product", b =>
+                {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Organization", "Organization")
+                        .WithMany("Products")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.ProductSupplier", b =>
@@ -594,13 +706,32 @@ namespace BackendAPI.Migrations
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Shift", b =>
                 {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Organization", "Organization")
+                        .WithMany("Shifts")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
                         .WithMany("Shifts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Organization");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Supplier", b =>
+                {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Organization", "Organization")
+                        .WithMany("Suppliers")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.GoodsReceipt", b =>
@@ -612,6 +743,17 @@ namespace BackendAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Organization", b =>
+                {
+                    b.Navigation("OrganizationMembers");
+
+                    b.Navigation("Products");
+
+                    b.Navigation("Shifts");
+
+                    b.Navigation("Suppliers");
                 });
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Product", b =>
@@ -635,6 +777,8 @@ namespace BackendAPI.Migrations
                     b.Navigation("InfractionTickets");
 
                     b.Navigation("Notes");
+
+                    b.Navigation("OrganizationMembers");
 
                     b.Navigation("PasswordResetTokens");
 

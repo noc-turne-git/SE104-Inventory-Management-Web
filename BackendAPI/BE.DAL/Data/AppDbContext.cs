@@ -1,3 +1,4 @@
+using System.ClientModel.Primitives;
 using BackendAPI.BE.DAL.Entities; 
 using Microsoft.EntityFrameworkCore;
 
@@ -25,11 +26,18 @@ public class AppDbContext : DbContext
     public DbSet<DeliveryItem> deliveryItems { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<OTP> OTPs { get; set; }
-public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+    public DbSet<Organization> Organizations { get; set; }
+    public DbSet<OrganizationMember> OrganizationMembers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+    modelBuilder.Entity<User>()
+    .HasIndex(u => u.Email)
+    .IsUnique(); 
+
 
     // =======================
     // User - RefreshToken (1-n)
@@ -72,6 +80,15 @@ public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
         .HasOne(n => n.User)
         .WithMany()
         .HasForeignKey(n => n.UserId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+    // =======================
+    // Note - Organization (1-n)
+    // =======================
+    modelBuilder.Entity<Note>()
+        .HasOne(n => n.Organization)
+        .WithMany()
+        .HasForeignKey(n => n.OrganizationId)
         .OnDelete(DeleteBehavior.Restrict);
 
     // =======================
@@ -125,6 +142,15 @@ public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
         .HasForeignKey(s => s.UserId);
 
     // =======================
+    // Shift - Organization
+    // =======================
+    modelBuilder.Entity<Shift>()
+        .HasOne(s => s.Organization)
+        .WithMany(o => o.Shifts)
+        .HasForeignKey(s => s.OrganizationId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+    // =======================
     // InfractionTicket - User
     // =======================
     modelBuilder.Entity<InfractionTicket>()
@@ -132,7 +158,54 @@ public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
     .WithMany(u => u.InfractionTickets)    
     .HasForeignKey(i => i.UserId);
 
-    }
 
     
+    // =======================
+    // OrganizationMember - Organization
+    // =======================
+    modelBuilder.Entity<OrganizationMember>()
+        .HasKey(ps => new { ps.OrganizationId, ps.UserId });
+
+    modelBuilder.Entity<OrganizationMember>()
+        .HasOne(om => om.Organization)
+        .WithMany(o => o.OrganizationMembers)
+        .HasForeignKey(om => om.OrganizationId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+    modelBuilder.Entity<OrganizationMember>()
+        .HasOne(om => om.User)
+        .WithMany(u => u.OrganizationMembers) 
+        .HasForeignKey(om => om.UserId) 
+        .OnDelete(DeleteBehavior.Restrict);
+
+    // =======================
+    // Supplier - Organization
+    // =======================
+    modelBuilder.Entity<Supplier>()
+        .HasOne(s => s.Organization)
+        .WithMany(o => o.Suppliers)
+        .HasForeignKey(s => s.OrganizationId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+
+    // =======================
+    // Product - Organization   
+    // =======================
+    modelBuilder.Entity<Product>()
+        .HasOne(p => p.Organization)
+        .WithMany(o => o.Products)
+        .HasForeignKey(p => p.OrganizationId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+    // =======================
+    // Organization - Creator (User)
+    // =======================
+    modelBuilder.Entity<Organization>()
+        .HasOne(o => o.Creator)
+        .WithMany() 
+        .HasForeignKey(o => o.CreatorId) 
+        .OnDelete(DeleteBehavior.Restrict);
+
+    }
+          
 }
