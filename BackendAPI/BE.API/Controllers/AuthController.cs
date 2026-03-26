@@ -45,15 +45,6 @@ public class AuthController : ControllerBase
         return Ok(new { Success = result });
     }
 
-    [HttpPost("signup-warehouse-staff")]
-    public async Task<IActionResult> SignupWarehouseStaff(SignupDTO model)
-    {
-        var result = await _authService.SignupWarehouseStaffAsync(model);
-        if (!result)
-            return BadRequest(new { Success = false, Message = "Username already exists." });
-        return Ok(new { Success = result });
-    }
-
 
 
     [HttpPost("ForgotPassword")]

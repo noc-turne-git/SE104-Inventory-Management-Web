@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 
 using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductController : ControllerBase
@@ -25,12 +26,21 @@ public class ProductController : ControllerBase
     }
     
 
-    [Authorize]
+    
     [HttpGet("all-products")]
     public IActionResult GetAllProducts()
     {
         
         var products = _productService.GetAllProductsAsync().Result;
         return Ok(products);
+    }
+
+    [HttpPost("add-product")]
+    public IActionResult AddProduct(ProductDTO productDTO)
+    {
+        var result = _productService.AddProductAsync(productDTO).Result;
+        if (!result)
+            return BadRequest(new { Success = false, Message = "Failed to add product." });
+        return Ok(new { Success = true, Message = "Product added successfully." });
     }
 }

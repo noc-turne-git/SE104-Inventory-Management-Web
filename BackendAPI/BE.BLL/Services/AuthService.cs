@@ -73,19 +73,6 @@ public class AuthService: IAuthService
         return true;
     }
 
-    public async Task<bool> SignupWarehouseStaffAsync(SignupDTO model)
-    {
-        if (await _userRepository.GetByUsernameAsync(model.Username) != null)
-            return false; // Username already exists
-
-        var user = _mapper.Map<User>(model);
-        user.PasswordHash = BCrypt.HashPassword(model.Password);
-        user.Role = "WarehouseStaff"; // Set the role for warehouse staff
-
-        await _userRepository.AddAsync(user);
-        return true;
-    }
-
     // public async Task<bool> SignupWarehouseStaffAsync(SignupDTO model)
     // {
     //     if (await _userRepository.GetByUsernameAsync(model.Username) != null)
