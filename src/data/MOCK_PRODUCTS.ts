@@ -1,5 +1,5 @@
 import { type Product } from '../types/product';
-export const sampleProducts: Product[] = [
+export const MOCK_PRODUCTS: Product[] = [
   {
     id: "1",
     image: "",

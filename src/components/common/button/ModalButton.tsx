@@ -1,14 +1,19 @@
 //import React from 'react';
 import {Plus} from 'lucide-react';
 
-interface AddButtonProps{
+interface OpenModalButtonProps{
     label: string,
     onClick: () => void
 }
 
+interface ModalButtonProps{
+    label: string,
+    type: "submit" | "reset" | "button";
+}
+
 // {name, onClick} là props
-const AddButton = ({label, onClick} : AddButtonProps) => {
-    return (
+const AddButton = ({label, onClick} : OpenModalButtonProps) => {
+    return ( 
         <button 
           onClick={onClick}
           className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors"
@@ -19,10 +24,10 @@ const AddButton = ({label, onClick} : AddButtonProps) => {
     );
 }
 
-export const CancelButton = ({label, onClick} : AddButtonProps) => {
+export const CancelButton = ({label, type} : ModalButtonProps) => {
     return (
         <button 
-          //onClick={onClick}
+          type={type}
           className="w-full flex-1 items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 hover:bg-gray-200 font-semibold text black text-lg font-bold rounded-lg transition-colors"
         >
         {label}
@@ -30,10 +35,10 @@ export const CancelButton = ({label, onClick} : AddButtonProps) => {
     );
 }
 
-export const ConfirmButton = ({label, onClick} : AddButtonProps) => {
+export const ConfirmButton = ({label, type} : ModalButtonProps) => {
     return (
         <button 
-          //onClick={onClick}
+          type={type}
           className="w-full flex-1 items-center justify-center gap-2 px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-semibold text-large rounded-lg transition-colors"
         >
         {label}

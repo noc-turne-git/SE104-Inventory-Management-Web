@@ -1,12 +1,14 @@
 import React from 'react';
-import { type Product } from '../../types/product.tsx';
+import { type Product } from '../../types/product.ts';
 import { Edit, Trash2, Package} from 'lucide-react'; // Sử dụng lucide-react cho icon
 
 interface ProductRowProps {
   product: Product;
+  onOpenEditModal: (product: Product) => void;
+  onDelete: (id: string) => void;
 }
 
-const ProductRow: React.FC<ProductRowProps> = ({product}) => {
+const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditModal}) => {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -45,13 +47,13 @@ const ProductRow: React.FC<ProductRowProps> = ({product}) => {
             <td className="px-6 py-4">
           <div className="flex items-center justify-end gap-2">
           <button 
-            //onClick={() => handleOpenEditModal(product)}
+            onClick={() => onOpenEditModal(product)}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
             >
             <Edit className="w-4 h-4" />
           </button>
           <button
-            //onClick={() => handleDelete(product.id)}
+            onClick={() => onDelete(product.id)}
             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             >
             <Trash2 className="w-4 h-4" />

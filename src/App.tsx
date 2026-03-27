@@ -1,5 +1,6 @@
-import ProductScreen from './screenStyles/ProductScreen.tsx'
-import { Sidebar } from './assets/components/Sidebar.tsx';
+import ProductScreen from './screenStyles/ProductScreen.tsx';
+import ShiftScreen from './screenStyles/ShiftScreen.tsx';
+import { Sidebar } from './components/Sidebar.tsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
 
@@ -15,7 +16,7 @@ function App() {
           <Routes>
             <Route path="/products" element={<ProductScreen />} />
             {/* Mặc định vào Products hoặc Dashboard */}
-            <Route path="/" element={<ProductScreen />} /> 
+            <Route path="/shifts" element={<ShiftScreen />} /> 
             <Route path="*" element={<div style={{padding: 20}}>Trang này đang phát triển...</div>} />
           </Routes>
         </div>

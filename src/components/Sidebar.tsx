@@ -5,6 +5,7 @@ import './Sidebar.css';
 export const Sidebar = () => {
   const location = useLocation();
 
+  //Path để load screens
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
     { name: 'Profile', icon: <User size={20} />, path: '/profile' },

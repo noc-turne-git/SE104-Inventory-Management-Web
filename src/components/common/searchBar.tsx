@@ -7,7 +7,7 @@ interface SearchBarProps {
 
 const SearchBar = ({label, onChange}: SearchBarProps) => {
     return (
-            <div className="pl-3 mb-6 flex items-center border border-gray-300 focus-within:border-blue-500 focus-within:border-2 rounded-lg ">
+            <div className="pl-3 mb-6 flex items-center border border-gray-300 focus-within:border-blue-500 focus-within:border-2 rounded-xl ">
                 <Search className="w-4 h-4 text-gray-500" />
                     <input
                         type="text"
