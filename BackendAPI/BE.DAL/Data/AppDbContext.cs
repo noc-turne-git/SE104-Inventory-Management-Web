@@ -26,9 +26,11 @@ public class AppDbContext : DbContext
     public DbSet<DeliveryItem> deliveryItems { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<OTP> OTPs { get; set; }
+
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
-    public DbSet<Organization> Organizations { get; set; }
-    public DbSet<OrganizationMember> OrganizationMembers { get; set; }
+    public DbSet<Warehouse> Warehouses { get; set; }
+    public DbSet<WarehouseStaff> WarehouseStaffs { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -83,12 +85,12 @@ public class AppDbContext : DbContext
         .OnDelete(DeleteBehavior.Restrict);
 
     // =======================
-    // Note - Organization (1-n)
+    // Note - Warehouse (1-n)
     // =======================
     modelBuilder.Entity<Note>()
-        .HasOne(n => n.Organization)
+        .HasOne(n => n.Warehouse)
         .WithMany()
-        .HasForeignKey(n => n.OrganizationId)
+        .HasForeignKey(n => n.WarehouseId)
         .OnDelete(DeleteBehavior.Restrict);
 
     // =======================
@@ -142,12 +144,12 @@ public class AppDbContext : DbContext
         .HasForeignKey(s => s.UserId);
 
     // =======================
-    // Shift - Organization
+    // Shift - Warehouse
     // =======================
     modelBuilder.Entity<Shift>()
-        .HasOne(s => s.Organization)
+        .HasOne(s => s.Warehouse)
         .WithMany(o => o.Shifts)
-        .HasForeignKey(s => s.OrganizationId)
+        .HasForeignKey(s => s.WarehouseId)
         .OnDelete(DeleteBehavior.Restrict);
 
     // =======================
@@ -158,52 +160,62 @@ public class AppDbContext : DbContext
     .WithMany(u => u.InfractionTickets)    
     .HasForeignKey(i => i.UserId);
 
+    
 
     
     // =======================
-    // OrganizationMember - Organization
+    // WarehouseStaff - Warehouse
     // =======================
-    modelBuilder.Entity<OrganizationMember>()
-        .HasKey(ps => new { ps.OrganizationId, ps.UserId });
+    modelBuilder.Entity<WarehouseStaff>()
+        .HasKey(ws => new { ws.WarehouseId, ws.UserId });
 
-    modelBuilder.Entity<OrganizationMember>()
-        .HasOne(om => om.Organization)
-        .WithMany(o => o.OrganizationMembers)
-        .HasForeignKey(om => om.OrganizationId)
+    modelBuilder.Entity<WarehouseStaff>()
+        .HasOne(ws => ws.Warehouse)
+        .WithMany(w => w.WarehouseStaffs)
+        .HasForeignKey(ws => ws.WarehouseId)
         .OnDelete(DeleteBehavior.Restrict);
 
-    modelBuilder.Entity<OrganizationMember>()
-        .HasOne(om => om.User)
-        .WithMany(u => u.OrganizationMembers) 
-        .HasForeignKey(om => om.UserId) 
+    modelBuilder.Entity<WarehouseStaff>()
+        .HasOne(ws => ws.User)
+        .WithMany(u => u.WarehouseStaffs)
+        .HasForeignKey(ws => ws.UserId)
         .OnDelete(DeleteBehavior.Restrict);
 
     // =======================
-    // Supplier - Organization
+    // Supplier - Warehouse
     // =======================
     modelBuilder.Entity<Supplier>()
-        .HasOne(s => s.Organization)
-        .WithMany(o => o.Suppliers)
-        .HasForeignKey(s => s.OrganizationId)
+        .HasOne(s => s.Warehouse)
+        .WithMany(w => w.Suppliers)
+        .HasForeignKey(s => s.WarehouseId)
         .OnDelete(DeleteBehavior.Restrict);
 
 
     // =======================
-    // Product - Organization   
+    // Product - Warehouse   
     // =======================
     modelBuilder.Entity<Product>()
-        .HasOne(p => p.Organization)
-        .WithMany(o => o.Products)
-        .HasForeignKey(p => p.OrganizationId)
+        .HasOne(p => p.Warehouse)
+        .WithMany(w => w.Products)
+        .HasForeignKey(p => p.WarehouseId)
         .OnDelete(DeleteBehavior.Restrict);
 
     // =======================
-    // Organization - Creator (User)
+    // Warehouse - Creator (User)
     // =======================
-    modelBuilder.Entity<Organization>()
-        .HasOne(o => o.Creator)
-        .WithMany() 
-        .HasForeignKey(o => o.CreatorId) 
+    modelBuilder.Entity<Warehouse>()
+        .HasOne(w => w.Creator)
+        .WithMany()
+        .HasForeignKey(w => w.CreatorId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+    // =======================
+    // Warehouse - InfractionTicket
+    // =======================
+    modelBuilder.Entity<InfractionTicket>()
+        .HasOne(i => i.Warehouse)
+        .WithMany(w => w.InfractionTickets)
+        .HasForeignKey(i => i.WarehouseId)
         .OnDelete(DeleteBehavior.Restrict);
 
     }

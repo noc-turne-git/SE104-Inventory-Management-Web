@@ -61,30 +61,24 @@ public class AuthService: IAuthService
     public async Task<bool> SignupManagerAsync(SignupDTO model)
     {
         if (await _userRepository.GetByUsernameAsync(model.Username) != null)
-            return false; // Username already exists
+            return false; // Username already exists        
 
-        
+
+        //await _emailService.SendConfirmationEmailAsync(model.Email);
 
         var user = _mapper.Map<User>(model);
+
         user.PasswordHash = BCrypt.HashPassword(model.Password);
         user.Role = "Manager"; // Set the role for manager
+
 
         await _userRepository.AddAsync(user);
         return true;
     }
 
-    // public async Task<bool> SignupWarehouseStaffAsync(SignupDTO model)
-    // {
-    //     if (await _userRepository.GetByUsernameAsync(model.Username) != null)
-    //         return false; // Username already exists
 
-    //     var user = _mapper.Map<User>(model);
-    //     user.PasswordHash = BCrypt.HashPassword(model.Password);
-    //     user.Role = "WarehouseStaff"; // Set the role for warehouse staff
+    //public async Task<bool> verifyUser
 
-    //     await _userRepository.AddAsync(user);
-    //     return true;
-    // }
 
     public async Task<bool> ForgotPasswordAsync(ForgotPasswordDTO model)
     {
@@ -93,26 +87,21 @@ public class AuthService: IAuthService
             return false; // Email not found
         var otpCode = await _emailService.GenerateOtpAsync();
 
-        await _emailService.SendResetPasswordEmailAsync(model.Email, otpCode);
-        var OTP = new OTP
-        {
-            Code = otpCode,
-            Email = model.Email,
-            CreatedAt = DateTime.UtcNow,
-            Expiration = DateTime.UtcNow.AddMinutes(15), // OTP valid for 15 minutes
-            IsUsed = false
-        };
-        await _OTPRepository.AddAsync(OTP);
-
+        await _emailService.SendResetPasswordEmailAsync(model.Email);
 
         return true;
     }
 
-    public async Task<string> verifyOtpAsync(string otp, string email) {
+    public async Task<bool> verifyOtpAsync(string otp, string email) {
         var otpEntity = await _OTPRepository.GetByEmailAsync(email);
-        if(otpEntity == null || otpEntity.Expiration < DateTime.UtcNow || otpEntity.IsUsed) return null;
-        if(otpEntity.Code != otp) return null;
+        if(otpEntity == null || otpEntity.Expiration < DateTime.UtcNow || otpEntity.IsUsed) return false;
+        if(otpEntity.Code != otp) return false;
+        await _OTPRepository.MarkAsUsedAsync(otpEntity.Id);
 
+        return true;
+    }
+
+    public async Task<String> createPasswordResetTokenAsync(string email) {
         var resetPasswordToken = _tokenService.GenerateRandomStringToken();
         var tokenEntity = new PasswordResetToken
         {
@@ -123,9 +112,10 @@ public class AuthService: IAuthService
              
         };
         await _PasswordResetTokenRepository.AddAsync(tokenEntity);
-        await _OTPRepository.MarkAsUsedAsync(otpEntity.Id);
         return resetPasswordToken;
     }
+
+
 
     public async Task<bool> ResetPasswordAsync(ChangePasswordDTO model)
     {
@@ -181,40 +171,5 @@ public class AuthService: IAuthService
             RefreshToken = newRefreshToken 
         };
     }
-
-//     public async Task<TokenDTO> RefreshTokenAsync(RefreshTokenRequestDTO model)
-//     {
-//         var tokens = await _refreshTokenRepository.GetAsync(rt => rt.Token == model.RefreshToken);
-//         var existingToken = tokens.FirstOrDefault(rt => rt.Token == model.RefreshToken);
-//         if (existingToken == null || existingToken.ExpiresAt < DateTime.UtcNow)
-//             return null; // Invalid or expired refresh token
-
-//         var test = new ClaimsIdentity();
-//         var httpUser = _httpContextAccessor.HttpContext?.User;
-
-//         var userIdClaim = httpUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-//         var allClaims = httpUser.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
-// // Đặt breakpoint ở đây để xem danh sách claims
-
-//         var user = await _userRepository.GetByIdAsync(int.Parse(userIdClaim));
-       
-
-//         if (user == null)
-//             return null; // User not found
-
-//         var userDTO = _mapper.Map<UserDTO>(user);
-
-//         TokenDTO tokenDTO = new TokenDTO
-//         {
-//             AccessToken = _tokenService.CreateAccessToken(userDTO),
-//             RefreshToken = _tokenService.GenerateRandomStringToken()
-//         };
-
-//         existingToken.Token = tokenDTO.RefreshToken;
-//         existingToken.ExpiresAt = DateTime.UtcNow.AddDays(7); // Extend expiration
-//         await _refreshTokenRepository.UpdateAsync(existingToken);
-
-//         return tokenDTO;
-//     }
 
 }

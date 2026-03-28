@@ -46,6 +46,10 @@ public class AuthController : ControllerBase
     }
 
 
+ 
+    // [HttpPost("Verify-email")]
+    // public async Task<IActionResult> verifyEmail()
+
 
     [HttpPost("ForgotPassword")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO model)
@@ -56,16 +60,19 @@ public class AuthController : ControllerBase
         return Ok(new { Success = true });
     }
 
-    [HttpPost("verify-otp")]
+    [HttpPost("forgotPassword/verify-otp")]
     public async Task<IActionResult> VerifyOtp(VerifyOtpDTO model)
     {
         var result = await _authService.verifyOtpAsync(model.Otp, model.Email);
-        if (result == null)
+        if (!result)
             return BadRequest(new { Success = false, Message = "Invalid OTP." });
+
+        var resetToken = await _authService.createPasswordResetTokenAsync(model.Email);
+
         return Ok(new 
         {
             Success = true,
-            ResetToken = result 
+            ResetToken = resetToken 
         });
     }
 

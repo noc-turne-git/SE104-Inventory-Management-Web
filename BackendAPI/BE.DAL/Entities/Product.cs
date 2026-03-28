@@ -13,7 +13,7 @@ namespace BackendAPI.BE.DAL.Entities;
 public class Product
 {
     public int ProductId { get; set; }    
-    public int OrganizationId { get; set; } 
+    public int WarehouseId { get; set; } 
 
     public string Name { get; set; }
     public string Category { get; set; }
@@ -30,5 +30,5 @@ public class Product
     public ICollection<ReceiptItem> ReceiptItems { get; set; }
     public ICollection<DamageItem> DamageItems { get; set; }
     public ICollection<ProductSupplier> ProductSuppliers { get; set; }
-    public Organization Organization { get; set; }
+    public Warehouse Warehouse { get; set; }
 }
