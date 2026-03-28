@@ -36,20 +36,18 @@ public class AuthController : ControllerBase
         return Ok(new { Success = true, AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
     }   
 
-    [HttpPost("signup-manager")]
+    [HttpPost("signup")]
     public async Task<IActionResult> Signup(SignupDTO model)
     {
-        var result = await _authService.SignupManagerAsync(model);
+        var result = await _authService.SignupAsync(model);
         if (!result)
-            return BadRequest(new { Success = false, Message = "Username already exists." });
+            return BadRequest(new { Success = false, Message = "Username or Email already exists." });
         return Ok(new { Success = result });
     }
-
 
  
     // [HttpPost("Verify-email")]
     // public async Task<IActionResult> verifyEmail()
-
 
     [HttpPost("ForgotPassword")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO model)
@@ -85,6 +83,7 @@ public class AuthController : ControllerBase
         return Ok(new { Success = true });
     }
  
+    //[AllowAnonymous]
     [HttpPost("refresh-token")]
     public async Task<IActionResult> RefreshToken(RefreshTokenRequestDTO model)
     {
