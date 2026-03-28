@@ -1,3 +1,4 @@
+using System.ClientModel.Primitives;
 using BackendAPI.BE.DAL.Entities; 
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +35,11 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+    modelBuilder.Entity<User>()
+    .HasIndex(u => u.Email)
+    .IsUnique(); 
+
 
     // =======================
     // User - RefreshToken (1-n)

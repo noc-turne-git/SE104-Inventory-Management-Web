@@ -28,4 +28,19 @@ public class ProductService : IProductService
         var products = await _productRepository.GetAllAsync();
         return _mapper.Map<IEnumerable<ProductDTO>>(products);
     }
+
+    public async Task<bool> AddProductAsync(ProductDTO productDTO)
+    {
+        try
+        {
+            var product = _mapper.Map<Product>(productDTO);
+            await _productRepository.AddAsync(product);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (ex) as needed
+            return false;
+        }
+    }
 }

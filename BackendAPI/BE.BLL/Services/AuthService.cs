@@ -58,7 +58,7 @@ public class AuthService: IAuthService
         return new TokenDTO { AccessToken = accessToken, RefreshToken = refreshToken };
     }
 
-    public async Task<bool> SignupAsync(SignupDTO model)
+    public async Task<bool> SignupManagerAsync(SignupDTO model)
     {
         if (await _userRepository.GetByUsernameAsync(model.Username) != null)
             return false; // Username already exists        
@@ -69,6 +69,7 @@ public class AuthService: IAuthService
         var user = _mapper.Map<User>(model);
 
         user.PasswordHash = BCrypt.HashPassword(model.Password);
+        user.Role = "Manager"; // Set the role for manager
 
 
         await _userRepository.AddAsync(user);

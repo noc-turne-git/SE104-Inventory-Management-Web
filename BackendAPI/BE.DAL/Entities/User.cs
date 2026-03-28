@@ -1,4 +1,5 @@
 namespace BackendAPI.BE.DAL.Entities;
+using System.ComponentModel.DataAnnotations;
 
 /*abstract class User {
     - id: String
@@ -17,6 +18,8 @@ public class User
     public string Username { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
+    [Required]
+    [EmailAddress]
     public string Email { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     //public bool isVerified {get; set;}= false;

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using BackendAPI.BE.DAL.Entities;
 using BackendAPI.BE.BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -35,10 +36,10 @@ public class AuthController : ControllerBase
         return Ok(new { Success = true, AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
     }   
 
-    [HttpPost("signup")]
+    [HttpPost("signup-manager")]
     public async Task<IActionResult> Signup(SignupDTO model)
     {
-        var result = await _authService.SignupAsync(model);
+        var result = await _authService.SignupManagerAsync(model);
         if (!result)
             return BadRequest(new { Success = false, Message = "Username already exists." });
         return Ok(new { Success = result });
