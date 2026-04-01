@@ -11,9 +11,9 @@ export interface Shift {
 }
 
 export const ShiftTimes: { [key: string]: { start: string; end: string } } = {
-  'Morning':   { start: '07:00', end: '15:00' }, 
-  'Afternoon': { start: '15:00', end: '23:00' },
-  'Night':     { start: '23:00', end: '07:00' },
+  'Shift 1':   { start: '07:00', end: '15:00' }, 
+  'Shift 2': { start: '15:00', end: '23:00' },
+  'Shift 3':     { start: '23:00', end: '07:00' },
 };
 
 export interface ShiftFormData extends Omit<Shift, 'id' | 'status'> {

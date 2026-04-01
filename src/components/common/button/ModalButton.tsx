@@ -6,9 +6,14 @@ interface OpenModalButtonProps{
     onClick: () => void
 }
 
-interface ModalButtonProps{
+interface ConfirmButtonProps{
     label: string,
     type: "submit" | "reset" | "button";
+}
+
+interface CancelButtonProps{
+    label: string,
+    onClick: () => void;
 }
 
 // {name, onClick} là props
@@ -24,10 +29,11 @@ const AddButton = ({label, onClick} : OpenModalButtonProps) => {
     );
 }
 
-export const CancelButton = ({label, type} : ModalButtonProps) => {
+export const CancelButton = ({label, onClick} : CancelButtonProps) => {
     return (
         <button 
-          type={type}
+          //type={type}
+          onClick={onClick}
           className="w-full flex-1 items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 hover:bg-gray-200 font-semibold text black text-lg font-bold rounded-lg transition-colors"
         >
         {label}
@@ -35,7 +41,7 @@ export const CancelButton = ({label, type} : ModalButtonProps) => {
     );
 }
 
-export const ConfirmButton = ({label, type} : ModalButtonProps) => {
+export const ConfirmButton = ({label, type} : ConfirmButtonProps) => {
     return (
         <button 
           type={type}

@@ -2,15 +2,17 @@ export interface Product {
   id: string;
   image: string;
   name: string;
-  category: string;
   sku: string;
+  category: string;
   description: string;
-  price: number;
-  stock: number;
+  sellPrice: number;
+  stockQuantity: number;
+  defectiveQuantity: number;
+  damagedQuantity: number;
   status: 'in stock' | 'low stock' | 'out of stock' | 'undefined';
 }
 
-export type ProductFormData = Omit<Product, 'id' | 'status' | 'price' | 'stock' > & {
-  price: string;
-  stock: string;
+export type ProductFormData = Omit<Product, 'id' | 'status' | 'sellPrice' | 'stockQuantity' | 'defectiveQuantity' | 'damagedQuantity' > & {
+  sellPrice: string;
+  //stock: string;
 };

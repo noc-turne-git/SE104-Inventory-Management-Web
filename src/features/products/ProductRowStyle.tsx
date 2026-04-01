@@ -37,8 +37,10 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
             </td>
             <td className="px-6 py-4 text-sm text-gray-600">{product.sku}</td>
             <td className="px-6 py-4 text-sm text-gray-600">{product.description}</td>
-            <td className="px-6 py-4 text-sm font-medium text-gray-900">${product.price}</td>
-            <td className="px-6 py-4 text-sm text-gray-600">{product.stock}</td>
+            <td className="px-6 py-4 text-sm font-medium text-gray-900">${product.sellPrice}</td>
+            <td className="px-6 py-4 text-sm text-gray-600">{product.stockQuantity}</td>
+            <td className="px-6 py-4 text-sm text-gray-600">{product.defectiveQuantity}</td>
+            <td className="px-6 py-4 text-sm text-gray-600">{product.damagedQuantity}</td>
             <td className="px-6 py-4">
               <span className={`px-2 py-1 text-xs rounded-full ${getStatusStyle(product.status)}`}>
                 {product.status}

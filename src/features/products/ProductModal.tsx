@@ -15,8 +15,7 @@ const DEFAULT_FORM: ProductFormData = {
     image: '',
     name:'',
     sku:'',
-    price:'',
-    stock:'',
+    sellPrice:'',
     description:'',
     category:''
 }
@@ -28,8 +27,8 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData}: Props) => {
         if (initialData) {
             setFormData({
                 ...initialData,
-                price: initialData.price.toString(),
-                stock: initialData.stock.toString(),
+                sellPrice: initialData.sellPrice.toString(),
+                //stock: initialData.stock.toString(),
             });
         } else {
             setFormData(DEFAULT_FORM);
@@ -85,8 +84,8 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData}: Props) => {
             <input
               className='modal-input'
               placeholder='e.g. 3'
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              value={formData.sellPrice}
+              onChange={(e) => setFormData({ ...formData, sellPrice: e.target.value })}
             />
           </div>
           <div className=''>
@@ -119,7 +118,7 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData}: Props) => {
         </div>
 
         <div className='mt-10 grid grid-cols-2 gap-3'>
-          <CancelButton type="button" label='Cancel' />
+          <CancelButton onClick={onClose} label='Cancel' />
           <ConfirmButton type="submit" label={initialData ? 'Update' : 'Create'} />
         </div>
       </form>

@@ -16,8 +16,8 @@ const ProductScreen = () => {
   const [editingItem, setEditingItem] = useState<Product | null>(null);
 
   const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    p.sku.toLowerCase().includes(searchTerm.toLowerCase())
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+    //p.sku.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSubmit = (formData : ProductFormData) => {
@@ -56,13 +56,15 @@ const ProductScreen = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-4 text-center text-base font-medium text-gray-600 uppercase">Product</th>
-                    <th className="px-6 py-4 text-center text-base font-medium text-gray-600 uppercase">SKU</th>
-                    <th className="px-6 py-4 text-center text-base font-medium text-gray-600 uppercase">Description</th>
-                    <th className="px-6 py-4 text-center text-base font-medium text-gray-600 uppercase">Price</th>
-                    <th className="px-6 py-4 text-center text-base font-medium text-gray-600 uppercase">Stock</th>
-                    <th className="px-6 py-4 text-center text-base font-medium text-gray-600 uppercase">Status</th>
-                    <th className="px-6 py-4 text-center text-base font-medium text-gray-600 uppercase">Actions</th>
+                    <th className="table-header">Product</th>
+                    <th className="table-header">SKU</th>
+                    <th className="table-header">Description</th>
+                    <th className="table-header">Sell Price</th>
+                    <th className="table-header">Stock</th>
+                    <th className="table-header">Defective</th>
+                    <th className="table-header">Damage</th>
+                    <th className="table-header">Status</th>
+                    <th className="table-header">Actions</th>
                   </tr>
               </thead>
               <tbody>

@@ -3,9 +3,7 @@ export interface Staff {
   name: string;
   email: string;
   role: 'Manager' | 'Staff';
-  position: string;
-  accountStatus: 'Active' | 'Inactive'; // Nghỉ việc hay chưa Manager quản lý
-  availability: 'Available' | 'Busy' | 'On Leave'; // rảnh / nghỉ phép ko tính lương / nghỉ phép có tính lương
+  //availability: 'Available' | 'Busy'; // rảnh / nghỉ phép
   salary: number;
   hireDate: string;
 
