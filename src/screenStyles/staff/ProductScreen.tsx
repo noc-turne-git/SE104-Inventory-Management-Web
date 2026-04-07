@@ -1,31 +1,29 @@
 import { useState } from 'react';
-import ProductRow from '../features/products/ProductRowStyle.tsx';
-import AddButton from '../components/common/button/ModalButton.tsx';
-import SearchBar from '../components/common/searchBar.tsx';
-import { MOCK_PRODUCTS } from '../data/MOCK_PRODUCTS.ts';
+import ProductViewRow from '../../features/products/ProductViewRowStyle.tsx';
+import AddButton from '../../components/common/button/ModalButton.tsx';
+import SearchBar from '../../components/common/searchBar.tsx';
+//import { MOCK_INVENTORY_CHECKS } from '../../data/MOCK_INVENTORY_CHECK.ts';
+import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS.ts';
 import { toast } from 'sonner';
-import { type Product, type ProductFormData } from '../types/product.ts';
-import '../components/common/modal.css'
-import ProductModal from '../features/products/ProductModal.tsx';
-import { useProducts } from '../features/hooks/useProducts.tsx';
+import { type Product } from '../../types/product.ts';
+import { type InventoryCheckFormData } from '../../types/inventory_check.ts';
+import InventoryCheckModal from '../../features/products/InventoryCheckModal.tsx';
 
-const ProductScreen = () => {
-  const { products, addProduct, updateProduct, deleteProduct } = useProducts(MOCK_PRODUCTS);
+
+import { useProducts } from '../../features/hooks/useProducts.tsx';
+
+const ProductViewScreen = () => {
+  const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Product | null>(null);
 
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-    //p.sku.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const sendToManager = () => {
 
-  const handleSubmit = (formData : ProductFormData) => {
-    if(editingItem) {
-      updateProduct(editingItem.id, formData)
-    } else {
-      addProduct(formData)
-    }
+  }
+
+  const handleSubmit = (formData : InventoryCheckFormData) => {
+    sendToManager();
     handleCloseModal();
   }
 
@@ -46,10 +44,10 @@ const ProductScreen = () => {
           <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
-        <AddButton label="Add Product" onClick={() => handleOpenAddModal()}></AddButton>
+        <AddButton label="Check Inventory" onClick={() => handleOpenAddModal()}></AddButton>
       </div>
     
-      <SearchBar label="Search Product's Name ...."  onChange={() => alert('Changed')}></SearchBar>
+      <SearchBar label="Search Product's Name ...."  onChange={(e) => setSearchTerm(e.target.value)}></SearchBar>
           
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
@@ -68,24 +66,23 @@ const ProductScreen = () => {
                   </tr>
               </thead>
               <tbody>
-                {filteredProducts.map(p => ( 
-                  <ProductRow key={p.id} product={p} 
+                {filteredProducts(searchTerm).map(p => ( 
+                  <ProductViewRow key={p.id} product={p} 
                     onDelete={deleteProduct} onOpenEditModal={(prod) => {setEditingItem(prod); setShowAddModal(true);}} >
-                  </ProductRow>
+                  </ProductViewRow>
                 ))}
               </tbody>
               </table>
             </div>
           </div>
           
-          <ProductModal 
+          <InventoryCheckModal
             isOpen={showAddModal} 
             onClose={() => handleCloseModal()}
-            initialData={editingItem}
             onSubmit={handleSubmit}
           />
         </div>
     );
 }
 
-export default ProductScreen;
+export default ProductViewScreen;

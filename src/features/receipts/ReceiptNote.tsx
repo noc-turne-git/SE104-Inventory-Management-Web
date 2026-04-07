@@ -116,7 +116,6 @@ export const ReceiptNote = ({receipt, onOpenEditModal} : Props) => {
           <Edit className="w-4 h-4" />
             Edit
           </button>
-
       </div>      
     </div>
   );

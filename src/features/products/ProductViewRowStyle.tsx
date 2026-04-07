@@ -3,13 +3,13 @@ import { type Product } from '../../types/product.ts';
 import { Edit, Trash2, Package} from 'lucide-react'; // Sử dụng lucide-react cho icon
 import ListSupplierModal from './ListSupplierModal.tsx';
 
-interface ProductRowProps {
+interface Props {
   product: Product;
   onOpenEditModal: (product: Product) => void;
   onDelete: (id: string) => void;
 }
 
-const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditModal}) => {
+const ProductViewRow: React.FC<Props> = ({product, onDelete, onOpenEditModal}) => {
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -20,11 +20,8 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
     }
   };
 
-  const [isOpenListSupplierModal, setIsOpenListSupplierModal] = useState(false);
-
   return (
-    <tr className="hover:bg-gray-50"
-        onDoubleClick={() => setIsOpenListSupplierModal(true)}>
+    <tr className="hover:bg-gray-50">
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="w-20 h-20 rounded-lg flex overflow-hidden items-center justify-center">
@@ -66,10 +63,8 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
           </button>
         </div>
       </td>
-
-      <ListSupplierModal isOpen={isOpenListSupplierModal} onClose={() => setIsOpenListSupplierModal(false)}></ListSupplierModal>
     </tr>
   );
 }
 
-export default ProductRow;
+export default ProductViewRow;

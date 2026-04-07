@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import AddButton from '../components/common/button/ModalButton';
-import SearchBar, {FilterBar} from '../components/common/searchBar';
-import { MOCK_RECEIPTS } from '../data/MOCK_RECEIPTS';
-import { type Receipt, type ReceiptFormData } from '../types/receipt'; 
-import '../components/common/modal.css';
-import ReceiptModal from '../features/receipts/ReceiptModal';
-import { useReceipts } from '../features/hooks/useReceipts';
-import { ReceiptNote } from '../features/receipts/ReceiptNote';
+import AddButton from '../../components/common/button/ModalButton';
+import SearchBar, {FilterBar} from '../../components/common/searchBar';
+import { MOCK_RECEIPTS } from '../../data/MOCK_RECEIPTS';
+import { type Receipt, type ReceiptFormData } from '../../types/receipt'; 
+import ReceiptModal from '../../features/receipts/ReceiptModal';
+import { useReceipts } from '../../features/hooks/useReceipts';
+import { ReceiptNote } from '../../features/receipts/ReceiptNote';
 
 const ReceiptScreen = () => {
   const {receipts, addReceipt, updateReceipt, deleteReceipt, filteredReceipts } = useReceipts(MOCK_RECEIPTS);

@@ -15,6 +15,7 @@ export const Sidebar = () => {
     { name: 'Shifts', icon: <Calendar size={20} />, path: '/shifts' },
     { name: 'Delivery', icon: <ScrollText size={20} />, path: '/delivery' },
     { name: 'Receipts', icon: <Van size={20} />, path: '/receipts' },
+    { name: 'ProductsView', icon: <Package size={20} />, path: '/products_view' },
   ];
 
   return (

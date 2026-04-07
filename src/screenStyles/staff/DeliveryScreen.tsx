@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import AddButton from '../components/common/button/ModalButton';
-import SearchBar, { FilterBar } from '../components/common/searchBar';
-import { MOCK_DELIVERY } from '../data/MOCK_DELIVERY';
-import { type Delivery, type DeliveryFormData } from '../types/delivery'; 
-import '../components/common/modal.css';
-import DeliveryModal from '../features/delivery/DeliveryModal';
-import { useDeliveries } from '../features/hooks/useDelivery';
-import { DeliveryNote } from '../features/delivery/DeliveryNote';
+import AddButton from '../../components/common/button/ModalButton';
+import SearchBar, { FilterBar } from '../../components/common/searchBar';
+import { MOCK_DELIVERY } from '../../data/MOCK_DELIVERY';
+import { type Delivery, type DeliveryFormData } from '../../types/delivery'; 
+import DeliveryModal from '../../features/delivery/DeliveryModal';
+import { useDeliveries } from '../../features/hooks/useDelivery';
+import { DeliveryNote } from '../../features/delivery/DeliveryNote';
 
 const DeliveryScreen = () => {
   const { 

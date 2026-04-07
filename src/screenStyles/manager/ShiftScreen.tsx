@@ -1,13 +1,12 @@
 import {useState} from 'react';
 import { Calendar, User, AlertTriangle} from 'lucide-react';
-import AddButton from '../components/common/button/ModalButton.tsx';
-//import { MOCK_SHIFTS } from '../data/MOCK_SHIFTS.ts';
-import { type Shift } from '../types/shift.ts';
-import ShiftsCalendar from "../features/shifts/ShiftsCalendar.tsx";
-import { ShiftsModal } from '../features/shifts/ShiftsModal.tsx';
-//import { toast } from 'sonner';
-import {type ShiftFormData } from '../types/shift.ts';
-import { useShifts } from '../features/hooks/useShifts.tsx';
+import AddButton from '../../components/common/button/ModalButton.tsx';
+import { type Shift } from '../../types/shift.ts';
+import ShiftsCalendar from "../../features/shifts/ShiftsCalendar.tsx";
+import { ShiftsModal } from '../../features/shifts/ShiftsModal.tsx';
+import { toast } from 'sonner';
+import {type ShiftFormData } from '../../types/shift.ts';
+import { useShifts } from '../../features/hooks/useShifts.tsx';
 
 const ShiftScreen = () => {
     const { shifts, deleteShift, updateShift, addShift } = useShifts();

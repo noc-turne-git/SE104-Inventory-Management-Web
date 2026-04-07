@@ -11,6 +11,14 @@ export const useProducts = (initialData: Product[]) => {
     return 'in stock';
   };
 
+  const filteredProducts = (searchTerm: string) => {
+    return products.filter(p => {
+        const matchesSearch = p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            p.name.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesSearch;
+    });
+  }
+
   const addProduct = (data: ProductFormData) => {
     //const stock = parseInt(data.stock);
     const newProduct: Product = {
@@ -45,5 +53,5 @@ export const useProducts = (initialData: Product[]) => {
     toast.success('Product deleted successfully');
   };
 
-  return { products, addProduct, updateProduct, deleteProduct };
+  return { products, addProduct, updateProduct, deleteProduct, filteredProducts };
 };
