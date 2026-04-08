@@ -28,8 +28,8 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="w-20 h-20 rounded-lg flex overflow-hidden items-center justify-center">
-            {//overflow-hidden : tràn thì giấu
-            }
+              {//overflow-hidden : tràn thì giấu
+              }
             {product.image? (<img src={product.image} alt={product.name} className='w-full h-full'/>) :
             (<Package className="w-20 h-20 text-gray-400" />)}
           </div>
