@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import AddButton from '../../components/common/button/ModalButton';
+import OpenModalButton from '../../components/common/button/ModalButton';
 import SearchBar, { FilterBar } from '../../components/common/searchBar';
 import { MOCK_DELIVERY } from '../../data/MOCK_DELIVERY';
 import { type Delivery, type DeliveryFormData } from '../../types/delivery'; 
@@ -55,7 +55,7 @@ const DeliveryScreen = () => {
           <h1 className="text-3xl font-bold text-gray-900">Delivery Management</h1>
           <p className="text-gray-600 mt-1">Track and manage outgoing shipments and picker assignments</p>
         </div>
-        <AddButton label="Create Delivery Note" onClick={handleOpenAddModal} />
+        <OpenModalButton label="Create Delivery Note" onClick={handleOpenAddModal} />
       </div>
     
       {/* Search & Filter Section */}

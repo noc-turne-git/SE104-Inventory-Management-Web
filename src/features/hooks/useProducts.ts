@@ -53,5 +53,6 @@ export const useProducts = (initialData: Product[]) => {
     toast.success('Product deleted successfully');
   };
 
+
   return { products, addProduct, updateProduct, deleteProduct, filteredProducts };
 };

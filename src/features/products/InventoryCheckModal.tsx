@@ -1,9 +1,9 @@
 import { Check, Plus, Trash2 } from 'lucide-react';
-import Modal from '../../components/common/Modal.tsx';
-import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton.tsx';
-import { type InventoryCheck, type InventoryCheckFormData } from '../../types/inventory_check.ts';
+import Modal from '../../components/common/Modal';
+import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
+import { type InventoryCheck, type InventoryCheckFormData } from '../../types/inventory_check';
 import { useState, useEffect } from 'react';
-import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS.ts';
+import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS';
 
 interface Props {
   isOpen: boolean;

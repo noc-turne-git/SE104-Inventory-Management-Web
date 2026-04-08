@@ -14,11 +14,11 @@ interface Props {
 }
 
 // CHINH SUA SAU
-const getAvailableStaff = (staffList: Staff[], position: string) => {
+const getAvailableStaff = (staffList: Staff[]) => {
     return staffList.filter(s => 
-        s.accountStatus === 'Active' &&
-        s.availability === 'Available' &&
-        s.position === position
+        s.accountStatus === 'Active'
+        //s.availability === 'Available' &&
+        //s.position === position
     );
 }
 
@@ -90,7 +90,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
         }
     };    
 
-    const availableStaff = getAvailableStaff(MOCK_STAFF, formData.position);
+    //const availableStaff = getAvailableStaff(MOCK_STAFF, formData.position);
 
     return (
     <Modal
@@ -197,7 +197,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
                 className="modal-input"
               >
                 <option value="">Unassigned</option>
-                {availableStaff.map((staff) => (
+                {MOCK_STAFF.map((staff) => (
                                 <option key={staff.id} value={staff.name}>
                                     {staff.name}
                                 </option>
@@ -254,7 +254,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
 
           <div className="flex gap-3 pt-4 border-t border-gray-200">
             <CancelButton
-              type="button"
+              onClick={onClose}
               label='Cancel'>
             </CancelButton>
             <ConfirmButton

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { type Shift, type ShiftFormData } from '../../types/shift.ts';
+import { type Shift, type ShiftFormData } from '../../types/shift';
 import { MOCK_SHIFTS } from '../../data/MOCK_SHIFTS';
 import { toast } from 'sonner';
 

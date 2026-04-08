@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Delivery } from '../../types/delivery.ts';
+import { type Delivery } from '../../types/delivery';
 import { Edit, Package, Calendar, Truck, FileDown } from 'lucide-react';
 
 interface Props {

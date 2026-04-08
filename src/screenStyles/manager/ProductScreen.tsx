@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import ProductRow from '../../features/products/ProductRowStyle.tsx';
-import AddButton from '../../components/common/button/ModalButton.tsx';
-import SearchBar from '../../components/common/searchBar.tsx';
-import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS.ts';
+import ProductRow from '../../features/products/ProductRowStyle';
+import OpenModalButton from '../../components/common/button/ModalButton';
+import SearchBar from '../../components/common/searchBar';
+import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS';
 import { toast } from 'sonner';
-import { type Product, type ProductFormData } from '../../types/product.ts';
-import ProductModal from '../../features/products/ProductModal.tsx';
-import { useProducts } from '../../features/hooks/useProducts.tsx';
+import { type Product, type ProductFormData } from '../../types/product';
+import ProductModal from '../../features/products/ProductModal';
+import { useProducts } from '../../features/hooks/useProducts';
 
 const ProductScreen = () => {
   const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
@@ -40,7 +40,7 @@ const ProductScreen = () => {
           <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
-        <AddButton label="Add Product" onClick={() => handleOpenAddModal()}></AddButton>
+        <OpenModalButton label="Add Product" onClick={() => handleOpenAddModal()}></OpenModalButton>
       </div>
     
       <SearchBar label="Search Product's Name ...."  onChange={(e) =>  setSearchTerm(e.target.value)}></SearchBar>

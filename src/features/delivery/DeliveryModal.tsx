@@ -1,7 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
-import Modal from '../../components/common/Modal.tsx';
-import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton.tsx';
-import { type Delivery, type DeliveryFormData } from '../../types/delivery.ts';
+import Modal from '../../components/common/Modal';
+import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
+import { type Delivery, type DeliveryFormData } from '../../types/delivery';
 import { useState, useEffect } from 'react';
 
 

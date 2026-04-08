@@ -29,7 +29,6 @@ export function useReceipts(initialData: Receipt[]) {
     toast.success('Đã tạo đơn nhập hàng mới');
   };
 
-  // Cập nhật Receipt (Ví dụ: chỉnh sửa item hoặc thông tin chung)
   const updateReceipt = (id: string, data: Partial<ReceiptFormData>) => {
     setReceipts((prev) =>
       prev.map((r) => (r.id === id ? { ...r, ...data } : r))

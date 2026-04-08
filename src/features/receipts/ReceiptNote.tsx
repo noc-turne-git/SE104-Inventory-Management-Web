@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Receipt } from '../../types/receipt.ts';
+import { type Receipt } from '../../types/receipt';
 import { Edit, Package, Calendar, ClipboardList, FileDown} from 'lucide-react';
 
 interface Props {

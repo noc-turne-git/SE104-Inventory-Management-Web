@@ -1,7 +1,7 @@
 import { Plus } from 'lucide-react';
-import Modal from '../../components/common/Modal.tsx';
-import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton.tsx';
-import { type ProductFormData, type Product } from '../../types/product.ts';
+import Modal from '../../components/common/Modal';
+import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
+import { type ProductFormData, type Product } from '../../types/product';
 import { useState, useEffect } from 'react';
 
 interface Props {

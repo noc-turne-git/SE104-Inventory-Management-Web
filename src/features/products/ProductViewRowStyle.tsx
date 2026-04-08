@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { type Product } from '../../types/product.ts';
+import { type Product } from '../../types/product';
 import { Edit, Trash2, Package} from 'lucide-react'; // Sử dụng lucide-react cho icon
-import ListSupplierModal from './ListSupplierModal.tsx';
+import ListSupplierModal from './ListSupplierModal';
 
 interface Props {
   product: Product;

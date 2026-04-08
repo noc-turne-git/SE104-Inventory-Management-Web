@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import ProductViewRow from '../../features/products/ProductViewRowStyle.tsx';
-import AddButton from '../../components/common/button/ModalButton.tsx';
-import SearchBar from '../../components/common/searchBar.tsx';
-//import { MOCK_INVENTORY_CHECKS } from '../../data/MOCK_INVENTORY_CHECK.ts';
-import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS.ts';
+import ProductViewRow from '../../features/products/ProductViewRowStyle';
+import OpenModalButton from '../../components/common/button/ModalButton';
+import SearchBar from '../../components/common/searchBar';
+//import { MOCK_INVENTORY_CHECKS } from '../../data/MOCK_INVENTORY_CHECK';
+import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS';
 import { toast } from 'sonner';
-import { type Product } from '../../types/product.ts';
-import { type InventoryCheckFormData } from '../../types/inventory_check.ts';
-import InventoryCheckModal from '../../features/products/InventoryCheckModal.tsx';
+import { type Product } from '../../types/product';
+import { type InventoryCheckFormData } from '../../types/inventory_check';
+import InventoryCheckModal from '../../features/products/InventoryCheckModal';
 
 
-import { useProducts } from '../../features/hooks/useProducts.tsx';
+import { useProducts } from '../../features/hooks/useProducts';
 
 const ProductViewScreen = () => {
   const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
@@ -44,7 +44,7 @@ const ProductViewScreen = () => {
           <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
-        <AddButton label="Check Inventory" onClick={() => handleOpenAddModal()}></AddButton>
+        <OpenModalButton label="Check Inventory" onClick={() => handleOpenAddModal()}></OpenModalButton>
       </div>
     
       <SearchBar label="Search Product's Name ...."  onChange={(e) => setSearchTerm(e.target.value)}></SearchBar>

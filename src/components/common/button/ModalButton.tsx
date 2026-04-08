@@ -9,6 +9,7 @@ interface OpenModalButtonProps{
 interface ConfirmButtonProps{
     label: string,
     type: "submit" | "reset" | "button";
+    onClick?: () => void; //thêm onClick fix lỗi dòng 115 SupplierModal
 }
 
 interface CancelButtonProps{
@@ -17,7 +18,7 @@ interface CancelButtonProps{
 }
 
 // {name, onClick} là props
-const AddButton = ({label, onClick} : OpenModalButtonProps) => {
+const OpenModalButton = ({label, onClick} : OpenModalButtonProps) => {
     return ( 
         <button 
           onClick={onClick}
@@ -52,6 +53,4 @@ export const ConfirmButton = ({label, type} : ConfirmButtonProps) => {
     );
 }
 
-
-
-export default AddButton;
+export default OpenModalButton;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import AddButton from '../../components/common/button/ModalButton';
+import OpenModalButton from '../../components/common/button/ModalButton';
 import SearchBar, {FilterBar} from '../../components/common/searchBar';
 import { MOCK_RECEIPTS } from '../../data/MOCK_RECEIPTS';
 import { type Receipt, type ReceiptFormData } from '../../types/receipt'; 
@@ -47,7 +47,7 @@ const ReceiptScreen = () => {
           <h1 className="text-3xl font-bold text-gray-900">Goods Receipt Management</h1>
           <p className="text-gray-600 mt-1">Manage incoming goods receipt notes and quality checks</p>
         </div>
-        <AddButton label="Add Goods Receipt" onClick={handleOpenAddModal} />
+        <OpenModalButton label="Add Goods Receipt" onClick={handleOpenAddModal} />
       </div>
     
       <div className='grid grid-cols-2 gap-4'>

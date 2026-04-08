@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { type Product } from '../../types/product.ts';
+import { type Product } from '../../types/product';
 import { Edit, Trash2, Package} from 'lucide-react'; // Sử dụng lucide-react cho icon
-import ListSupplierModal from './ListSupplierModal.tsx';
+import ListSupplierModal from './ListSupplierModal';
 
 interface ProductRowProps {
   product: Product;
@@ -67,7 +67,13 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
         </div>
       </td>
 
-      <ListSupplierModal isOpen={isOpenListSupplierModal} onClose={() => setIsOpenListSupplierModal(false)}></ListSupplierModal>
+      <ListSupplierModal 
+        isOpen={isOpenListSupplierModal} 
+        onClose={() => setIsOpenListSupplierModal(false)}
+        product={product}
+      >
+
+        </ListSupplierModal>
     </tr>
   );
 }

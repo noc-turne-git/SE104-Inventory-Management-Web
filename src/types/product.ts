@@ -16,3 +16,10 @@ export type ProductFormData = Omit<Product, 'id' | 'status' | 'sellPrice' | 'sto
   sellPrice: string;
   //stock: string;
 };
+
+export interface ProductSupplier {
+  supplier: string;
+  product: string;
+  type: "PRIMARY" | "SECONDARY";
+  price : number;
+}

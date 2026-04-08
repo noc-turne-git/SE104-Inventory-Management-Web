@@ -1,12 +1,12 @@
 import {useState} from 'react';
 import { Calendar, User, AlertTriangle} from 'lucide-react';
-import AddButton from '../../components/common/button/ModalButton.tsx';
-import { type Shift } from '../../types/shift.ts';
-import ShiftsCalendar from "../../features/shifts/ShiftsCalendar.tsx";
-import { ShiftsModal } from '../../features/shifts/ShiftsModal.tsx';
+import OpenModalButton from '../../components/common/button/ModalButton';
+import { type Shift } from '../../types/shift';
+import ShiftsCalendar from "../../features/shifts/ShiftsCalendar";
+import { ShiftsModal } from '../../features/shifts/ShiftsModal';
 import { toast } from 'sonner';
-import {type ShiftFormData } from '../../types/shift.ts';
-import { useShifts } from '../../features/hooks/useShifts.tsx';
+import {type ShiftFormData } from '../../types/shift';
+import { useShifts } from '../../features/hooks/useShifts';
 
 const ShiftScreen = () => {
     const { shifts, deleteShift, updateShift, addShift } = useShifts();
@@ -46,7 +46,7 @@ const ShiftScreen = () => {
                 <h1 className="text-3xl font-bold text-gray-900">Shift Management</h1>
                 <p className="text-gray-600 mt-1">Track and manage employee shifts</p>
                 </div>
-                <AddButton label="New Shift" onClick={() => handleOpenAddModal()}></AddButton>
+                <OpenModalButton label="New Shift" onClick={() => handleOpenAddModal()}></OpenModalButton>
             </div>
 
             <div className="grid grid-cols-3 gap-6 mb-8">
