@@ -1,22 +1,27 @@
 import { Van, ScrollText, LayoutDashboard, User, Truck, Package, Users, Calendar, LogOut } from 'lucide-react';
-import { Link, useLocation} from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 
 export const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  //Path để load screens
+  // Update: thêm /app
   const menuItems = [
-    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
-    { name: 'Profile', icon: <User size={20} />, path: '/profile' },
-    { name: 'Suppliers', icon: <Truck size={20} />, path: '/suppliers' },
-    { name: 'Products', icon: <Package size={20} />, path: '/products' },
-    { name: 'Staff', icon: <Users size={20} />, path: '/staffs' },
-    { name: 'Shifts', icon: <Calendar size={20} />, path: '/shifts' },
-    { name: 'Delivery', icon: <ScrollText size={20} />, path: '/delivery' },
-    { name: 'Receipts', icon: <Van size={20} />, path: '/receipts' },
-    { name: 'ProductsView', icon: <Package size={20} />, path: '/products_view' },
+    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/app/dashboard' },
+    { name: 'Profile', icon: <User size={20} />, path: '/app/profile' },
+    { name: 'Suppliers', icon: <Truck size={20} />, path: '/app/suppliers' },
+    { name: 'Products', icon: <Package size={20} />, path: '/app/products' },
+    { name: 'Staff', icon: <Users size={20} />, path: '/app/staffs' },
+    { name: 'Shifts', icon: <Calendar size={20} />, path: '/app/shifts' },
+    { name: 'Delivery', icon: <ScrollText size={20} />, path: '/app/delivery' },
+    { name: 'Receipts', icon: <Van size={20} />, path: '/app/receipts' },
+    { name: 'ProductsView', icon: <Package size={20} />, path: '/app/products_view' },
   ];
+
+  const handleLogout = () => {
+    navigate("/", { replace: true });
+  };
 
   return (
     <div className="sidebar">
@@ -44,7 +49,8 @@ export const Sidebar = () => {
         ))}
       </nav>
 
-      <button className="logout-button">
+      {/* Nhấn logout về màn hình sign in (ví dụ đỡ vì chưa có home=)))  */}
+      <button className="logout-button" onClick={handleLogout}>
         <LogOut size={18} />
         <span>Logout</span>
       </button>
