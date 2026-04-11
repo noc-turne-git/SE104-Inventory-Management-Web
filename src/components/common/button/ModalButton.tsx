@@ -14,6 +14,7 @@ interface ConfirmButtonProps{
 
 interface CancelButtonProps{
     label: string,
+    type?: "button" | "submit"; // FIX lỗi của suppliermodal
     onClick: () => void;
 }
 

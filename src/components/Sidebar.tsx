@@ -1,11 +1,12 @@
 import { Van, LayoutDashboard, Package, Users, Calendar, LogOut, NotebookPen, UserRoundPen, BookUser, PackagePlus } from 'lucide-react';
-import { Link, useLocation} from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 
 export const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  //Path để load screens
+  // Update: thêm /app
   const menuItems = [
     { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard_manager' },
     { name: 'Profile', icon: <UserRoundPen size={20} />, path: '/profile' },
@@ -21,6 +22,10 @@ export const Sidebar = () => {
     { name: 'Receipts', icon: <PackagePlus size={20} />, path: '/receipts' },
     
   ];
+
+  const handleLogout = () => {
+    navigate("/", { replace: true });
+  };
 
   return (
     <div className="sidebar">
@@ -48,7 +53,8 @@ export const Sidebar = () => {
         ))}
       </nav>
 
-      <button className="logout-button">
+      {/* Nhấn logout về màn hình sign in (ví dụ đỡ vì chưa có home=)))  */}
+      <button className="logout-button" onClick={handleLogout}>
         <LogOut size={18} />
         <span>Logout</span>
       </button>
