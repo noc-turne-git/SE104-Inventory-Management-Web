@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useStaff } from "../../features/hooks/useStaff";
+import { useStaff } from "../../features/hooks/useStaffs";
 import { MOCK_STAFF } from "../../data/MOCK_STAFF";
 import StaffRow from "../../features/staff/StaffRow";
 import StaffModal from "../../features/staff/StaffModal";
@@ -54,7 +54,7 @@ const StaffScreen = () => {
       {/* HEADER */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900">
             Staff Management
           </h1>
           <p className="text-gray-600 mt-1">
@@ -77,19 +77,19 @@ const StaffScreen = () => {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-4 text-left text-sm text-gray-600 uppercase">
+                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
                   Employee </th>
-                <th className="px-6 py-4 text-left text-sm text-gray-600 uppercase">
+                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
                   Role </th>
-                <th className="px-6 py-4 text-left text-sm text-gray-600 uppercase">
+                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
                   Status </th>
-                <th className="px-6 py-4 text-left text-sm text-gray-600 uppercase">
+                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
                   Salary </th>
-                <th className="px-6 py-4 text-left text-sm text-gray-600 uppercase">
+                <th className="px-6 py-4 text-center text-md text-gray-600 uppercase">
                   Hire Date </th>
-                <th className="px-6 py-4 text-center text-sm text-gray-600 uppercase">
+                <th className="px-6 py-4 text-center text-md text-gray-600 uppercase">
                   Violation </th>
-                <th className="px-6 py-4 text-right text-sm text-gray-600 uppercase">
+                <th className="px-6 py-4 text-right text-md text-gray-600 uppercase">
                   Action </th>
               </tr>
             </thead>

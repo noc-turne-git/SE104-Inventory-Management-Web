@@ -1,7 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
-import { type Delivery, type DeliveryFormData } from '../../types/delivery';
+import { type Delivery, type DeliveryFormData } from '../../types/note';
 import { useState, useEffect } from 'react';
 
 
@@ -17,7 +17,7 @@ const DEFAULT_FORM: DeliveryFormData = {
   destination: '',
   items: [{ product: '', quantity: 1 }],
   status: 'new',
-  picker: '',
+  operator: '',
 };
 
 const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
@@ -65,7 +65,7 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className='bg-gray-50 p-4 rounded-xl border border-gray-100'>
           <div className="mb-4">
-            <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Destination *</label>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Destination *</label>
             <input
               className='modal-input w-full'
               placeholder='Delivery address'
@@ -76,18 +76,18 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
           </div>
           <div className='grid grid-cols-3 gap-4'>
           <div>
-            <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Picker *</label>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>operator *</label>
             <input
               className='modal-input w-full'
               placeholder='Staff name'
-              value={formData.picker}
-              onChange={(e) => setFormData({ ...formData, picker: e.target.value })}
+              value={formData.operator}
+              onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
               required
             />
           </div>
 
           <div>
-            <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Date *</label>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>
             <input
               type="date"
               className='modal-input w-full'
@@ -98,7 +98,7 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
           </div>
 
           <div>
-            <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Status *</label>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Status *</label>
             <select
               //type="date"
               className='modal-input w-full'
@@ -124,7 +124,7 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
             <button 
               type="button" 
               onClick={addItem}
-              className="flex items-center gap-2 text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+              className="flex items-center gap-2 text-md bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
             >
               <Plus size={18} /> Add Product
             </button>
@@ -133,8 +133,8 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
           <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
             {/* Header cho danh sách item */}
             <div className="grid grid-cols-12 gap-3 px-2 mb-1">
-              <div className="col-span-8 text-xs font-bold text-gray-400 uppercase">Product Name</div>
-              <div className="col-span-3 text-xs font-bold text-gray-400 uppercase text-center">Quantity</div>
+              <div className="col-span-8 text-sm font-bold text-gray-400 uppercase">Product Name</div>
+              <div className="col-span-3 text-sm font-bold text-gray-400 uppercase text-center">Quantity</div>
               <div className="col-span-1"></div>
             </div>
 

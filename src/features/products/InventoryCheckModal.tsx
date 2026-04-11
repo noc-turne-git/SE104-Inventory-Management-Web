@@ -1,7 +1,7 @@
 import { Check, Plus, Trash2 } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
-import { type InventoryCheck, type InventoryCheckFormData } from '../../types/inventory_check';
+import { type InventoryCheck, type InventoryCheckFormData } from '../../types/note';
 import { useState, useEffect } from 'react';
 import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS';
 
@@ -72,7 +72,7 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
         <div className='bg-gray-50 p-4 rounded-xl border border-gray-100'>
           <div className='grid grid-cols-2 gap-4'>
             <div>
-              <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Date *</label>
+              <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>
               <input
                 type="date"
                 className='modal-input w-full'
@@ -83,7 +83,7 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
             </div>
 
             <div>
-              <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Status *</label>
+              <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Status *</label>
               <select
                 className='modal-input w-full'
                 value={formData.status}
@@ -117,9 +117,9 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
 
           <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
             <div className="grid grid-cols-12 gap-3 px-2 mb-1">
-              <div className="col-span-7 text-xs font-bold text-gray-400 uppercase">Product Name</div>
-              <div className="col-span-2 text-xs font-bold text-gray-400 uppercase text-center">Quantity</div>
-              <div className="col-span-2 text-xs font-bold text-gray-400 uppercase text-center">Expected Quantity</div>
+              <div className="col-span-7 text-sm font-bold text-gray-400 uppercase">Product Name</div>
+              <div className="col-span-2 text-sm font-bold text-gray-400 uppercase text-center">Quantity</div>
+              <div className="col-span-2 text-sm font-bold text-gray-400 uppercase text-center">Expected Quantity</div>
               <div className="col-span-1"></div>
             </div>
 
@@ -180,7 +180,7 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
 
                   {isMismatch && (
                     <div className="col-span-12 border border-red-300 rounded-lg">
-                      {/* <div className="text-xs font-bold text-gray-400 uppercase">Reason</div> */}
+                      {/* <div className="text-sm font-bold text-gray-400 uppercase">Reason</div> */}
                       <textarea
                         className="modal-input !border-none w-full focus:bg-white custom-scrollbar" 
                         placeholder="Enter reason of discrepancy"

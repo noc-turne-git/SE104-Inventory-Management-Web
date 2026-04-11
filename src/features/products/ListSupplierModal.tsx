@@ -86,7 +86,7 @@ export default function SuppliersModal({ isOpen, onClose, product }: any) {
             <h2 className="text-xl font-semibold">Suppliers for {product?.name}</h2>
             <button
               onClick={editMode ? handleSave : () => setEditMode(true)}
-              className={`text-sm ml-5 px-5 py-2.5 rounded-full transition-all font-medium ${
+              className={`text-md ml-5 px-5 py-2.5 rounded-full transition-all font-medium ${
                 !editMode
                   ? "bg-blue-500 text-white hover:bg-blue-600"
                   : "bg-red-500 text-white hover:bg-red-600"
@@ -127,7 +127,7 @@ export default function SuppliersModal({ isOpen, onClose, product }: any) {
                       />
                       <button
                         onClick={() => toggleSupplierType(s.supplier, product.name)}
-                        className={`text-xs px-2 py-1 rounded-full font-bold transition-transform active:scale-90 ${getSupplierTypeColor[s.type]}`}
+                        className={`text-sm px-2 py-1 rounded-full font-bold transition-transform active:scale-90 ${getSupplierTypeColor[s.type]}`}
                       >
                         {s.type} 🔄
                       </button>
@@ -135,14 +135,14 @@ export default function SuppliersModal({ isOpen, onClose, product }: any) {
                   ) : (
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="font-semibold text-gray-900">{s.supplier}</h3>
-                      <span className={`text-xs px-2 py-1 rounded-full font-bold ${getSupplierTypeColor[s.type]}`}>
+                      <span className={`text-sm px-2 py-1 rounded-full font-bold ${getSupplierTypeColor[s.type]}`}>
                         {s.type}
                       </span>
                     </div>
                   )}
 
                   {/* Thông tin liên hệ */}
-                  <div className={`text-sm text-gray-500 space-y-1 transition-opacity ${editMode ? "opacity-50" : "opacity-100"}`}>
+                  <div className={`text-md text-gray-500 space-y-1 transition-opacity ${editMode ? "opacity-50" : "opacity-100"}`}>
                     <div className="flex items-center gap-2">
                       <Mail className="w-3.5 h-3.5" /> {s.email}
                     </div>
@@ -199,7 +199,7 @@ export default function SuppliersModal({ isOpen, onClose, product }: any) {
               <div className="p-2 bg-gray-200 rounded-full mb-1">
                 <Plus size={24} />
               </div>
-              <span className="text-sm font-medium">Add New Supplier</span>
+              <span className="text-md font-medium">Add New Supplier</span>
             </button>
           )}
         </div>

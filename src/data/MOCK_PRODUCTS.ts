@@ -65,5 +65,70 @@ export const MOCK_PRODUCTS: Product[] = [
     defectiveQuantity: 1,
     damagedQuantity: 0,
     status: "low stock"
+  },
+  {
+    id: "6",
+    //image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+    name: "Red Canvas Sneakers",
+    sku: 'FW-006',
+    category: "Footwear",
+    description: "Lightweight canvas sneakers with a durable rubber sole.",
+    sellPrice: 850000,
+    stockQuantity: 30,
+    defectiveQuantity: 1,
+    damagedQuantity: 0,
+    status: "in stock"
+  },
+  {
+    id: "7",
+    image: "https://images.unsplash.com/photo-1576566586067-450c999c1c1e",
+    name: "Beige Cargo Shorts",
+    sku: 'SRT-007',
+    category: "Shorts",
+    description: "Utility cargo shorts with multiple pockets for outdoor use.",
+    sellPrice: 280000,
+    stockQuantity: 15,
+    defectiveQuantity: 0,
+    damagedQuantity: 0,
+    status: "low stock"
+  },
+  {
+    id: "8",
+    //image: "https://images.unsplash.com/photo-1521335629791-ce4aec67dd16",
+    name: "Leather Baseball Cap",
+    sku: 'ACC-008',
+    category: "Accessories",
+    description: "Premium faux-leather cap with adjustable strap.",
+    sellPrice: 150000,
+    stockQuantity: 85,
+    defectiveQuantity: 3,
+    damagedQuantity: 1,
+    status: "in stock"
+  },
+  {
+    id: "9",
+    image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b",
+    name: "Striped Polo Shirt",
+    sku: 'SHT-009',
+    category: "Shirt",
+    description: "Classic fit polo with horizontal navy stripes.",
+    sellPrice: 350000,
+    stockQuantity: 0,
+    defectiveQuantity: 0,
+    damagedQuantity: 0,
+    status: "out of stock"
+  },
+  {
+    id: "10",
+    //image: "https://images.unsplash.com/photo-1551028711-031c50728753",
+    name: "Leather Biker Jacket",
+    sku: 'JAC-010',
+    category: "Jacket",
+    description: "Heavyweight genuine leather jacket with silver hardware.",
+    sellPrice: 1250000,
+    stockQuantity: 12,
+    defectiveQuantity: 0,
+    damagedQuantity: 0,
+    status: "low stock"
   }
 ];

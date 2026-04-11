@@ -2,9 +2,9 @@ import { useState } from 'react';
 import OpenModalButton from '../../components/common/button/ModalButton';
 import SearchBar, { FilterBar } from '../../components/common/searchBar';
 import { MOCK_DELIVERY } from '../../data/MOCK_DELIVERY';
-import { type Delivery, type DeliveryFormData } from '../../types/delivery'; 
+import { type Delivery, type DeliveryFormData } from '../../types/note'; 
 import DeliveryModal from '../../features/delivery/DeliveryModal';
-import { useDeliveries } from '../../features/hooks/useDelivery';
+import { useDeliveries } from '../../features/hooks/useDeliveries';
 import { DeliveryNote } from '../../features/delivery/DeliveryNote';
 
 const DeliveryScreen = () => {
@@ -14,7 +14,7 @@ const DeliveryScreen = () => {
     updateDelivery, 
     deleteDelivery, 
     filterDeliveries 
-  } = useDeliveries(MOCK_DELIVERY);
+  } = useDeliveries();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -52,8 +52,8 @@ const DeliveryScreen = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Delivery Management</h1>
-          <p className="text-gray-600 mt-1">Track and manage outgoing shipments and picker assignments</p>
+          <h1 className="text-2xl font-bold text-gray-900">Delivery Management</h1>
+          <p className="text-gray-600 mt-1">Track and manage outgoing shipments and operator assignments</p>
         </div>
         <OpenModalButton label="Create Delivery Note" onClick={handleOpenAddModal} />
       </div>
@@ -61,7 +61,7 @@ const DeliveryScreen = () => {
       {/* Search & Filter Section */}
       <div className='grid grid-cols-2 gap-4 mb-6'>
         <SearchBar 
-          label="Search by ID, Destination or Picker..."
+          label="Search by ID, Destination or operator..."
           onChange={(e: any) => setSearchTerm(e.target.value)} 
         />
         <FilterBar

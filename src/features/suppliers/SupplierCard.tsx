@@ -17,7 +17,7 @@ const SupplierCard = ({ supplier, onDelete, onEdit }: Props) => {
           <h2 className="text-lg font-semibold text-gray-900">
             {supplier.name}
           </h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-md text-gray-500">
             Contact: {supplier.contact}
           </p>
         </div>
@@ -41,7 +41,7 @@ const SupplierCard = ({ supplier, onDelete, onEdit }: Props) => {
       </div>
 
       {/* INFO */}
-      <div className="space-y-2 text-sm text-gray-600">
+      <div className="space-y-2 text-md text-gray-600">
 
         <div className="flex items-center gap-2">
           <Mail className="w-4 h-4" />

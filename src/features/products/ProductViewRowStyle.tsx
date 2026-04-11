@@ -32,18 +32,18 @@ const ProductViewRow: React.FC<Props> = ({product, onDelete, onOpenEditModal}) =
           </div>
           <div>
             <p className="font-medium text-grey-900">{product.name}</p>
-            <p className="text-sm text-gray-500">{product.category}</p>
+            <p className="text-md text-gray-500">{product.category}</p>
           </div>
           </div>
             </td>
-            <td className="px-6 py-4 text-sm text-gray-600">{product.sku}</td>
-            <td className="px-6 py-4 text-sm text-gray-600">{product.description}</td>
-            <td className="px-6 py-4 text-sm font-medium text-gray-900">${product.sellPrice}</td>
-            <td className="px-6 py-4 text-sm text-gray-600">{product.stockQuantity}</td>
-            <td className="px-6 py-4 text-sm text-gray-600">{product.defectiveQuantity}</td>
-            <td className="px-6 py-4 text-sm text-gray-600">{product.damagedQuantity}</td>
+            <td className="px-6 py-4 text-md text-gray-600">{product.sku}</td>
+            <td className="px-6 py-4 text-md text-gray-600">{product.description}</td>
+            <td className="px-6 py-4 text-md font-medium text-gray-900">${product.sellPrice}</td>
+            <td className="px-6 py-4 text-md text-gray-600">{product.stockQuantity}</td>
+            <td className="px-6 py-4 text-md text-gray-600">{product.defectiveQuantity}</td>
+            <td className="px-6 py-4 text-md text-gray-600">{product.damagedQuantity}</td>
             <td className="px-6 py-4">
-              <span className={`px-2 py-1 text-xs rounded-full ${getStatusStyle(product.status)}`}>
+              <span className={`px-2 py-1 text-sm rounded-full ${getStatusStyle(product.status)}`}>
                 {product.status}
               </span>
             </td>

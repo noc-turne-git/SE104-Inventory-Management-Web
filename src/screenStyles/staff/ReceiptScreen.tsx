@@ -2,13 +2,13 @@ import { useState } from 'react';
 import OpenModalButton from '../../components/common/button/ModalButton';
 import SearchBar, {FilterBar} from '../../components/common/searchBar';
 import { MOCK_RECEIPTS } from '../../data/MOCK_RECEIPTS';
-import { type Receipt, type ReceiptFormData } from '../../types/receipt'; 
+import { type Receipt, type ReceiptFormData } from '../../types/note'; 
 import ReceiptModal from '../../features/receipts/ReceiptModal';
 import { useReceipts } from '../../features/hooks/useReceipts';
 import { ReceiptNote } from '../../features/receipts/ReceiptNote';
 
 const ReceiptScreen = () => {
-  const {receipts, addReceipt, updateReceipt, deleteReceipt, filteredReceipts } = useReceipts(MOCK_RECEIPTS);
+  const {receipts, addReceipt, updateReceipt, deleteReceipt, filterReceipts } = useReceipts();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Receipt | null>(null);
@@ -44,7 +44,7 @@ const ReceiptScreen = () => {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Goods Receipt Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Goods Receipt Management</h1>
           <p className="text-gray-600 mt-1">Manage incoming goods receipt notes and quality checks</p>
         </div>
         <OpenModalButton label="Add Goods Receipt" onClick={handleOpenAddModal} />
@@ -64,7 +64,7 @@ const ReceiptScreen = () => {
       </div>
           
       <div className="space-y-4">
-        {filteredReceipts(searchTerm, statusFilter).map((rec) => (
+        {filterReceipts(searchTerm, statusFilter).map((rec) => (
             <ReceiptNote
                 receipt={rec}
                 key={rec.id}

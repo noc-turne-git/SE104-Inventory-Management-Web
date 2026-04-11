@@ -1,9 +1,10 @@
-import { type Receipt } from '../types/receipt';
+import { type Receipt } from '../types/note';
 
 export const MOCK_RECEIPTS: Receipt[] = [
   {
     id: "rec-001",
-    receiptNumber: "GR-20260310-001",
+    noteNumber: "GR-20260310-001",
+    type: 'RECEIPT',
     dateCreated: "2026-03-10",
     supplier: "ABC Electronics Corp",
     items: [
@@ -11,11 +12,12 @@ export const MOCK_RECEIPTS: Receipt[] = [
       { product: "Samsung 27\" Monitor", ordered: 30, received: 30, defective: 0 }
     ],
     status: "approved",
-    inspector: "Sarah Keeper"
+    operator: "Sarah Keeper"
   },
   {
     id: "rec-002",
-    receiptNumber: "GR-20260312-001",
+    noteNumber: "GR-20260312-001",
+    type: 'RECEIPT',
     dateCreated: "2026-03-12",
     supplier: "Fashion Guru Wholesale",
     items: [
@@ -23,11 +25,12 @@ export const MOCK_RECEIPTS: Receipt[] = [
       { product: "Slim Fit Jeans", ordered: 100, received: 98, defective: 2 }
     ],
     status: "in process",
-    inspector: "John Wick"
+    operator: "John Wick"
   },
   {
     id: "rec-003",
-    receiptNumber: "GR-20260315-001",
+    noteNumber: "GR-20260315-001",
+    type: 'RECEIPT',
     dateCreated: "2026-03-15",
     supplier: "Global Logistics Ltd",
     items: [
@@ -35,22 +38,24 @@ export const MOCK_RECEIPTS: Receipt[] = [
       { product: "Mechanical Keyboard", ordered: 80, received: 75, defective: 3 }
     ],
     status: "pending",
-    inspector: "Elena Fisher"
+    operator: "Elena Fisher"
   },
   {
     id: "rec-004",
-    receiptNumber: "GR-20260315-002",
+    noteNumber: "GR-20260315-002",
+    type: 'RECEIPT',
     dateCreated: "2026-03-15",
     supplier: "Tech Gear Solutions",
     items: [
       { product: "USB-C Hub", ordered: 300, received: 290, defective: 10 }
     ],
     status: "new",
-    inspector: "Michael Scott"
+    operator: "Michael Scott"
   },
   {
     id: "rec-005",
-    receiptNumber: "GR-20260320-001",
+    noteNumber: "GR-20260320-001",
+    type: 'RECEIPT',
     dateCreated: "2026-03-20",
     supplier: "Premium Fabric Inc",
     items: [
@@ -58,6 +63,6 @@ export const MOCK_RECEIPTS: Receipt[] = [
       { product: "Cotton Tote Bag", ordered: 500, received: 500, defective: 12 }
     ],
     status: "rejected",
-    inspector: "Sarah Keeper"
+    operator: "Sarah Keeper"
   }
 ];

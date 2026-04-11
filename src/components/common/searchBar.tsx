@@ -12,7 +12,7 @@ const SearchBar = ({ label, onChange }: SearchBarProps) => {
   return (
     <div
       onClick={() => inputRef.current?.focus()} // click cả div focus input
-      className="pl-3 mb-6 flex items-center border border-gray-300 
+      className="pl-3 shadow-sm bg-white mb-6 flex items-center border border-gray-300 
       focus-within:border-blue-500 focus-within:border-2 
       rounded-xl cursor-text transition"
     >
@@ -23,7 +23,7 @@ const SearchBar = ({ label, onChange }: SearchBarProps) => {
         type="text"
         placeholder={label}
         onChange={onChange} 
-        className="w-full p-2 outline-none text-gray-500 h-12 bg-transparent"
+        className="w-full p-2 outline-none text-md text-gray-500 h-12 bg-transparent"
       />
     </div>
   );
@@ -38,7 +38,7 @@ interface FilterBarProps {
 
 export const FilterBar = ({value, onChange, select}: FilterBarProps) => {
     return (
-            <div className="pl-3 mb-6 flex items-center border border-gray-300 focus-within:border-blue-500 focus-within:border-2 rounded-xl ">
+            <div className="pl-3 mb-6 flex bg-white items-center border border-gray-300 focus-within:border-blue-500 focus-within:border-2 rounded-xl ">
                 <FilterIcon className="w-4 h-4 text-gray-500" />
                 <select
                     value={value}

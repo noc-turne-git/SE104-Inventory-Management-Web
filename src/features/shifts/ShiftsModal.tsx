@@ -102,7 +102,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Shift Type Quick Select */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-md font-medium text-gray-700 mb-3">
               Quick Select Shift Type
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -154,7 +154,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
                   <option value="Delivery Coordinator">Delivery Coordinator</option>
                   <option value="Night Guard">Night Guard</option>
                   <option value="Loading Staff">Loading Staff</option>
-                  <option value="Quality Inspector">Quality Inspector</option>
+                  <option value="Quality operator">Quality operator</option>
                 </select>
               </div>
             </div>
@@ -203,7 +203,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
                                 </option>
                 ))}
               </select>
-              <p className="text-xs text-gray-500 mt-1">Select employee or leave unassigned</p>
+              <p className="text-sm text-gray-500 mt-1">Select employee or leave unassigned</p>
             </div>
 
             <div className="mb-4">
@@ -229,13 +229,13 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
                     onChange={(e) => setFormData({ ...formData, repeatWeekly: e.target.checked })}
                     className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
-                  <label htmlFor="repeatWeekly" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="repeatWeekly" className="text-md font-medium text-gray-700">
                     Repeat weekly
                   </label>
                 </div>
                 {formData.repeatWeekly && (
                   <div>
-                    <label className="block text-sm text-gray-600 mb-2">
+                    <label className="block text-md text-gray-600 mb-2">
                       Number of weeks
                     </label>
                     <input

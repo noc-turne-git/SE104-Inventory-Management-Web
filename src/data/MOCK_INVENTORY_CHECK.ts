@@ -1,9 +1,10 @@
-import { type InventoryCheck } from "../types/inventory_check";
+import { type InventoryCheck } from "../types/note";
 
 export const MOCK_INVENTORY_CHECKS: InventoryCheck[] = [
   {
     id: "1",
-    inventoryCheckNumber: "IC-20260401-001",
+    noteNumber: "IC-20260401-001", 
+    type: 'INVENTORY_CHECK',
     dateCreated: "2026-04-01 09:00",
     status: "approved",
     items: [
@@ -18,11 +19,12 @@ export const MOCK_INVENTORY_CHECKS: InventoryCheck[] = [
         reason: "Stock discrepancy after delivery"
       }
     ],
-    checker: "Robert Wilson"
+    operator: "Robert Wilson"
   },
   {
     id: "2",
-    inventoryCheckNumber: "IC-20260402-002",
+    noteNumber: "IC-20260402-002",
+    type: 'INVENTORY_CHECK',
     dateCreated: "2026-04-02 10:30",
     status: "in process",
     items: [
@@ -32,11 +34,12 @@ export const MOCK_INVENTORY_CHECKS: InventoryCheck[] = [
         reason: "Damage report follow-up"
       }
     ],
-    checker: "Jessica Lee"
+    operator: "Jessica Lee"
   },
   {
     id: "3",
-    inventoryCheckNumber: "IC-20260403-003",
+    noteNumber: "IC-20260403-003",
+    type: 'INVENTORY_CHECK',
     dateCreated: "2026-04-03 13:15",
     status: "pending",
     items: [
@@ -51,11 +54,12 @@ export const MOCK_INVENTORY_CHECKS: InventoryCheck[] = [
         reason: "Confirming out of stock status"
       }
     ],
-    checker: "Thomas Anderson"
+    operator: "Thomas Anderson"
   },
   {
     id: "4",
-    inventoryCheckNumber: "IC-20260404-004",
+    noteNumber: "IC-20260404-004",
+    type: 'INVENTORY_CHECK',
     dateCreated: "2026-04-04 08:45",
     status: "new",
     items: [
@@ -65,11 +69,12 @@ export const MOCK_INVENTORY_CHECKS: InventoryCheck[] = [
         reason: "End of week cycle count"
       }
     ],
-    checker: "Amanda Collins"
+    operator: "Amanda Collins"
   },
   {
     id: "5",
-    inventoryCheckNumber: "IC-20260405-005",
+    noteNumber: "IC-20260405-005",
+    type: 'INVENTORY_CHECK',
     dateCreated: "2026-04-05 15:50",
     status: "rejected",
     items: [
@@ -79,6 +84,6 @@ export const MOCK_INVENTORY_CHECKS: InventoryCheck[] = [
         reason: "Incomplete count submitted"
       }
     ],
-    checker: "Christopher Moore"
+    operator: "Christopher Moore"
   }
 ];

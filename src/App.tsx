@@ -8,30 +8,42 @@ import DeliveryScreen from './screenStyles/staff/DeliveryScreen';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProductViewScreen from './screenStyles/staff/ProductScreen';
 import './index.css';
+import DashboardStaffScreen from './screenStyles/staff/DashboardScreen';
+import DashboardManagerScreen from './screenStyles/manager/DashboardScreen';
+import NoteAuthorizationScreen from './screenStyles/manager/NoteAuthorizationScreen';
+
+import { NoteProvider } from './context/NoteContext';
+
 
 function App() {
   return (
-    <Router>
-      <div className="layout-container">
-        {/* Thanh điều hướng bên trái */}
-        <Sidebar />
+    <NoteProvider>
+      <Router>
+        <div className="layout-container">
+          {/* Thanh điều hướng bên trái */}
+          <Sidebar />
 
-        {/* Vùng hiển thị nội dung bên phải */}
-        <div className="main-content">
-          <Routes>
-            <Route path="/products" element={<ProductScreen />} />
-            {/* Mặc định vào Products hoặc Dashboard */}
-            <Route path="/shifts" element={<ShiftScreen />} /> 
-            <Route path="/delivery" element={<DeliveryScreen />} /> 
-            <Route path="/receipts" element={<ReceiptScreen />} /> 
-            <Route path="/products_view" element={<ReceiptScreen />} /> 
-            <Route path="/suppliers" element={<SupplierScreen />} /> 
-            <Route path="/staffs" element={<StaffScreen />} /> 
-            <Route path="*" element={<div style={{padding: 20}}>Trang này đang phát triển...</div>} />
-          </Routes>
+          {/* Vùng hiển thị nội dung bên phải */}
+          <div className="main-content">
+            <Routes>
+              <Route path="/dashboard_manager" element={<DashboardManagerScreen />} />
+              <Route path="/products" element={<ProductScreen />} />
+              <Route path="/suppliers" element={<SupplierScreen />} /> 
+              <Route path="/staffs" element={<StaffScreen />} /> 
+              <Route path="/shifts" element={<ShiftScreen />} />
+              <Route path="/notes" element={<NoteAuthorizationScreen/>} /> 
+
+              <Route path="/dashboard_staff" element={<DashboardStaffScreen />} />
+              <Route path="/products_view" element={<ProductViewScreen />} /> 
+              <Route path="/delivery" element={<DeliveryScreen />} /> 
+              <Route path="/receipts" element={<ReceiptScreen />} /> 
+              
+              <Route path="*" element={<div style={{padding: 20}}>Trang này đang phát triển...</div>} />
+            </Routes>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </NoteProvider>
   );
 }
 

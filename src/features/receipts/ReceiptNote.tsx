@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Receipt } from '../../types/receipt';
+import { type Receipt } from '../../types/note';
 import { Edit, Package, Calendar, ClipboardList, FileDown} from 'lucide-react';
 
 interface Props {
@@ -39,7 +39,7 @@ const ReceiptItem = ({ordered, received, defective, product} : ItemProps) => {
     <div className="items-center justify-start mb-2">
         <span className="font-medium text-gray-900">{product}</span>
     </div>
-    <div className="grid grid-cols-3 gap-4 text-sm">
+    <div className="grid grid-cols-3 gap-4 text-md">
       <div>
         <span className="text-gray-600">Ordered:</span>
         <span className="ml-2 font-medium text-gray-900">{ordered}</span>
@@ -66,30 +66,30 @@ export const ReceiptNote = ({receipt, onOpenEditModal} : Props) => {
             <ClipboardList className="w-6 h-6 text-green-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{receipt.receiptNumber}</h3>
-            <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+            <h3 className="text-lg font-semibold text-gray-900">{receipt.noteNumber}</h3>
+            <div className="flex items-center gap-4 mt-1 text-md text-gray-600">
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
                 {receipt.dateCreated}
               </div>
-              <span>Inspector: {receipt.inspector}</span>
+              <span>operator: {receipt.operator}</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`px-3 py-1 text-sm rounded-full capitalize ${getStatusColor(receipt.status)}`}>
+          <span className={`px-3 py-1 text-md rounded-full capitalize ${getStatusColor(receipt.status)}`}>
             {receipt.status}
           </span>
         </div>
       </div>
 
       <div className="mb-4">
-        <p className="text-sm text-gray-600 mb-2">Supplier:</p>
-        <p className="font-medium text-gray-900">{receipt.supplier}</p>
+        <p className="text-md text-gray-600 mb-2">Supplier:</p>
+        <p className="font-medium text-lg text-gray-900">{receipt.supplier}</p>
       </div>
 
       <div className="mb-4">
-        <p className="text-sm text-gray-600 mb-3">Items Quality Check:</p>
+        <p className="text-md text-gray-600 mb-3">Items Quality Check:</p>
         <div className="space-y-3">
           {receipt.items.map((item) => (
             <ReceiptItem
@@ -103,15 +103,15 @@ export const ReceiptNote = ({receipt, onOpenEditModal} : Props) => {
         </div>
       </div>    
       
-      <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
+      <div className="flex items-center gap-2 pt-4 border-gray-200">
         <button
           // onClick={}
-          className="flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-md text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
         >
           <FileDown className="w-4 h-4" />
           Export PDF
         </button>
-        <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+        <button className="flex items-center gap-2 px-4 py-2 text-md text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                 onClick={() => onOpenEditModal(receipt)}>
           <Edit className="w-4 h-4" />
             Edit

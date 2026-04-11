@@ -26,7 +26,7 @@ const ShiftsCalendar = ({shifts, onOpenEditModal, onDelete,}: Props) => {
         <div className="flex items-center gap-3">
           <button
             onClick={goToToday}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="px-4 py-2 text-md border border-gray-300 rounded-lg hover:bg-gray-50"
           >
             Today
           </button>
@@ -53,7 +53,7 @@ const ShiftsCalendar = ({shifts, onOpenEditModal, onDelete,}: Props) => {
             <div key={index} className="min-h-[200px]">
         
               <div className={`text-center mb-3 p-2 rounded-lg ${isToday ? 'bg-blue-100' : ''}`}>
-                  <div className="text-xs text-gray-600 mb-1">{weekDays[index]}</div>
+                  <div className="text-sm text-gray-600 mb-1">{weekDays[index]}</div>
                   <div className={`text-lg font-semibold ${isToday ? 'text-blue-600' : 'text-gray-900'}`}>
                       {date.getDate()}
                   </div>

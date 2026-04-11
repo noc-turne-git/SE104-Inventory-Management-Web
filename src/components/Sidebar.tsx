@@ -1,4 +1,4 @@
-import { Van, ScrollText, LayoutDashboard, User, Truck, Package, Users, Calendar, LogOut } from 'lucide-react';
+import { Van, LayoutDashboard, Package, Users, Calendar, LogOut, NotebookPen, UserRoundPen, BookUser, PackagePlus } from 'lucide-react';
 import { Link, useLocation} from 'react-router-dom';
 import './Sidebar.css';
 
@@ -7,15 +7,19 @@ export const Sidebar = () => {
 
   //Path để load screens
   const menuItems = [
-    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard' },
-    { name: 'Profile', icon: <User size={20} />, path: '/profile' },
-    { name: 'Suppliers', icon: <Truck size={20} />, path: '/suppliers' },
+    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard_manager' },
+    { name: 'Profile', icon: <UserRoundPen size={20} />, path: '/profile' },
     { name: 'Products', icon: <Package size={20} />, path: '/products' },
+    { name: 'Suppliers', icon: <BookUser size={20} />, path: '/suppliers' },
     { name: 'Staff', icon: <Users size={20} />, path: '/staffs' },
     { name: 'Shifts', icon: <Calendar size={20} />, path: '/shifts' },
-    { name: 'Delivery', icon: <ScrollText size={20} />, path: '/delivery' },
-    { name: 'Receipts', icon: <Van size={20} />, path: '/receipts' },
-    { name: 'ProductsView', icon: <Package size={20} />, path: '/products_view' },
+    { name: 'Notes', icon: <NotebookPen size={20} />, path: '/notes' },
+
+    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard_staff' },
+    { name: 'Products', icon: <Package size={20} />, path: '/products_view' },
+    { name: 'Delivery', icon: <Van size={20} />, path: '/delivery' },
+    { name: 'Receipts', icon: <PackagePlus size={20} />, path: '/receipts' },
+    
   ];
 
   return (
@@ -34,7 +38,7 @@ export const Sidebar = () => {
       <nav className="nav-list">
         {menuItems.map((item) => (
           <Link 
-            key={item.name} 
+            key={item.path} 
             to={item.path} 
             className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
           >

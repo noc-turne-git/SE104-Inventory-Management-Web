@@ -22,7 +22,7 @@
     return (
         <div key={shift.id} className={`border rounded-lg p-2 ${getStatusColor(shift.status)}`}>
                         
-            <div className="flex justify-between mb-1 text-xs">
+            <div className="flex justify-between mb-1 text-sm">
                 <Clock size={20}> </Clock>
                 <span> {shift.startTime} - {shift.endTime} </span>
                 <div className="flex gap-1">
@@ -40,13 +40,13 @@
                 </div>
             </div>
 
-            <div className="text-xs font-medium">{shift.position}</div>
-                <div className="text-xs text-gray-700">
+            <div className="text-sm font-medium">{shift.position}</div>
+                <div className="text-sm text-gray-700">
                     {shift.assignedTo || 'Unassigned'}
                 </div>
 
                 {shift.notes && (
-                    <div className="text-xs text-gray-600 italic truncate">
+                    <div className="text-sm text-gray-600 italic truncate">
                         {shift.notes}
                     </div>
                 )}

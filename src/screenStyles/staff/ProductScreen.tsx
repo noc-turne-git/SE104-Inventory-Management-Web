@@ -6,7 +6,7 @@ import SearchBar from '../../components/common/searchBar';
 import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS';
 import { toast } from 'sonner';
 import { type Product } from '../../types/product';
-import { type InventoryCheckFormData } from '../../types/inventory_check';
+import { type InventoryCheckFormData } from '../../types/note';
 import InventoryCheckModal from '../../features/products/InventoryCheckModal';
 
 
@@ -41,7 +41,7 @@ const ProductViewScreen = () => {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Product Management</h1>
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
         <OpenModalButton label="Check Inventory" onClick={() => handleOpenAddModal()}></OpenModalButton>

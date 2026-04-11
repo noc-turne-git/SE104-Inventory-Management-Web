@@ -1,7 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
-import { type Receipt, type ReceiptFormData } from '../../types/receipt';
+import { type Receipt, type ReceiptFormData } from '../../types/note';
 import { useState, useEffect } from 'react';
 
 interface Props {
@@ -16,7 +16,7 @@ const DEFAULT_FORM: ReceiptFormData = {
   supplier: '',
   items: [{ product: '', ordered: 0, received: 0, defective: 0 }],
   status: 'new',
-  inspector: '',
+  operator: '',
 };
 
 const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
@@ -66,7 +66,7 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
         {/* Hàng thông tin chung: Chia 4 cột */}
         <div className='grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100'>
           <div>
-            <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Supplier *</label>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Supplier *</label>
             <input
               className='modal-input w-full'
               placeholder='Supplier name'
@@ -76,17 +76,17 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
             />
           </div>
           <div>
-            <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Inspector *</label>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>operator *</label>
             <input
               className='modal-input w-full'
               placeholder='Name'
-              value={formData.inspector}
-              onChange={(e) => setFormData({ ...formData, inspector: e.target.value })}
+              value={formData.operator}
+              onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
               required
             />
           </div>
           <div>
-            <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Date *</label>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>
             <input
               type="date"
               className='modal-input w-full'
@@ -96,7 +96,7 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
             />
           </div>
           <div>
-            <label className='block text-xs font-semibold text-gray-500 uppercase mb-1'>Status *</label>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Status *</label>
             <select
               className='modal-input w-full'
               value={formData.status}
@@ -121,7 +121,7 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
             <button 
               type="button" 
               onClick={addItem}
-              className="flex items-center gap-2 text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+              className="flex items-center gap-2 text-md bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
             >
               <Plus size={18} /> Add New Item
             </button>
@@ -130,10 +130,10 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
           <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
             {/* Header giả cho danh sách item để nhìn chuyên nghiệp hơn */}
             <div className="grid grid-cols-12 gap-3 px-2 mb-1">
-              <div className="col-span-5 text-xs font-bold text-gray-400 uppercase">Product </div>
-              <div className="col-span-2 text-xs font-bold text-gray-400 uppercase text-center">Ordered</div>
-              <div className="col-span-2 text-xs font-bold text-gray-400 uppercase text-center">Received</div>
-              <div className="col-span-2 text-xs font-bold text-gray-400 uppercase text-center">Defective</div>
+              <div className="col-span-5 text-sm font-bold text-gray-400 uppercase">Product </div>
+              <div className="col-span-2 text-sm font-bold text-gray-400 uppercase text-center">Ordered</div>
+              <div className="col-span-2 text-sm font-bold text-gray-400 uppercase text-center">Received</div>
+              <div className="col-span-2 text-sm font-bold text-gray-400 uppercase text-center">Defective</div>
               <div className="col-span-1"></div>
             </div>
 

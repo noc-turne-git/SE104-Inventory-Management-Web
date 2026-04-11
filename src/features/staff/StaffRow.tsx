@@ -15,18 +15,18 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
       {/* EMPLOYEE */}
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white">
+          <div className="w-15 h-15 bg-blue-500 rounded-full flex items-center justify-center text-white">
             {staff.name.charAt(0)}
           </div>
           <div>
             <p className="font-medium text-gray-900">{staff.name}</p>
-            <p className="text-sm text-gray-500">{staff.email}</p>
+            <p className="text-md text-gray-500">{staff.email}</p>
           </div>
         </div>
       </td>
 
-      <td className="px-6 py-4 text-sm text-gray-600">{staff.role}</td>
-      <td className="px-6 py-4 text-sm text-gray-600">{staff.accountStatus}</td>
+      <td className="px-6 py-4 text-md text-gray-600">{staff.role}</td>
+      <td className="px-6 py-4 text-md text-gray-600">{staff.accountStatus}</td>
       <td className="px-6 py-4 font-medium">${staff.salary}</td>
       <td className="px-6 py-4 text-center">
         {new Date(staff.hireDate).toLocaleDateString('vi-VN')}</td>
@@ -35,7 +35,7 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
       <td className="px-6 py-4 text-center">
         <span
           onClick={() => onViewInfractions(staff)}
-          className={`cursor-pointer px-3 py-1 text-xs rounded-full ${
+          className={`cursor-pointer px-3 py-1 text-lg rounded-full ${
             staff.infractions.length === 0
               ? "bg-green-100 text-green-700"
               : "bg-yellow-100 text-yellow-700"
@@ -47,12 +47,12 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
 
       {/* ACTION */}
       <td className="px-6 py-4">
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-5">
           <button onClick={() => onEdit(staff)}>
-            <Edit className="w-4 h-4 text-blue-600" />
+            <Edit className="w-6 h-6 text-blue-600" />
           </button>
           <button onClick={() => onDelete(staff.id)}>
-            <Trash2 className="w-4 h-4 text-red-600" />
+            <Trash2 className="w-6 h-6 text-red-600" />
           </button>
         </div>
       </td>
