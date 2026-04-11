@@ -1,4 +1,4 @@
-import { Van, ScrollText, LayoutDashboard, User, Truck, Package, Users, Calendar, LogOut } from 'lucide-react';
+import { Van, ScrollText, LayoutDashboard, User, Truck, Package, Users, Calendar, LogOut, Home } from 'lucide-react';
 import { Link, useLocation} from 'react-router-dom';
 import './Sidebar.css';
 
@@ -16,6 +16,8 @@ export const Sidebar = () => {
     { name: 'Delivery', icon: <ScrollText size={20} />, path: '/delivery' },
     { name: 'Receipts', icon: <Van size={20} />, path: '/receipts' },
     { name: 'ProductsView', icon: <Package size={20} />, path: '/products_view' },
+    { name: 'Home', icon: <Home size={20} />, path: '/home' },
+    { name: 'Warehouse', icon: <Home size={20} />, path: '/warehouse' },
   ];
 
   return (
