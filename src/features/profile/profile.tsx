@@ -44,7 +44,7 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
   const [showToast, setShowToast] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: 'Sarah Keeper',
+    fullName: 'John Manager',
     dob: '1995-05-20', 
     phone: '+1 234 567 890', 
     address: '123 Warehouse St, NY', 
