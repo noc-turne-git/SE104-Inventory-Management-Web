@@ -12,9 +12,16 @@ import { HomeScreen } from './screenStyles/HomeScreen';
 import { MOCK_HOME_DATA } from './data/MOCK_HOME';
 import ProfileScreen from './screenStyles/manager/ProfileScreen';
 import WareHouseScreen  from './screenStyles/WareHouseScreen';
-import { MOCK_WAREHOUSES } from './data/MOCK_WAREHOUSE';
+import { MOCK_WAREHOUSES, MOCK_INVITATIONS } from './data/MOCK_WAREHOUSE';
+import { useState } from 'react';
 
 function App() {
+  const [warehouses, setWarehouses] = useState(MOCK_WAREHOUSES);
+  const [invitations, setInvitations] = useState(MOCK_INVITATIONS);
+  const handleRemoveInvitation = (id: string) => {
+    setInvitations(prev => prev.filter(inv => inv.id !== id));
+  };
+
   return (
     <Router>
       <div className="layout-container">
@@ -34,7 +41,18 @@ function App() {
             <Route path="/suppliers" element={<SupplierScreen />} /> 
             <Route path="/staffs" element={<StaffScreen />} /> 
             <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
-            <Route path="/warehouse" element={<WareHouseScreen warehouses={MOCK_WAREHOUSES} invitations={[]} onManage={() => {}} onCreate={() => {}} onAcceptInvitation={() => {}} onDeclineInvitation={() => {}} />} />
+            <Route path="/warehouse" element={<WareHouseScreen warehouses={warehouses} 
+            invitations={invitations} 
+            onManage={(id) => console.log("Manage:", id)} 
+            onCreate={(name, addr) => console.log("Create:", name, addr)} 
+            onAcceptInvitation={(id) => {
+              console.log("Accepted:", id);
+              handleRemoveInvitation(id);
+            }} 
+            onDeclineInvitation={(id) => {
+              console.log("Declined:", id);
+              handleRemoveInvitation(id);
+            }} />} />
             <Route path="*" element={<div style={{padding: 20}}>Trang này đang phát triển...</div>} />
           </Routes>
         </div>

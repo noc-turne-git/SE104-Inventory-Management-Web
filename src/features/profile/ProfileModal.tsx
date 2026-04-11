@@ -28,6 +28,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl'
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         className={`relative w-full ${maxWidth} bg-white rounded-2xl shadow-2xl overflow-hidden`}
       >
+        <div className={`relative w-full ${maxWidth} bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col`}></div>
         <div className="flex justify-between items-center p-6 border-b border-[#f1f5f9]">
           <h2 className="text-xl font-bold text-[#1e293b]">{title}</h2>
           <button 
@@ -37,7 +38,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl'
             <X className="w-6 h-6" />
           </button>
         </div>
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto max-h-[80vh] custom-scrollbar">
           {children}
         </div>
       </motion.div>
