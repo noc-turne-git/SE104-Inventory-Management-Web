@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type Supplier } from "../../types/supplier";
+import { type Supplier } from "../types/supplier";
 import { toast } from "sonner";
 
 export const useSuppliers = (initialData: Supplier[]) => {

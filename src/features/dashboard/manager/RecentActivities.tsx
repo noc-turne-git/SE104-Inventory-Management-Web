@@ -42,7 +42,7 @@ const RecentActivities: React.FC = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col min-h-[500px] overflow-hidden">
       <div className="p-6 flex-1">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-semibold text-gray-900">Recent Activities</h3>
+          <h3 className="text-4xl font-semibold text-gray-900">Recent Activities</h3>
           <Activity className="w-5 h-5 text-gray-400" />
         </div>
         <div className="space-y-4">

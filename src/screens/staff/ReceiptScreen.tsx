@@ -4,7 +4,7 @@ import SearchBar, {FilterBar} from '../../components/common/searchBar';
 import { MOCK_RECEIPTS } from '../../data/MOCK_RECEIPTS';
 import { type Receipt, type ReceiptFormData } from '../../types/note'; 
 import ReceiptModal from '../../features/receipts/ReceiptModal';
-import { useReceipts } from '../../features/hooks/useReceipts';
+import { useReceipts } from '../../hooks/useReceipts';
 import { ReceiptNote } from '../../features/receipts/ReceiptNote';
 
 const ReceiptScreen = () => {
@@ -44,7 +44,7 @@ const ReceiptScreen = () => {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Goods Receipt Management</h1>
+          <h1 className="text-4xl font-bold text-gray-900">Goods Receipt Management</h1>
           <p className="text-gray-600 mt-1">Manage incoming goods receipt notes and quality checks</p>
         </div>
         <OpenModalButton label="Add Goods Receipt" onClick={handleOpenAddModal} />

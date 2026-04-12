@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type Staff, type Infractions } from "../../types/staff";
+import { type Staff, type Infractions } from "../types/staff";
 import { toast } from "sonner";
 
 export const useStaff = (initialData: Staff[]) => {

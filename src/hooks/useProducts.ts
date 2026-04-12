@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { type Product, type ProductFormData } from '../../types/product';
+import { type Product, type ProductFormData } from '../types/product';
 import { toast } from 'sonner';
 
 export const useProducts = (initialData: Product[]) => {

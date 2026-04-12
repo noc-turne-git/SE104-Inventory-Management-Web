@@ -46,7 +46,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({ data }) => {
             <p className="text-md font-semibold text-gray-400 uppercase tracking-wider">
               {stat.title}
             </p>
-            <h3 className="text-3xl font-bold text-gray-900 mt-1">
+            <h3 className="text-4xl font-bold text-gray-900 mt-1">
               {stat.value}
             </h3>
             <p className="text-sm text-gray-400 mt-2 font-medium">

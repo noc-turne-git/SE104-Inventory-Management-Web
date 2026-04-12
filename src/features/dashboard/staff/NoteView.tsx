@@ -58,7 +58,7 @@ const NoteTable: React.FC = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col min-h-[500px] overflow-hidden">
       <div className="flex p-6 items-center justify-between">
         <div>
-          <h3 className="text-2xl font-semibold text-gray-900">Note Status</h3>
+          <h3 className="text-4xl font-semibold text-gray-900">Note Status</h3>
           <p className="text-md text-gray-500">Recheck rejected note soon</p>
         </div>
         {/* <AlertTriangle className="w-5 h-5 text-red-500" /> */}

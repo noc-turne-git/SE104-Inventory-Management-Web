@@ -18,7 +18,7 @@ const WeeklySchedule: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full">
-      <h3 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+      <h3 className="text-4xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
         <Briefcase className="w-5 h-5 text-purple-500" /> Weekly Schedule
       </h3>
       <div className="space-y-3">

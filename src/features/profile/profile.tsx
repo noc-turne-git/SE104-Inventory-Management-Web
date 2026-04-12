@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Mail, Shield, Save, CheckCircle2, Plus } from 'lucide-react';
+import { User, Mail, Shield, Save, Calendar, Phone, MapPin, Plus, CheckCircle2 } from 'lucide-react';
 import { Modal } from './ProfileModal';
 
 interface ToastProps {
@@ -35,11 +35,19 @@ const Toast = ({ message, onClose }: ToastProps) => {
   );
 };
 
-export function ProfileFeature() {
+interface ProfileFeatureProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
   const [showToast, setShowToast] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: 'Sarah Keeper',
+    fullName: 'John Manager',
+    dob: '1995-05-20', 
+    phone: '+1 234 567 890', 
+    address: '123 Warehouse St, NY', 
     email: 'warehouse@example.com',
     role: 'Warehouse Keeper'
   });
@@ -54,7 +62,7 @@ export function ProfileFeature() {
       <div className="flex items-center gap-6 mb-10">
         <button 
           onClick={() => setIsAvatarModalOpen(true)}
-          className="w-20 h-20 bg-[#4f46e5] rounded-full flex items-center justify-center text-white text-3xl font-semibold shadow-inner hover:opacity-90 transition-opacity cursor-pointer group relative"
+          className="w-20 h-20 bg-[#4f46e5] rounded-full flex items-center justify-center text-white text-4xl font-semibold shadow-inner hover:opacity-90 transition-opacity cursor-pointer group relative"
         >
           S
           <div className="absolute inset-0 bg-black/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -62,7 +70,7 @@ export function ProfileFeature() {
           </div>
         </button>
         <div>
-          <h2 className="text-2xl font-bold text-[#1e293b]">{formData.fullName}</h2>
+          <h2 className="text-4xl font-bold text-[#1e293b]">{formData.fullName}</h2>
           <p className="text-[#64748b] text-lg">{formData.role}</p>
         </div>
       </div>
@@ -98,6 +106,47 @@ export function ProfileFeature() {
 
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-[#475569] font-medium text-sm ml-1">
+            <Calendar className="w-4 h-4" />
+            Date of Birth
+          </label>
+          <input
+            type="date"
+            value={formData.dob}
+            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+            className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
+          />
+        </div>
+
+        <div className="space-y-2">
+            <label className="flex items-center gap-2 text-[#475569] font-medium text-sm ml-1">
+              <Phone className="w-4 h-4" />
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
+              placeholder="Enter your phone number"
+            />
+        </div>
+
+        <div className="space-y-2">
+            <label className="flex items-center gap-2 text-[#475569] font-medium text-sm ml-1">
+              <MapPin className="w-4 h-4" />
+              Address
+            </label>
+            <input
+              type="text"
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
+              placeholder="Enter your address"
+            />
+        </div>
+
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-[#475569] font-medium text-sm ml-1">
             <Shield className="w-4 h-4" />
             Role
           </label>
@@ -124,6 +173,12 @@ export function ProfileFeature() {
 
   return (
     <>
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      title="Profile Settings" 
+      maxWidth="max-w-3xl"
+    >
       <AnimatePresence>
         {showToast && (
           <Toast 
@@ -132,52 +187,10 @@ export function ProfileFeature() {
           />
         )}
       </AnimatePresence>
-
-      <AnimatePresence>
-        {isAvatarModalOpen && (
-          <Modal 
-            isOpen={isAvatarModalOpen} 
-            onClose={() => setIsAvatarModalOpen(false)}
-            title="Add Your Picture"
-            maxWidth="max-w-md"
-          >
-            <div className="space-y-6">
-              {/* Image Upload Area */}
-              <div className="w-40 h-40 bg-[#f1f5f9] rounded-xl flex items-center justify-center cursor-pointer hover:bg-[#e2e8f0] transition-colors group mx-auto">
-                <Plus className="w-12 h-12 text-[#94a3b8] group-hover:text-[#64748b]" />
-              </div>
-
-              {/* Footer Buttons */}
-              <div className="flex justify-center gap-3 pt-6 border-t border-[#f1f5f9]">
-                <button
-                  onClick={() => setIsAvatarModalOpen(false)}
-                  className="flex-1 py-3 rounded-xl font-bold text-[#1e293b] border border-[#e2e8f0] hover:bg-[#f8fafc] transition-all"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => setIsAvatarModalOpen(false)}
-                  className="flex-1 py-3 rounded-xl font-bold text-white bg-[#4f46e5] hover:bg-[#4338ca] transition-all shadow-lg shadow-[#4f46e5]/20"
-                >
-                  Add
-                </button>
-              </div>
-            </div>
-          </Modal>
-        )}
-      </AnimatePresence>
-
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#1e293b]">Profile Settings</h1>
-      </div>
-
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-sm border border-[#e2e8f0] overflow-hidden"
-      >
-        <ProfileForm />
-      </motion.div>
+      <div className="relative">
+          <ProfileForm />
+       </div>
+      </Modal>
     </>
   );
 }

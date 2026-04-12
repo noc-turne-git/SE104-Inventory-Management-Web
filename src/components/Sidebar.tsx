@@ -1,47 +1,66 @@
-import { Van, Home, LayoutDashboard, Package, Users, Calendar, LogOut, NotebookPen, UserRoundPen, BookUser, PackagePlus } from 'lucide-react';
+import { Van, Home, LayoutDashboard, Package, Users, Calendar, LogOut, NotebookPen, UserRoundPen, BookUser, PackagePlus, ArrowLeft } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import './Sidebar.css';
+import { ProfileFeature } from '../features/profile/profile';
+import { useAuth } from '../context/AuthContext';
 
 export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  // Update: thêm /app
-  const menuItems = [
-    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard_manager' },
-    { name: 'Profile', icon: <UserRoundPen size={20} />, path: '/profile' },
-    { name: 'Products', icon: <Package size={20} />, path: '/products' },
-    { name: 'Suppliers', icon: <BookUser size={20} />, path: '/suppliers' },
-    { name: 'Staff', icon: <Users size={20} />, path: '/staffs' },
-    { name: 'Shifts', icon: <Calendar size={20} />, path: '/shifts' },
-    { name: 'Notes', icon: <NotebookPen size={20} />, path: '/notes' },
+  const {user, logout} = useAuth();
+  if (!user) return null;
 
-    { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard_staff' },
-    { name: 'Products', icon: <Package size={20} />, path: '/products_view' },
-    { name: 'Delivery', icon: <Van size={20} />, path: '/delivery' },
-    { name: 'Receipts', icon: <PackagePlus size={20} />, path: '/receipts' },
-    
-     { name: 'Home', icon: <Home size={20} />, path: '/home' },
-    { name: 'Warehouse', icon: <Home size={20} />, path: '/warehouse' },
-  ];
+  const menuConfig = {
+    manager: [
+      { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/app/dashboard_manager' },
+      { name: 'Products', icon: <Package size={20} />, path: '/app/products' },
+      { name: 'Suppliers', icon: <BookUser size={20} />, path: '/app/suppliers' },
+      { name: 'Staff', icon: <Users size={20} />, path: '/app/staffs' },
+      { name: 'Shifts', icon: <Calendar size={20} />, path: '/app/shifts' },
+      { name: 'Notes', icon: <NotebookPen size={20} />, path: '/app/notes' },
+    ],
+    staff: [
+      { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/app/dashboard_staff' },
+      { name: 'Products', icon: <Package size={20} />, path: '/app/products_view' },
+      { name: 'Delivery', icon: <Van size={20} />, path: '/app/delivery' },
+      { name: 'Receipts', icon: <PackagePlus size={20} />, path: '/app/receipts' },
+    ]
+  };
+
+  const menuItems = menuConfig[user?.role as keyof typeof menuConfig] || [];
 
   const handleLogout = () => {
-    navigate("/", { replace: true });
+    logout();
+    navigate("/home", { replace: true });
   };
 
   return (
     <div className="sidebar">
+      {/* Header section */}
       <div className="sidebar-header">
-        <h2 className="logo-text">Management System</h2>
-        <div className="user-card">
-          <div className="avatar">J</div>
-          <div className="user-info">
-            <span className="user-name">John Manager</span>
-            <span className="user-role">Manager</span>
-          </div>
+        <div className="flex flex-row gap-2 items-center justify-start">
+          <button className="backButton-text" onClick={() => navigate('/warehouse')} title="Back to Warehouse">
+            <ArrowLeft size={20} />
+          </button>
+          <h2 className="brand-text">Stockify</h2>
         </div>
+
+        <button 
+          onClick={() => setIsProfileOpen(true)}
+          className="user-card"
+        >
+          <div className="avatar">{user?.role ? 'M' : 'S'}</div>
+          <div className="user-info">
+            <span className="user-name">Linda Anna</span>
+            <span className="user-role">{user?.role}</span>
+          </div>
+        </button>
       </div>
 
+      {/* Navigation section - scrollable if too long */}
       <nav className="nav-list">
         {menuItems.map((item) => (
           <Link 
@@ -55,11 +74,18 @@ export const Sidebar = () => {
         ))}
       </nav>
 
-      {/* Nhấn logout về màn hình sign in (ví dụ đỡ vì chưa có home=)))  */}
-      <button className="logout-button" onClick={handleLogout}>
-        <LogOut size={18} />
-        <span>Logout</span>
-      </button>
+      {/* Logout button - always at bottom */}
+      <div className="">
+        <button className="logout-button" onClick={handleLogout}>
+          <LogOut size={18} />
+          <span>Logout</span>
+        </button>
+      </div>
+
+      <ProfileFeature 
+        isOpen={isProfileOpen} 
+        onClose={() => setIsProfileOpen(false)} 
+      />
     </div>
   );
 };

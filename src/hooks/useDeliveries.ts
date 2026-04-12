@@ -1,5 +1,5 @@
-import { useNotes } from '../../context/NoteContext'; // Import hook từ Context
-import { type Delivery, type DeliveryFormData } from '../../types/note';
+import { useNotes } from '../context/NoteContext'; // Import hook từ Context
+import { type Delivery, type DeliveryFormData } from '../types/note';
 
 export function useDeliveries() {
   const { allNotes, addNote, updateNote, deleteNote, updateStatus, getDeliveries} = useNotes();

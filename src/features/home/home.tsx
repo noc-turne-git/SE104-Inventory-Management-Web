@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HomeScreen } from '../../screenStyles/HomeScreen';
+import { HomeScreen } from '../../screens/HomeScreen';
 import { MOCK_HOME_DATA } from '../../data/MOCK_HOME';
 import { Settings } from 'lucide-react';
 

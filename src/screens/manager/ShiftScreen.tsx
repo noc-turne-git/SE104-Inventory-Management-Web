@@ -6,7 +6,7 @@ import ShiftsCalendar from "../../features/shifts/ShiftsCalendar";
 import { ShiftsModal } from '../../features/shifts/ShiftsModal';
 import { toast } from 'sonner';
 import {type ShiftFormData } from '../../types/shift';
-import { useShifts } from '../../features/hooks/useShifts';
+import { useShifts } from '../../hooks/useShifts';
 
 const ShiftScreen = () => {
     const { shifts, deleteShift, updateShift, addShift } = useShifts();
@@ -43,7 +43,7 @@ const ShiftScreen = () => {
         <div className="p-8">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                <h1 className="text-2xl font-bold text-gray-900">Shift Management</h1>
+                <h1 className="text-4xl font-bold text-gray-900">Shift Management</h1>
                 <p className="text-gray-600 mt-1">Track and manage employee shifts</p>
                 </div>
                 <OpenModalButton label="New Shift" onClick={() => handleOpenAddModal()}></OpenModalButton>

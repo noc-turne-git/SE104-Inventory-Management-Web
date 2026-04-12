@@ -1,12 +1,12 @@
 export const MOCK_ACCOUNTS = [
   {
-    email: "manager@example.com",
-    password: "manager123",
+    email: "1",
+    password: "1",
     role: "manager",
   },
   {
-    email: "staff@example.com",
-    password: "staff123",
+    email: "2",
+    password: "2",
     role: "staff",
   },
 ];

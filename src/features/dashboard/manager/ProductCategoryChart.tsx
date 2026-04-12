@@ -8,7 +8,7 @@ const ProductCategoryChart: React.FC = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-semibold text-gray-900">Product Distribution</h3>
+          <h3 className="text-4xl font-semibold text-gray-900">Product Distribution</h3>
           <p className="text-md text-gray-500">By category</p>
         </div>
         <PieIcon className="w-5 h-5 text-gray-400" />

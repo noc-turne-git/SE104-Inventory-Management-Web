@@ -25,7 +25,7 @@ const LowStockAlert: React.FC = () => {
       <div className="p-6 flex-1">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-2xl font-semibold text-gray-900">Low Stock Alert</h3>
+            <h3 className="text-4xl font-semibold text-gray-900">Low Stock Alert</h3>
             <p className="text-md text-gray-500">Items requiring reorder</p>
           </div>
           <AlertTriangle className="w-5 h-5 text-red-500" />

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { X, Mail, Phone, MapPin, Plus, Trash2 } from "lucide-react";
-import { useProductSuppliers } from "../hooks/useProductSupplier";
+import { useProductSuppliers } from "../../hooks/useProductSupplier";
 import { MOCK_SUPPLIERS } from "../../data/MOCK_SUPPLIERS";
 import { MOCK_PRODUCT_SUPPLIERS } from "../../data/MOCK_PRODUCT_SUPPLIERS";
 import type { ProductSupplier } from "../../types/product";

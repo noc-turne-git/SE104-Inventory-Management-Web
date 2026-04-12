@@ -32,7 +32,7 @@ const TopProducts = () => {
       <div className="p-6 flex-1">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-2xl font-semibold text-gray-900">Top Selling Products</h3>
+            <h3 className="text-4xl font-semibold text-gray-900">Top Selling Products</h3>
             <div className="flex gap-3 mt-2">
               <select 
                 className="text-lg border border-gray-300 rounded-xl px-2 p-1" 

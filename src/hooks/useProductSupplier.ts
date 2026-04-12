@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { type ProductSupplier } from '../../types/product';
+import { type ProductSupplier } from '../types/product';
 
 export const useProductSuppliers = (initialData: ProductSupplier[]) => {
   const [productSuppliers, setProductSuppliers] = useState<ProductSupplier[]>(initialData);

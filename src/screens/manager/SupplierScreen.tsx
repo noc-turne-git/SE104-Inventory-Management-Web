@@ -3,7 +3,7 @@ import SupplierCard from "../../features/suppliers/SupplierCard";
 import SupplierModal from "../../features/suppliers/SupplierModal";
 import SearchBar from "../../components/common/searchBar";
 import OpenModalButton from "../../components/common/button/ModalButton";
-import { useSuppliers } from "../../features/hooks/useSuppliers";
+import { useSuppliers } from "../../hooks/useSuppliers";
 import { MOCK_SUPPLIERS } from "../../data/MOCK_SUPPLIERS";
 import { type Supplier } from "../../types/supplier";
 
@@ -46,7 +46,7 @@ const SupplierScreen = () => {
       {/* HEADER */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-4xl font-bold text-gray-900">
             Supplier Management
           </h1>
           <p className="text-gray-600 mt-1">

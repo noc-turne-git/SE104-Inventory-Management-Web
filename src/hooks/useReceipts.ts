@@ -1,5 +1,5 @@
-import { useNotes } from '../../context/NoteContext';
-import { type Receipt, type ReceiptFormData } from '../../types/note';
+import { useNotes } from '../context/NoteContext';
+import { type Receipt, type ReceiptFormData } from '../types/note';
 
 export function useReceipts() {
   const { allNotes, addNote, updateNote, deleteNote, updateStatus, getReceipts } = useNotes();

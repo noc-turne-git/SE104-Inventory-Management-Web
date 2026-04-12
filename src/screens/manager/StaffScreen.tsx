@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useStaff } from "../../features/hooks/useStaffs";
+import { useStaff } from "../../hooks/useStaffs";
 import { MOCK_STAFF } from "../../data/MOCK_STAFF";
 import StaffRow from "../../features/staff/StaffRow";
 import StaffModal from "../../features/staff/StaffModal";
@@ -54,7 +54,7 @@ const StaffScreen = () => {
       {/* HEADER */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-4xl font-bold text-gray-900">
             Staff Management
           </h1>
           <p className="text-gray-600 mt-1">

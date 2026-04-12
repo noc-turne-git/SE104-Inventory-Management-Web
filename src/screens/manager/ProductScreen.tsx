@@ -6,7 +6,7 @@ import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS';
 import { toast } from 'sonner';
 import { type Product, type ProductFormData } from '../../types/product';
 import ProductModal from '../../features/products/ProductModal';
-import { useProducts } from '../../features/hooks/useProducts';
+import { useProducts } from '../../hooks/useProducts';
 
 const ProductScreen = () => {
   const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
@@ -37,7 +37,7 @@ const ProductScreen = () => {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Product Management</h1>
+          <h1 className="text-4xl font-bold text-gray-900">Product Management</h1>
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
         <OpenModalButton label="Add Product" onClick={() => handleOpenAddModal()}></OpenModalButton>

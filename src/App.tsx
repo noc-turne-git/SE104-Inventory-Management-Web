@@ -1,83 +1,91 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Outlet } from 'react-router-dom';
 
-// --- AUTH COMPONENTS ---
+// --- AUTH & PUBLIC ---
+import { HomeScreen } from './screens/HomeScreen';
 import SignInScreen from './features/auth/SignInScreen';
 import SignUp from "./features/auth/SignUpScreen";
-import ForgotPasswordScreen from './features/auth/ForgotPasswordScreen';
-import VerifyOtpScreen from './features/auth/VerifyOtpScreen';
-import ResetPasswordScreen from './features/auth/ResetPasswordScreen';
-
-// --- MANAGER SCREENS ---
-import ProductScreen from './screenStyles/manager/ProductScreen';
-import ShiftScreen from './screenStyles/manager/ShiftScreen';
-import StaffScreen from './screenStyles/manager/StaffScreen';
-import SupplierScreen from './screenStyles/manager/SupplierScreen';
-import DashboardManagerScreen from './screenStyles/manager/DashboardScreen';
-import NoteAuthorizationScreen from './screenStyles/manager/NoteAuthorizationScreen';
-
-// --- STAFF SCREENS ---
-import ReceiptScreen from './screenStyles/staff/ReceiptScreen';
-import DeliveryScreen from './screenStyles/staff/DeliveryScreen';
-import ProductViewScreen from './screenStyles/staff/ProductScreen';
-import DashboardStaffScreen from './screenStyles/staff/DashboardScreen';
-
-// --- COMMON COMPONENTS ---
-import { Sidebar } from './components/Sidebar';
-import { NoteProvider } from './context/NoteContext';
-import './index.css';
-import { HomeScreen } from './screenStyles/HomeScreen';
 import { MOCK_HOME_DATA } from './data/MOCK_HOME';
-import ProfileScreen from './screenStyles/manager/ProfileScreen';
-//import WareHouseScreen  from './screenStyles/WareHouseScreen';
-//import { MOCK_WAREHOUSES } from './data/MOCK_WAREHOUSE';
+
+// --- SELECTION ---
+import WareHouseScreen from './screens/WareHouseScreen';
+
+// --- MANAGER ---
+import { Sidebar } from './components/Sidebar';
+import DashboardManagerScreen from './screens/manager/DashboardScreen';
+import ProductScreen from './screens/manager/ProductScreen';
+import StaffScreen from './screens/manager/StaffScreen';
+import ShiftScreen from './screens/manager/ShiftScreen';
+import SupplierScreen from './screens/manager/SupplierScreen';
+import NoteAuthorizationScreen from './screens/manager/NoteAuthorizationScreen';
+
+// ---  STAFF ---
+import DashboardStaffScreen from './screens/staff/DashboardScreen';
+import ProductViewScreen from './screens/staff/ProductScreen';
+import DeliveryScreen from './screens/staff/DeliveryScreen';
+import ReceiptScreen from './screens/staff/ReceiptScreen';
+
+// --- CONTEXT & CSS ---
+import { NoteProvider } from './context/NoteContext';
+import { AuthProvider } from './context/AuthContext';
+import './index.css';
+
+// 1. Component Layout chứa Sidebar - Chỉ dùng cho các route bên trong hệ thống
+const AppLayout = () => {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar /> 
+      <main className="flex-1 overflow-y-auto p-4">
+        {/* Outlet sẽ render các con của Route /app/* */}
+        <Outlet />
+      </main>
+    </div>
+  );
+};
 
 function App() {
+
   return (
+    <AuthProvider>
     <NoteProvider>
       <Router>
-        <div className="layout-container">
-          {/* Lưu ý: Sidebar thường chỉ hiển thị khi đã đăng nhập. 
-              Nếu bạn muốn ẩn Sidebar ở các trang Auth, bạn có thể thêm logic kiểm tra auth tại đây.
-          */}
-          <Sidebar />
+        <Routes>
+          {/* --- NHÓM 1: PUBLIC (Không Sidebar) --- */}
+          <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
+          <Route path="/signin" element={<SignInScreen />} />
+          <Route path="/signup" element={<SignUp />} />
 
-          <div className="main-content">
-            <Routes>
-              {/* --- AUTH ROUTES --- */}
-              <Route path="/signin" element={<SignInScreen />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
-              <Route path="/verify-otp" element={<VerifyOtpScreen />} />
-              <Route path="/reset-password" element={<ResetPasswordScreen />} />
+          {/* --- NHÓM 2: SELECTION (Không Sidebar) --- */}
+          <Route path="/warehouse" element={<WareHouseScreen />} />
 
-              {/* --- MANAGER ROUTES --- */}
-              <Route path="/dashboard_manager" element={<DashboardManagerScreen />} />
-              <Route path="/profile" element={<ProfileScreen />} />
-              <Route path="/products" element={<ProductScreen />} />
-              <Route path="/suppliers" element={<SupplierScreen />} />
-              <Route path="/staffs" element={<StaffScreen />} />
-              <Route path="/shifts" element={<ShiftScreen />} />
-              <Route path="/notes" element={<NoteAuthorizationScreen />} />
-              
+          {/* --- NHÓM 3: INTERNAL APP (CÓ SIDEBAR) --- */}
+          {/* Tất cả các route bắt đầu bằng /app sẽ được bọc bởi AppLayout */}
+          <Route path="/app" element={<AppLayout />}>
+            {/* Manager Routes */}
+            <Route path="dashboard_manager" element={<DashboardManagerScreen />} />
+            <Route path="products" element={<ProductScreen />} />
+            <Route path="staffs" element={<StaffScreen />} />
+            <Route path="suppliers" element={<SupplierScreen />} />
+            <Route path="notes" element={<NoteAuthorizationScreen/>} />
+            <Route path="shifts" element={<ShiftScreen />} />
+            
+            {/* Staff Routes */}
+            <Route path="dashboard_staff" element={<DashboardStaffScreen />} />
+            <Route path="products_view" element={<ProductViewScreen />} />
+            <Route path="delivery" element={<DeliveryScreen />} />
+            <Route path="receipts" element={<ReceiptScreen />} />
 
-              <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
-              {/* <Route path="/warehouse" element={<WareHouseScreen warehouses={MOCK_WAREHOUSES} invitations={[]} onManage={() => {}} onCreate={() => {}} onAcceptInvitation={() => {}} onDeclineInvitation={() => {}} />} /> */}
+            {/* Điều hướng mặc định bên trong app */}
+            <Route index element={<Navigate to="dashboard_manager" replace />} />
+          </Route>
 
-              {/* --- STAFF ROUTES --- */}
-              <Route path="/dashboard_staff" element={<DashboardStaffScreen />} />
-              <Route path="/products_view" element={<ProductViewScreen />} />
-              <Route path="/delivery" element={<DeliveryScreen />} />
-              <Route path="/receipts" element={<ReceiptScreen />} />
-
-              {/* --- DEFAULT & 404 --- */}
-              <Route path="/" element={<Navigate to="/signin" replace />} />
-              <Route path="*" element={<div style={{ padding: 20 }}>Trang này đang phát triển hoặc không tồn tại...</div>} />
-            </Routes>
-          </div>
-        </div>
+          {/* --- ĐIỀU HƯỚNG GỐC --- */}
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="*" element={<div className="p-10">404 - Trang không tồn tại</div>} />
+        </Routes>
       </Router>
     </NoteProvider>
+    </AuthProvider>
   );
 }
 

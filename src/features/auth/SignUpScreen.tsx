@@ -57,7 +57,7 @@ const SignUp = () => {
       <div className="flex w-full md:w-1/2 items-center justify-center bg-gray-50">
         <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-sm border border-gray-100">
 
-          <h2 className="text-2xl font-bold mb-2">Create Account</h2>
+          <h2 className="text-3xl font-bold mb-2">Create Account</h2>
           <p className="text-gray-500 mb-6">
             Join Stockify system
           </p>

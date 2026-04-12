@@ -1,7 +1,7 @@
 import { Clock } from 'lucide-react';
 import { ShiftCalendarItem } from './ShiftCalendarItem';
 import { type Shift, type ShiftFormData } from '../../types/shift';
-import { useShifts } from '../hooks/useShifts';
+import { useShifts } from '../../hooks/useShifts';
 
 interface Props {
   shifts: Shift[];

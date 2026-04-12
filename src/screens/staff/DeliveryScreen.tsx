@@ -4,7 +4,7 @@ import SearchBar, { FilterBar } from '../../components/common/searchBar';
 import { MOCK_DELIVERY } from '../../data/MOCK_DELIVERY';
 import { type Delivery, type DeliveryFormData } from '../../types/note'; 
 import DeliveryModal from '../../features/delivery/DeliveryModal';
-import { useDeliveries } from '../../features/hooks/useDeliveries';
+import { useDeliveries } from '../../hooks/useDeliveries';
 import { DeliveryNote } from '../../features/delivery/DeliveryNote';
 
 const DeliveryScreen = () => {
@@ -52,7 +52,7 @@ const DeliveryScreen = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Delivery Management</h1>
+          <h1 className="text-4xl font-bold text-gray-900">Delivery Management</h1>
           <p className="text-gray-600 mt-1">Track and manage outgoing shipments and operator assignments</p>
         </div>
         <OpenModalButton label="Create Delivery Note" onClick={handleOpenAddModal} />

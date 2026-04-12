@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { MOCK_ACCOUNTS } from "../../data/MOCK_ACCOUNT";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, User } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const SignIn = () => {
   const navigate = useNavigate();
+
+  const {user, login} = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,24 +21,29 @@ const SignIn = () => {
       return;
     }
 
-    const user = MOCK_ACCOUNTS.find(
+    const userData = MOCK_ACCOUNTS.find(
       (u) => u.email === email && u.password === password
     );
+    console.log(user?.email);
+    console.log(email);
 
-    if (!user) {
+    if (!userData) {
       setError("Invalid email or password");
       return;
     }
 
     // clear error
     setError("");
+    login(userData);
 
     // điều hướng theo role
-    if (user.role === "manager") {
-      navigate("/app/products", { replace: true });
-    } else {
-      navigate("/app/products_view", { replace: true });
-    }
+    // if (user.role === "manager") {
+    //   navigate("/app/products", { replace: true });
+    // } else {
+    //   navigate("/app/products_view", { replace: true });
+    // }
+
+    navigate("/warehouse", {replace: true});
   };
 
   return (
@@ -51,11 +59,11 @@ const SignIn = () => {
 
         <div className="mt-10 flex gap-10">
           <div>
-            <p className="text-2xl font-bold">2.5k+</p>
+            <p className="text-3xl font-bold">2.5k+</p>
             <span className="text-sm opacity-80">Warehouses</span>
           </div>
           <div>
-            <p className="text-2xl font-bold">99.9%</p>
+            <p className="text-3xl font-bold">99.9%</p>
             <span className="text-sm opacity-80">Uptime</span>
           </div>
         </div>
@@ -65,7 +73,7 @@ const SignIn = () => {
       <div className="flex w-full md:w-1/2 items-center justify-center bg-gray-50">
         <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-sm border border-gray-200">
 
-          <h2 className="text-2xl font-bold mb-2">Sign In</h2>
+          <h2 className="text-3xl font-bold mb-2">Sign In</h2>
           <p className="text-gray-500 mb-6">
             Welcome back to Stockify
           </p>

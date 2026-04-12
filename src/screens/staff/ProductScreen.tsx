@@ -10,7 +10,7 @@ import { type InventoryCheckFormData } from '../../types/note';
 import InventoryCheckModal from '../../features/products/InventoryCheckModal';
 
 
-import { useProducts } from '../../features/hooks/useProducts';
+import { useProducts } from '../../hooks/useProducts';
 
 const ProductViewScreen = () => {
   const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
@@ -41,7 +41,7 @@ const ProductViewScreen = () => {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Product Management</h1>
+          <h1 className="text-4xl font-bold text-gray-900">Product Management</h1>
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
         <OpenModalButton label="Check Inventory" onClick={() => handleOpenAddModal()}></OpenModalButton>

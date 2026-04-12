@@ -231,7 +231,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ data, themeColor }) => {
                   <div className="text-[#1f6feb]">
                     {IconMap[benefit.icon] ? React.createElement(IconMap[benefit.icon], { className: "w-12 h-12" }) : null}
                   </div>
-                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">{benefit.title}</h3>
+                  <h3 className="text-4xl font-black text-slate-900 tracking-tight">{benefit.title}</h3>
                   <p className="text-slate-500 text-lg leading-relaxed font-normal">
                     {benefit.description}
                   </p>
@@ -253,7 +253,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ data, themeColor }) => {
         <footer className="bg-white border-t border-slate-100 py-20 px-8 w-full font-sans">
           <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
             <div className="flex flex-col gap-4">
-              <span className="text-2xl font-bold tracking-tighter text-[#0F172A]">Stockify</span>
+              <span className="text-4xl font-bold tracking-tighter text-[#0F172A]">Stockify</span>
               <p className="text-slate-400 max-w-xs text-sm font-normal">© 2024 <span className="text-[#0F172A]">Stockify</span>, Inc. Built for the kinetic vault.</p>
             </div>
             <div className="flex items-center gap-16">

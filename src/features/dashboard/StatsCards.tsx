@@ -32,7 +32,7 @@ const StatsCards = ({role} : {role : 'manager' | 'staff'}) => {
             </div>
             <TrendingUp className="w-10 h-10" /> 
           </div>
-          <p className={`${stat.subColor} text-xl`}>{stat.title}</p>
+          <p className={`${stat.subColor} text-xl font-semibold`}>{stat.title}</p>
           <p className="text-4xl font-bold mt-1">{stat.value}</p>
           <p className={`text-lg ${stat.subColor} mt-2`}>{stat.change}</p>
         </div>
