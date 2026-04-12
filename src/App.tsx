@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Outlet }
 import { HomeScreen } from './screens/HomeScreen';
 import SignInScreen from './features/auth/SignInScreen';
 import SignUp from "./features/auth/SignUpScreen";
+import ForgotPasswordScreen from "./features/auth/ForgotPasswordScreen";
+import VerifyOtpScreen from "./features/auth/VerifyOtpScreen";
+import ResetPasswordScreen from "./features/auth/ResetPasswordScreen"
 import { MOCK_HOME_DATA } from './data/MOCK_HOME';
 
 // --- SELECTION ---
@@ -54,6 +57,9 @@ function App() {
           <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
           <Route path="/signin" element={<SignInScreen />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgotpassword" element={<ForgotPasswordScreen />} />
+          <Route path="/verifyotp" element={<VerifyOtpScreen />} />
+          <Route path="/resetpassword" element={<ResetPasswordScreen />} />
 
           {/* --- NHÓM 2: SELECTION (Không Sidebar) --- */}
           <Route path="/warehouse" element={<WareHouseScreen />} />

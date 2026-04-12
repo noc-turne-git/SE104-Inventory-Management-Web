@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = () => {
             
             <button 
               className="bg-linear-to-r from-[#afc6ff] to-[#1f6feb] text-[#002d6d] px-6 py-2.5 sm:px-8 sm:py-3 md:px-10 md:py-3.5 rounded-full font-black text-sm sm:text-base md:text-lg hover:opacity-90 transition-all shadow-xl shadow-[#1f6feb]/20 whitespace-nowrap shrink-0 cursor-pointer"
-              onClick={() => navigate('/signin', {replace: false})}
+              onClick={() => navigate('/signup', {replace: false})}
             >
               Sign up
             </button>

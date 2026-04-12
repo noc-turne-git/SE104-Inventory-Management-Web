@@ -1,185 +1,188 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Eye, EyeOff, ChevronDown } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router";
+import bgImage from "../../assets/stockify.png";
 
-const SignUp = () => {
+const SignupScreen = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     fullName: "",
     email: "",
-    password: "",
-    confirmPassword: "",
+    dob: "",
+    phone: "",
+    address: "",
     role: "",
+    password: "",
+    confirmPassword: ""
   });
 
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleChange = (key: string, value: string) => {
-    setForm({ ...form, [key]: value });
-  };
-
-  const handleSignUp = () => {
-    if (
-      !form.fullName ||
-      !form.email ||
-      !form.password ||
-      !form.confirmPassword ||
-      !form.role
-    ) {
-      setError("Please fill all fields");
-      return;
-    }
-
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    setError("");
-    navigate("/", { replace: true });
+    setForm(prev => ({ ...prev, [key]: value }));
   };
 
   return (
     <div className="flex min-h-screen">
 
-      {/* LEFT */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-b from-blue-600 to-blue-400 text-white p-12 flex-col justify-center">
-        <h1 className="text-4xl font-bold mb-4">Stockify</h1>
-        <p className="text-lg opacity-90">
-          Manage your warehouse smarter with Stockify.
-        </p>
+      {/* LEFT SIDE */}
+      <div className="hidden lg:flex w-1/2 relative items-center text-white">
+
+        <img
+          src={bgImage}
+          alt="bg"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        <div className="absolute inset-0 bg-blue-900/50 via-blue-700/60 to-transparent"></div>
+
+        <div className="relative z-10 px-16 text-left">
+          <h1 className="text-6xl font-bold mb-4">Stockify</h1>
+          <p className="text-lg text-gray-200 max-w-md">
+            Elevate your warehouse operations. Manage inventory, staff and logistics efficiently.
+          </p>
+        </div>
       </div>
 
-      {/* RIGHT */}
-      <div className="flex w-full md:w-1/2 items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-sm border border-gray-100">
+      {/* RIGHT SIDE */}
+      <div className="flex w-full lg:w-1/2 items-center justify-center bg-gray-50 min-h-screen px-4 pt-10 pb-10">
 
-          <h2 className="text-3xl font-bold mb-2">Create Account</h2>
-          <p className="text-gray-500 mb-6">
-            Join Stockify system
-          </p>
+        <form className="w-full max-w-md px-6">
 
-          {error && (
-            <p className="text-red-500 text-sm mb-3">{error}</p>
-          )}
-
-          <div className="space-y-4">
-
-            {/* FULL NAME */}
-            <input
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl 
-              bg-white placeholder-gray-400
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-              transition duration-200"
-              placeholder="Full Name"
-              onChange={(e) => handleChange("fullName", e.target.value)}
-            />
-
-            {/* EMAIL */}
-            <input
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl 
-              bg-white placeholder-gray-400
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-              transition duration-200"
-              placeholder="Email"
-              onChange={(e) => handleChange("email", e.target.value)}
-            />
-
-            {/* PASSWORD */}
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl 
-                bg-white placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                transition duration-200 pr-10"
-                placeholder="Password"
-                onChange={(e) => handleChange("password", e.target.value)}
-              />
-              <span
-                className="absolute right-3 top-1/2 -translate-y-1/2 
-                cursor-pointer text-gray-400 hover:text-gray-600"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </span>
-            </div>
-
-            {/* CONFIRM PASSWORD */}
-            <div className="relative">
-              <input
-                type={showConfirm ? "text" : "password"}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl 
-                bg-white placeholder-gray-400
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                transition duration-200 pr-10"
-                placeholder="Confirm Password"
-                onChange={(e) =>
-                  handleChange("confirmPassword", e.target.value)
-                }
-              />
-              <span
-                className="absolute right-3 top-1/2 -translate-y-1/2 
-                cursor-pointer text-gray-400 hover:text-gray-600"
-                onClick={() => setShowConfirm(!showConfirm)}
-              >
-                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-              </span>
-            </div>
-
-            {/* SELECT ROLE */}
-            <div className="relative">
-              <select
-                className="w-full px-4 pr-10 py-2.5 border border-gray-200 rounded-xl 
-                bg-white text-gray-500
-                appearance-none
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                transition duration-200"
-                onChange={(e) => handleChange("role", e.target.value)}
-              >
-                <option value="" disabled selected hidden>
-                  Select Role
-                </option>
-                <option value="manager">Manager</option>
-                <option value="staff">Staff</option>
-              </select>
-
-              <ChevronDown
-                size={18}
-                className="absolute right-3 top-1/2 -translate-y-1/2 
-                text-gray-400 pointer-events-none"
-              />
-            </div>
-
-            {/* BUTTON */}
-            <button
-              onClick={handleSignUp}
-              className="w-full bg-blue-600 text-white py-2.5 rounded-xl 
-              hover:bg-blue-700 active:scale-[0.98]
-              transition duration-150"
-            >
-              Create Account
-            </button>
+          {/* TITLE */}
+          <div className="mb-6">
+            <h2 className="text-3xl font-bold">Create Account</h2>
+            <p className="text-gray-500 mt-1 text-base">
+              Join Stockify system
+            </p>
           </div>
 
-          {/* BACK TO LOGIN */}
-          <p className="text-sm text-center mt-6 text-gray-500">
+          {/* FULL NAME */}
+          <div className="my-4">
+            <label className="modal-label">Full Name*</label>
+            <input
+              className="modal-input"
+              placeholder="John Doe"
+              value={form.fullName}
+              onChange={(e) => handleChange("fullName", e.target.value)}
+            />
+          </div>
+
+          {/* EMAIL */}
+          <div className="my-4">
+            <label className="modal-label">Email*</label>
+            <input
+              className="modal-input"
+              placeholder="john@example.com"
+              value={form.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+            />
+          </div>
+
+          {/* DOB + PHONE */}
+          <div className="grid grid-cols-2 gap-4 my-4">
+            <div>
+              <label className="modal-label">Date of Birth*</label>
+              <input
+                type="date"
+                className="modal-input"
+                value={form.dob}
+                onChange={(e) => handleChange("dob", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="modal-label">Phone*</label>
+              <input
+                className="modal-input"
+                placeholder="0123456789"
+                value={form.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* ADDRESS */}
+          <div className="my-4">
+            <label className="modal-label">Address</label>
+            <input
+              className="modal-input"
+              placeholder="Your address"
+              value={form.address}
+              onChange={(e) => handleChange("address", e.target.value)}
+            />
+          </div>
+
+          {/* ROLE */}
+          <div className="my-4">
+            <label className="modal-label">Role*</label>
+            <select
+              className="modal-input"
+              value={form.role}
+              onChange={(e) => handleChange("role", e.target.value)}
+            >
+              <option value="">Select role</option>
+              <option value="manager">Manager</option>
+              <option value="staff">Staff</option>
+            </select>
+          </div>
+
+          {/* PASSWORD */}
+          <div className="my-4 relative">
+            <label className="modal-label">Password*</label>
+            <input
+              type={showPass ? "text" : "password"}
+              className="modal-input pr-10"
+              value={form.password}
+              onChange={(e) => handleChange("password", e.target.value)}
+            />
+            <div
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 top-9 cursor-pointer text-gray-500"
+            >
+              {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+            </div>
+          </div>
+
+          {/* CONFIRM */}
+          <div className="my-4 relative">
+            <label className="modal-label">Confirm Password*</label>
+            <input
+              type={showConfirm ? "text" : "password"}
+              className="modal-input pr-10"
+              value={form.confirmPassword}
+              onChange={(e) => handleChange("confirmPassword", e.target.value)}
+            />
+            <div
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3 top-9 cursor-pointer text-gray-500"
+            >
+              {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+            </div>
+          </div>
+
+          {/* BUTTON */}
+          <button className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition">
+            Sign up
+          </button>
+
+          {/* LOGIN */}
+          <p className="text-center text-sm text-gray-500 mt-5">
             Already have an account?{" "}
             <span
-              className="text-blue-600 font-semibold cursor-pointer hover:underline"
-              onClick={() => navigate("/")}
+              className="text-blue-600 font-medium cursor-pointer hover:underline"
+              onClick={() => navigate("/signin")}
             >
               Sign in
             </span>
           </p>
 
-        </div>
+        </form>
       </div>
     </div>
   );
 };
 
-export default SignUp;
+export default SignupScreen;
