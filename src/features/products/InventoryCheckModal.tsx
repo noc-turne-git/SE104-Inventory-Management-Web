@@ -115,7 +115,7 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
             </button>
           </div>
 
-          <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-3 max-h-100 overflow-y-auto pr-2 custom-scrollbar">
             <div className="grid grid-cols-12 gap-3 px-2 mb-1">
               <div className="col-span-7 text-sm font-bold text-gray-400 uppercase">Product Name</div>
               <div className="col-span-2 text-sm font-bold text-gray-400 uppercase text-center">Quantity</div>
@@ -139,7 +139,7 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
                   {/* Product */}
                   <div className="col-span-7">
                     <input
-                      className="modal-input !border-none w-full focus:bg-white"
+                      className="modal-input border-none! w-full focus:bg-white"
                       placeholder="Product"
                       value={item.product}
                       onChange={(e) => handleItemChange(index, 'product', e.target.value)}
@@ -151,7 +151,7 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
                   <div className="col-span-2">
                     <input
                       type="number"
-                      className="modal-input !border-none w-full text-center font-semibold"
+                      className="modal-input border-none! w-full text-center font-semibold"
                       value={item.stockQuantity}
                       onChange={(e) => {
                         handleItemChange(index, 'stockQuantity', parseInt(e.target.value) || 0);
@@ -160,7 +160,7 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
                     />
                   </div>
 
-                  <div className="col-span-2 modal-input text-center bg-gray-200  !border-none w-full">
+                  <div className="col-span-2 modal-input text-center bg-gray-200  border-none! w-full">
                     <label className="font-semibold">
                     {expectedQuantity}
                     </label>
@@ -182,7 +182,7 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
                     <div className="col-span-12 border border-red-300 rounded-lg">
                       {/* <div className="text-sm font-bold text-gray-400 uppercase">Reason</div> */}
                       <textarea
-                        className="modal-input !border-none w-full focus:bg-white custom-scrollbar" 
+                        className="modal-input border-none! w-full focus:bg-white custom-scrollbar" 
                         placeholder="Enter reason of discrepancy"
                         rows={3}
                         value={item.reason}  

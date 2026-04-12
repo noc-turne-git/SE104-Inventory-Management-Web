@@ -1,4 +1,4 @@
-import { Van, LayoutDashboard, Package, Users, Calendar, LogOut, NotebookPen, UserRoundPen, BookUser, PackagePlus } from 'lucide-react';
+import { Van, Home, LayoutDashboard, Package, Users, Calendar, LogOut, NotebookPen, UserRoundPen, BookUser, PackagePlus } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 
@@ -21,6 +21,8 @@ export const Sidebar = () => {
     { name: 'Delivery', icon: <Van size={20} />, path: '/delivery' },
     { name: 'Receipts', icon: <PackagePlus size={20} />, path: '/receipts' },
     
+     { name: 'Home', icon: <Home size={20} />, path: '/home' },
+    { name: 'Warehouse', icon: <Home size={20} />, path: '/warehouse' },
   ];
 
   const handleLogout = () => {

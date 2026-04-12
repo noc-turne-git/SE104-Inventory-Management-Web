@@ -26,6 +26,11 @@ import DashboardStaffScreen from './screenStyles/staff/DashboardScreen';
 import { Sidebar } from './components/Sidebar';
 import { NoteProvider } from './context/NoteContext';
 import './index.css';
+import { HomeScreen } from './screenStyles/HomeScreen';
+import { MOCK_HOME_DATA } from './data/MOCK_HOME';
+import ProfileScreen from './screenStyles/manager/ProfileScreen';
+//import WareHouseScreen  from './screenStyles/WareHouseScreen';
+//import { MOCK_WAREHOUSES } from './data/MOCK_WAREHOUSE';
 
 function App() {
   return (
@@ -48,11 +53,16 @@ function App() {
 
               {/* --- MANAGER ROUTES --- */}
               <Route path="/dashboard_manager" element={<DashboardManagerScreen />} />
+              <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/products" element={<ProductScreen />} />
               <Route path="/suppliers" element={<SupplierScreen />} />
               <Route path="/staffs" element={<StaffScreen />} />
               <Route path="/shifts" element={<ShiftScreen />} />
               <Route path="/notes" element={<NoteAuthorizationScreen />} />
+              
+
+              <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
+              {/* <Route path="/warehouse" element={<WareHouseScreen warehouses={MOCK_WAREHOUSES} invitations={[]} onManage={() => {}} onCreate={() => {}} onAcceptInvitation={() => {}} onDeclineInvitation={() => {}} />} /> */}
 
               {/* --- STAFF ROUTES --- */}
               <Route path="/dashboard_staff" element={<DashboardStaffScreen />} />
