@@ -50,7 +50,7 @@ export const Sidebar = () => {
 
         <button 
           onClick={() => setIsProfileOpen(true)}
-          className="user-card"
+          className="user-card hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-[#2563EB] active:scale-90 active:shadow-inner border border-white/10"
         >
           <div className="avatar">{user?.role ? 'M' : 'S'}</div>
           <div className="user-info">

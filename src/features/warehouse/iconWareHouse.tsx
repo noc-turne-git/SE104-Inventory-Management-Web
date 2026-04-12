@@ -14,7 +14,11 @@ import {
   Users,
   LayoutDashboard,
   Settings,
-  Bell
+  Bell,
+  Languages,
+  Moon,
+  Sun,
+  LogOut
 } from "lucide-react";
 
 export const Icons = {
@@ -33,5 +37,9 @@ export const Icons = {
   Users,
   LayoutDashboard,
   Settings,
-  Bell
+  Bell,
+  Languages,
+  Moon,
+  Sun,
+  LogOut
 };

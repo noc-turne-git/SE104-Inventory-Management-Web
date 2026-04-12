@@ -64,7 +64,7 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           onClick={() => setIsAvatarModalOpen(true)}
           className="w-20 h-20 bg-[#4f46e5] rounded-full flex items-center justify-center text-white text-4xl font-semibold shadow-inner hover:opacity-90 transition-opacity cursor-pointer group relative"
         >
-          S
+          JD
           <div className="absolute inset-0 bg-black/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <Plus className="w-6 h-6 text-white/80" />
           </div>
