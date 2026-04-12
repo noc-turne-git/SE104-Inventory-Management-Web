@@ -54,7 +54,7 @@ export const Sidebar = () => {
         >
           <div className="avatar">{user?.role ? 'M' : 'S'}</div>
           <div className="user-info">
-            <span className="user-name">Linda Anna</span>
+            <span className="user-name">{user?.userName}</span>
             <span className="user-role">{user?.role}</span>
           </div>
         </button>

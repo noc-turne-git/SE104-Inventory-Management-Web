@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Mail, Shield, Save, Calendar, Phone, MapPin, Plus, CheckCircle2 } from 'lucide-react';
+import { User as UserIcon, Mail, Shield, Save, Calendar, Phone, MapPin, Plus, CheckCircle2 } from 'lucide-react';
 import { Modal } from './ProfileModal';
+import { useAuth } from '../../context/AuthContext';
+import { type User } from '../../types/user';
 
 interface ToastProps {
   message: string;
@@ -43,17 +45,32 @@ interface ProfileFeatureProps {
 export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
   const [showToast, setShowToast] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: 'John Manager',
-    dob: '1995-05-20', 
-    phone: '+1 234 567 890', 
-    address: '123 Warehouse St, NY', 
-    email: 'warehouse@example.com',
-    role: 'Warehouse Keeper'
-  });
+  const {user, setUser} = useAuth();
+  // const [formData, setFormData] = useState({
+  //   fullName: 'John Manager',
+  //   dob: '1995-05-20', 
+  //   phone: '+1 234 567 890', 
+  //   address: '123 Warehouse St, NY', 
+  //   email: 'warehouse@example.com',
+  //   role: 'Warehouse Keeper'
+  // });
+  const [formData, setFormData] = useState<User | null>(user);
+
+  // Đồng bộ khi user từ context thay đổi
+  useEffect(() => {
+    setFormData(user);
+  }, [user]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData) {
+      setUser(formData);
+    } else {
+       setShowToast(false);
+      return;
+    }
+
     setShowToast(true);
   };
 
@@ -64,27 +81,27 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           onClick={() => setIsAvatarModalOpen(true)}
           className="w-20 h-20 bg-[#4f46e5] rounded-full flex items-center justify-center text-white text-4xl font-semibold shadow-inner hover:opacity-90 transition-opacity cursor-pointer group relative"
         >
-          JD
+          {user?.role === 'manager' ? 'M' : 'S'}
           <div className="absolute inset-0 bg-black/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <Plus className="w-6 h-6 text-white/80" />
           </div>
         </button>
         <div>
-          <h2 className="text-4xl font-bold text-[#1e293b]">{formData.fullName}</h2>
-          <p className="text-[#64748b] text-lg">{formData.role}</p>
+          <h2 className="text-4xl font-bold text-[#1e293b]">{formData?.userName}</h2>
+          <p className="text-[#64748b] text-lg">{formData?.role}</p>
         </div>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-[#475569] font-medium text-sm ml-1">
-            <User className="w-4 h-4" />
+            <UserIcon className="w-4 h-4" />
             Full Name
           </label>
           <input
             type="text"
-            value={formData.fullName}
-            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+            value={formData?.userName || ""}
+            onChange={(e) => formData && setFormData({ ...formData, userName: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
             placeholder="Enter your full name"
           />
@@ -97,8 +114,8 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           </label>
           <input
             type="email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            value={formData?.email || ""}
+            onChange={(e) => formData && setFormData({ ...formData, email: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
             placeholder="Enter your email"
           />
@@ -111,8 +128,8 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           </label>
           <input
             type="date"
-            value={formData.dob}
-            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+            value={formData?.dob || ""}
+            onChange={(e) => formData && setFormData({ ...formData, dob: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
           />
         </div>
@@ -124,8 +141,8 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
             </label>
             <input
               type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              value={formData?.phone || ""}
+              onChange={(e) => formData && setFormData({ ...formData, phone: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
               placeholder="Enter your phone number"
             />
@@ -138,8 +155,8 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
             </label>
             <input
               type="text"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              value={formData?.address || ""}
+              onChange={(e) => formData && setFormData({ ...formData, address: e.target.value })}
               className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
               placeholder="Enter your address"
             />
@@ -152,7 +169,7 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           </label>
           <input
             type="text"
-            value={formData.role}
+            value={formData?.role}
             readOnly
             className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#f8fafc] text-[#94a3b8] text-lg cursor-not-allowed"
           />

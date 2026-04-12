@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import React from "react";
 import { ProfileFeature } from '../features/profile/profile';
 import { Icons } from "../features/warehouse/iconWareHouse";
@@ -11,8 +11,11 @@ import { CreateWareHouseModal } from "../features/warehouse/CreateWareHouseModal
 import { useWarehouse } from "../hooks/useWarehouse"; // Import hook vừa tạo
 import type { Warehouse, Invitation } from "../types/warehouse";
 import { MOCK_WAREHOUSES, MOCK_INVITATIONS } from "../data/MOCK_WAREHOUSE";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const WareHouseScreen = () => {
+  const {user} = useAuth();
   const {
     warehouses,
     invitations,
@@ -25,6 +28,9 @@ const WareHouseScreen = () => {
     manageWarehouse,
   } = useWarehouse(MOCK_WAREHOUSES, MOCK_INVITATIONS);
 
+  const {logout} = useAuth();
+  const navigate = useNavigate();
+  
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = React.useState(false);
   const [isDarkMode, setIsDarkMode] = React.useState(false); // State cho thanh trượt Day/Night
@@ -94,7 +100,8 @@ const WareHouseScreen = () => {
                   </div>
 
                   {/* Item: Logout */}
-                  <button className="w-full px-4 py-3 flex items-center gap-3 hover:bg-rose-50 transition-colors text-rose-600 text-sm font-semibold">
+                  <button className="w-full px-4 py-3 flex items-center gap-3 hover:bg-rose-50 transition-colors text-rose-600 text-sm font-semibold"
+                    onClick={() => logout()}>
                     <Icons.LogOut className="w-4 h-4" />
                     <span>Logout</span>
                   </button>
@@ -104,7 +111,7 @@ const WareHouseScreen = () => {
             </div>
             <button onClick={() => setIsProfileOpen(true)}
             className="h-8 w-8 rounded-full bg-[#1E3A8A] flex items-center justify-center text-white text-xs font-bold hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-[#2563EB] active:scale-90 active:shadow-inner border border-white/10">
-              JD
+              {user?.role ? 'M' : 'S'}
             </button>
           </div>
           <ProfileFeature 

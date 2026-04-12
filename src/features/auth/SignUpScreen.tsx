@@ -12,7 +12,6 @@ const SignupScreen = () => {
     dob: "",
     phone: "",
     address: "",
-    role: "",
     password: "",
     confirmPassword: ""
   });
@@ -23,6 +22,10 @@ const SignupScreen = () => {
   const handleChange = (key: string, value: string) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
+
+  const handleSignUp = () => {
+    navigate('/signin', {replace : false});
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -116,7 +119,7 @@ const SignupScreen = () => {
           </div>
 
           {/* ROLE */}
-          <div className="my-4">
+          {/* <div className="my-4">
             <label className="modal-label">Role*</label>
             <select
               className="modal-input"
@@ -127,7 +130,7 @@ const SignupScreen = () => {
               <option value="manager">Manager</option>
               <option value="staff">Staff</option>
             </select>
-          </div>
+          </div> */}
 
           {/* PASSWORD */}
           <div className="my-4 relative">
@@ -164,7 +167,8 @@ const SignupScreen = () => {
           </div>
 
           {/* BUTTON */}
-          <button className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition">
+          <button className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition"
+            onClick={() => handleSignUp()}>
             Sign up
           </button>
 
@@ -173,7 +177,7 @@ const SignupScreen = () => {
             Already have an account?{" "}
             <span
               className="text-blue-600 font-medium cursor-pointer hover:underline"
-              onClick={() => navigate("/signin")}
+              onClick={() => navigate('/signin', {replace : false})}
             >
               Sign in
             </span>

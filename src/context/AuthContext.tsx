@@ -1,14 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-interface User {
-  email: string;
-  role: 'manager' | 'staff';
-  name?: string;
-}
+import { useNavigate } from 'react-router-dom';
+import {type User} from '../types/user'
 
 interface AuthContextType {
   user: User | null;
-  login: (userData: any) => void;
+  setUser: (userData: User) => void;
+  login: (userData: User) => void;
   logout: () => void;
 }
 
@@ -16,6 +13,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+
+  const navigate = useNavigate();
 
   // Kiểm tra xem có user đã lưu trong máy chưa khi load trang
   useEffect(() => {
@@ -27,16 +26,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    navigate('/warehouse', {replace: false});
+    //localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    navigate('/home', {replace: true});
+    //localStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );

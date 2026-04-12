@@ -2,14 +2,29 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router";
 import bgImage from "../../assets/stockify.png";
+import { useAuth } from "../../context/AuthContext";
+import { MOCK_USERS } from "../../data/MOCK_USER";
 
 const SignInScreen = () => {
   const navigate = useNavigate();
+  const {login} = useAuth();
 
   const [form, setForm] = useState({
     email: "",
     password: ""
   });
+  const [error, setError] = useState("");
+
+  const handleSignIn = (e : any) => {
+    if (e) e.preventDefault(); // ngăn refresh lại vì dùng thẻ form 
+
+    const userData = MOCK_USERS.find(u => u.email === form.email);
+    if(userData) {
+      login(userData);
+    } else {
+      setError('Invalid password or email. Please try again')
+    }
+  }
 
   const [showPass, setShowPass] = useState(false);
 
@@ -44,8 +59,14 @@ const SignInScreen = () => {
             <p className="text-gray-500 mt-1">Welcome back to Stockify</p>
           </div>
 
+          <div className="items-start">
+            <span className="text-red-500 text-sm">
+              {error}
+            </span>
+          </div>
+
           {/* EMAIL */}
-          <div className="my-4">
+          <div className="">
             <label className="modal-label">
               Email
             </label>
@@ -91,7 +112,9 @@ const SignInScreen = () => {
           </div>
 
           {/* BUTTON */}
-          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition">
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition"
+            onClick={(e) => handleSignIn(e)}
+          >
             Sign In
           </button>
 

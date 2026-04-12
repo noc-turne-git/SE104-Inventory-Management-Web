@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { X } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface ModalProps {
 
 export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl' }: ModalProps) => {
   if (!isOpen) return null;
+  const {user} = useAuth();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
