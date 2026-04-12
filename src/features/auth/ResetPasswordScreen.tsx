@@ -1,102 +1,146 @@
-import { useState } from "react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { useState } from "react";
 
-const ResetPassword = () => {
+const ResetPasswordScreen = () => {
   const navigate = useNavigate();
 
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const [show, setShow] = useState(false);
+  const [form, setForm] = useState({
+    password: "",
+    confirmPassword: ""
+  });
+
+  const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const [error, setError] = useState("");
-
   const handleSubmit = () => {
-    if (!password || !confirm) {
-      setError("Please fill all fields");
+    // validate
+    if (!form.password || !form.confirmPassword) {
+      alert("Please fill all fields");
       return;
     }
 
-    if (password !== confirm) {
-      setError("Passwords do not match");
+    if (form.password.length < 8) {
+      alert("Password must be at least 8 characters");
       return;
     }
 
-    setError("");
-    navigate("/verify-success");
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    setSuccess(true);
+    setTimeout(() => {
+      navigate("/signin");
+    }, 2000); // đổi thành công chuyển trang sau 2s
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
 
-      <div className="w-full max-w-sm bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
+      <div className="w-full max-w-lg">
 
-        {/* ICON */}
-        <div className="flex justify-center mb-4">
-          <div className="p-3 bg-blue-100 rounded-xl">
-            <Lock className="text-blue-600" />
+        {/* LOGO */}
+        <div className="text-center mb-10">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
+            📦
           </div>
+          <p className="text-xs tracking-widest text-gray-500">STOCKIFY</p>
         </div>
 
-        <h2 className="text-lg font-semibold mb-6">
-          Reset Password
-        </h2>
+        {/* CARD */}
+        <div className="bg-white p-10 rounded-2xl shadow-lg border border-gray-300">
 
-        {/* ERROR */}
-        {error && (
-          <p className="text-red-500 text-sm mb-3">{error}</p>
-        )}
+          {/* TITLE */}
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold mb-2">
+              Reset Password
+            </h2>
+            <p className="text-gray-500 text-sm">
+              Enter your new password below
+            </p>
+          </div>
 
-        {/* PASSWORD */}
-        <div className="relative mb-4">
-          <input
-            type={show ? "text" : "password"}
-            placeholder="New Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl pr-10
-            focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <span
-            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
-            onClick={() => setShow(!show)}
+          {/* PASSWORD */}
+          <div className="my-5">
+            <label className="modal-label">New Password</label>
+
+            <div className="relative">
+              <input
+                type={showPass ? "text" : "password"}
+                placeholder="Enter new password"
+                className="modal-input h-12 pr-10"
+                value={form.password}
+                onChange={(e) =>
+                  setForm({ ...form, password: e.target.value })
+                }
+              />
+
+              <div
+                onClick={() => setShowPass(!showPass)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+              >
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+              </div>
+            </div>
+          </div>
+
+          {/* CONFIRM */}
+          <div className="my-5">
+            <label className="modal-label">Confirm Password</label>
+
+            <div className="relative">
+              <input
+                type={showConfirm ? "text" : "password"}
+                placeholder="Confirm password"
+                className="modal-input h-12 pr-10"
+                value={form.confirmPassword}
+                onChange={(e) =>
+                  setForm({ ...form, confirmPassword: e.target.value })
+                }
+              />
+
+              <div
+                onClick={() => setShowConfirm(!showConfirm)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+              >
+                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+              </div>
+            </div>
+          </div>
+
+          {/* BUTTON */}
+          <button
+            onClick={handleSubmit}
+            className="w-full py-3 rounded-xl text-white font-semibold text-lg
+            bg-blue-600 hover:bg-blue-700 transition"
           >
-            {show ? <EyeOff size={18} /> : <Eye size={18} />}
-          </span>
+            Reset Password
+          </button>
+          {success && (
+            <p className="text-green-600 text-sm text-center mt-4">
+              Password reset successfully! Redirecting...
+            </p>
+          )}
+
+          {/* BACK */}
+          <div className="text-center mt-6">
+            <span
+              onClick={() => navigate("/signin")}
+              className="inline-flex items-center gap-2 text-blue-600 text-sm cursor-pointer hover:underline"
+            >
+              <ArrowLeft size={16} />
+              Back to Sign in
+            </span>
+          </div>
+
         </div>
-
-        {/* CONFIRM PASSWORD */}
-        <div className="relative mb-6">
-          <input
-            type={showConfirm ? "text" : "password"}
-            placeholder="Confirm Password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl pr-10
-            focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <span
-            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
-            onClick={() => setShowConfirm(!showConfirm)}
-          >
-            {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-          </span>
-        </div>
-
-        {/* BUTTON */}
-        <button
-          onClick={handleSubmit}
-          className="w-full bg-gradient-to-r from-blue-600 to-indigo-500 
-          text-white py-2.5 rounded-xl hover:opacity-90 transition"
-        >
-          Change Password →
-        </button>
-
       </div>
     </div>
   );
 };
 
-export default ResetPassword;
+export default ResetPasswordScreen;

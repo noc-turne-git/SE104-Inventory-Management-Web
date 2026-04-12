@@ -1,149 +1,115 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { MOCK_ACCOUNTS } from "../../data/MOCK_ACCOUNT";
-import { Eye, EyeOff, User } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router";
+import bgImage from "../../assets/stockify.png";
 
-const SignIn = () => {
+const SignInScreen = () => {
   const navigate = useNavigate();
 
-  const {user, login} = useAuth();
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  });
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleSignIn = () => {
-    // validate
-    if (!email || !password) {
-      setError("Please fill all fields");
-      return;
-    }
-
-    const userData = MOCK_ACCOUNTS.find(
-      (u) => u.email === email && u.password === password
-    );
-    console.log(user?.email);
-    console.log(email);
-
-    if (!userData) {
-      setError("Invalid email or password");
-      return;
-    }
-
-    // clear error
-    setError("");
-    login(userData);
-
-    // điều hướng theo role
-    // if (user.role === "manager") {
-    //   navigate("/app/products", { replace: true });
-    // } else {
-    //   navigate("/app/products_view", { replace: true });
-    // }
-
-    navigate("/warehouse", {replace: true});
-  };
+  const [showPass, setShowPass] = useState(false);
 
   return (
     <div className="flex min-h-screen">
 
       {/* LEFT */}
-      <div className="hidden md:flex w-1/2 bg-gradient-to-b from-blue-600 to-blue-400 text-white p-12 flex-col justify-center">
-        <h1 className="text-4xl font-bold mb-4">Stockify</h1>
-        <p className="text-lg opacity-90">
-          Elevate your warehouse operations. Manage inventory,
-          staff and logistics efficiently.
-        </p>
+      <div className="hidden lg:flex w-1/2 relative items-center text-white">
+        <img
+          src={bgImage}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
 
-        <div className="mt-10 flex gap-10">
-          <div>
-            <p className="text-3xl font-bold">2.5k+</p>
-            <span className="text-sm opacity-80">Warehouses</span>
-          </div>
-          <div>
-            <p className="text-3xl font-bold">99.9%</p>
-            <span className="text-sm opacity-80">Uptime</span>
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-blue-700/60 to-transparent"></div>
+
+        <div className="relative z-10 px-16 text-left">
+          <h1 className="text-xl font-bold mb-4">Stockify</h1>
+          <p className="text-lg text-gray-200 max-w-md mb-10">
+            Elevate your warehouse operations. Manage inventory, staff and logistics efficiently.
+          </p>
         </div>
       </div>
 
       {/* RIGHT */}
-      <div className="flex w-full md:w-1/2 items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-sm border border-gray-200">
+      <div className="flex w-full lg:w-1/2 items-center justify-center bg-gray-50 min-h-screen px-6">
 
-          <h2 className="text-3xl font-bold mb-2">Sign In</h2>
-          <p className="text-gray-500 mb-6">
-            Welcome back to Stockify
-          </p>
+        <form className="w-full max-w-md">
 
-          {/* ERROR */}
-          {error && (
-            <p className="text-red-500 text-sm mb-3">{error}</p>
-          )}
-
-          {/* EMAIL */}
-          <input
-            className="w-full mb-4 px-4 py-2.5 border border-gray-200 rounded-xl 
-            focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          {/* PASSWORD */}
-          <div className="relative mb-2">
-            <input
-              type={showPassword ? "text" : "password"}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl 
-              focus:outline-none focus:ring-2 focus:ring-blue-500 transition pr-10"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            {/* ICON */}
-            <span
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </span>
+          {/* TITLE */}
+          <div className="mb-6">
+            <h2 className="text-3xl font-bold">Sign In</h2>
+            <p className="text-gray-500 mt-1">Welcome back to Stockify</p>
           </div>
 
-          {/* FORGOT PASSWORD */}
+          {/* EMAIL */}
+          <div className="my-4">
+            <label className="modal-label">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="Email"
+              className="modal-input h-12"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+          </div>
+
+          {/* PASSWORD */}
+          <div className="my-4">
+            <label className="modal-label">Password</label>
+
+            <div className="relative">
+              <input
+                type={showPass ? "text" : "password"}
+                placeholder="Password"
+                className="modal-input h-12 pr-10"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+              />
+
+              <div
+                onClick={() => setShowPass(!showPass)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+              >
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+              </div>
+            </div>
+          </div>
+
+          {/* FORGOT */}
           <div className="text-right mb-4">
-            <span
+            <span 
+              onClick={() => navigate("/forgotpassword")}
               className="text-sm text-blue-600 cursor-pointer hover:underline"
-              onClick={() => navigate("/forgot-password")}
             >
               Forgot password?
             </span>
           </div>
 
           {/* BUTTON */}
-          <button
-            onClick={handleSignIn}
-            className="w-full bg-blue-600 text-white py-2.5 rounded-xl 
-            hover:bg-blue-700 transition disabled:opacity-50"
-          >
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition">
             Sign In
           </button>
 
-          {/* SIGN UP */}
-          <p className="text-sm text-center mt-6 text-gray-500">
+          {/* SIGNUP */}
+          <p className="text-center text-sm text-gray-500 mt-5">
             Don’t have an account?{" "}
             <span
-              className="text-blue-600 font-medium cursor-pointer hover:underline"
-              onClick={() => navigate("/sign-up")}
+              onClick={() => navigate("/signup")}
+              className="text-blue-600 cursor-pointer hover:underline"
             >
               Sign up
             </span>
           </p>
 
-        </div>
+        </form>
       </div>
     </div>
   );
 };
 
-export default SignIn;
+export default SignInScreen;
