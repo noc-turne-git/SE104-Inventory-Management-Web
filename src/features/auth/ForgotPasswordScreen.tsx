@@ -1,7 +1,7 @@
 import { Mail, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useState } from "react";
-
+import lgImage from "../../assets/logostockify.png";
 import './auth.css';
 
 const ForgotPasswordScreen = () => {
@@ -15,11 +15,13 @@ const ForgotPasswordScreen = () => {
       <div className="w-full max-w-lg">
 
         {/* LOGO */}
-        <div className="auth-logo-container">
-          <div className="auth-logo-box">
-            📦
-          </div>
-          <p className="auth-logo-text">STOCKIFY</p>
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <img
+            src={lgImage}
+            alt="logo"
+            className="w-16 h-16 object-contain"
+          />
+          <p className="auth-logo-text m-0">STOCKIFY</p>
         </div>
 
         {/* CARD */}

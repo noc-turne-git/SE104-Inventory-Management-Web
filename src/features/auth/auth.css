@@ -9,7 +9,7 @@
   background-color: #ffffff; 
   
   /* Border mặc định */
-  border: 2px solid #d1d5db;
+  border: 1.5px solid #d1d5db;
   border-radius: 0.5rem;
 
   /* Hiệu ứng chuyển cảnh mượt mà */
@@ -32,7 +32,7 @@
   font-weight: 600;
   font-size: 1rem;
   color: #374151;
-  margin-bottom: 0.25crem;
+  margin-bottom: 0.25rem;
   text-align: left;
 }
 
@@ -42,27 +42,27 @@
   margin-bottom: 2.5rem; /* mb-10 */
 }
 
-/* Hình vuông xanh chứa icon 📦 */
-.auth-logo-box {
-  width: 6rem;           /* w-12 */
-  height: 6rem;          /* h-12 */
-  margin-left: auto;     /* mx-auto */
+/* Hình vuông xanh chứa logo */
+/* .auth-logo-box {
+  width: 6rem;           w-12
+  height: 6rem;          h-12
+  margin-left: auto;     mx-auto
   margin-right: auto;
-  margin-bottom: 0rem; /* mb-3 */
-  border-radius: 1rem;  /* rounded-lg */
-  /* background-color: #7da1ef; */
+  margin-bottom: 0rem;   mb-3
+  border-radius: 1rem;   rounded-lg
+  background-color: #7da1ef;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-size: 4rem;    /* text-xl */
-  font-weight: 700;      /* font-bold */
-}
+  font-size: 4rem;       text-xl
+  font-weight: 700;      font-bold
+} */
 
 /* Chữ STOCKIFY */
 .auth-logo-text {
-  font-size: 4rem;    /* text-6xl */
+  font-size: 3rem;    /* text-6xl */
   font-weight: 700;      /* font-bold */
   /* letter-spacing: 0.1em; tracking-widest */
   color: #0c1a6d;        /* text-gray-500 */
