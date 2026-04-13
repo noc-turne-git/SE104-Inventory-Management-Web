@@ -116,10 +116,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ data, themeColor }) => {
                 <h2 className="text-6xl font-black tracking-tight mb-6 text-slate-900">Operational Precision</h2>
                 <p className="text-slate-500 text-xl font-normal">Every pallet, every shipment, tracked with sub-second accuracy across your entire network.</p>
               </div>
-              <button className="flex items-center gap-2 text-[#1f6feb] font-bold hover:gap-4 transition-all">
+              {/* <button className="flex items-center gap-2 text-[#1f6feb] font-bold hover:gap-4 transition-all">
                 View all modules
                 <ArrowForwardIcon className="w-4 h-4" />
-              </button>
+              </button> */}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {data.features.map((feature, index) => (

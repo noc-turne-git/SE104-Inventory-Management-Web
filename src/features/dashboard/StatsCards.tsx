@@ -1,13 +1,11 @@
 import { type LucideIcon, Package, DollarSign, ShoppingCart, Users, TrendingUp, Activity, StoreIcon, AlertCircle, AlertOctagon, AlertTriangle, AlarmCheck } from 'lucide-react';
 
-
-
 const StatsCards = ({role} : {role : 'manager' | 'staff'}) => {
     let stats;
 
     if (role === 'manager')
     {
-        stats  = [
+      stats  = [
             { title: 'Total Products', value: '8', change: '+1 from last month', icon: Package, color: 'from-blue-500 to-blue-600', subColor: 'text-blue-100' },
             { title: 'Monthly Revenue', value: '$67K', change: '+22% from last month', icon: DollarSign, color: 'from-green-500 to-green-600', subColor: 'text-green-100' },
             { title: 'Low Stock', value: '3', change: '5% need restocking', icon: AlertTriangle, color: 'from-red-500 to-red-600', subColor: 'text-red-100' },

@@ -53,7 +53,7 @@ const StaffRecentActivities: React.FC = () => {
                 </p>
                 <p className="text-md text-gray-500 mt-1">{activity.item}</p>
               </div>
-              <span className="text-[10px] font-medium text-gray-400 whitespace-nowrap bg-gray-50 px-2 py-1 rounded">
+              <span className="text-lg font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded">
                 {activity.time}
               </span>
             </div>

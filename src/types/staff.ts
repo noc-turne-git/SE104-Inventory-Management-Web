@@ -16,6 +16,9 @@ export interface Staff {
   salary: number;
   hireDate: string;
   infractions: Infractions[];
+  dob?: string; // date of birth
+  phone?: string;
+  address?: string; // Dấu ? vì address có thể không bắt buộc
 
   //THÔNG TIN XEM THÊM SAU KHI CLICK VÀO tạm chưa làm bàn bạc sau
   //leaveBalance: number; // Số ngày phép còn lại - 1 năm reset 1 lần

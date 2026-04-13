@@ -25,15 +25,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = (userData: User) => {
+    // setUser(userData);
+    // console.log(user?.role);
+    // console.log(user?.email);
+    // navigate('/warehouse', {replace: false});
+
     setUser(userData);
-    navigate('/warehouse', {replace: false});
-    //localStorage.setItem('user', JSON.stringify(userData));
+    console.log(userData.role); // Chắc chắn sẽ ra 'staff'
+    console.log(userData.email); // Chắc chắn sẽ ra 'bob@example.com'
+    navigate('/warehouse');
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
     navigate('/home', {replace: true});
-    //localStorage.removeItem('user');
+    localStorage.removeItem('user');
   };
 
   return (

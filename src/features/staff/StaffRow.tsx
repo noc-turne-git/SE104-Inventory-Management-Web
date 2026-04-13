@@ -10,7 +10,7 @@ interface Props {
 
 const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
   return (
-    <tr className="hover:bg-gray-50">
+    <tr className='hover: bg-gray-100'>
 
       {/* EMPLOYEE */}
       <td className="px-6 py-4">
@@ -25,8 +25,25 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
         </div>
       </td>
 
+      <td className="px-6 py-4">
+        <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+          staff.accountStatus === 'Active' 
+            ? "bg-green-100 text-green-700 border border-green-200" 
+            : "bg-red-100 text-red-700 border border-red-200"
+        }`}>
+          {staff.accountStatus}
+        </span>
+      </td>
+
+      <td className="px-6 py-4 text-md text-gray-600">{staff.phone || "N/A"}</td>
+      <td className="px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate">
+        {staff.address || "N/A"}
+      </td>
+      <td className="px-6 py-4 text-md text-gray-600">{staff.dob || "N/A"}</td>
+
       <td className="px-6 py-4 text-md text-gray-600">{staff.role}</td>
-      <td className="px-6 py-4 text-md text-gray-600">{staff.accountStatus}</td>
+      {/* <td className="px-6 py-4 text-md text-gray-600">{staff.accountStatus}</td> */}
+
       <td className="px-6 py-4 font-medium">${staff.salary}</td>
       <td className="px-6 py-4 text-center">
         {new Date(staff.hireDate).toLocaleDateString('vi-VN')}</td>

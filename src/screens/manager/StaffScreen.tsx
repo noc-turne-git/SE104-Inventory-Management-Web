@@ -80,9 +80,15 @@ const StaffScreen = () => {
                 <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
                   Employee </th>
                 <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
-                  Role </th>
-                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
                   Status </th>
+                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                  Phone </th>
+                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                  Address </th>
+                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                  DOB </th>
+                <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                  Role </th>
                 <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
                   Salary </th>
                 <th className="px-6 py-4 text-center text-md text-gray-600 uppercase">

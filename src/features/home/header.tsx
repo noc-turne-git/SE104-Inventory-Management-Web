@@ -14,9 +14,9 @@ export const Header: React.FC<HeaderProps> = () => {
       <nav className="pointer-events-auto flex items-center justify-center bg-[#0a0e14]/85 backdrop-blur-3xl border-b border-white/10 px-6 py-4 md:px-10 md:py-5 shadow-2xl transition-all duration-500 hover:bg-[#0a0e14]/95 w-full">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-4 sm:gap-6 md:gap-10">
-            <button className="flex items-center justify-center text-slate-400 hover:text-slate-100 transition-colors shrink-0 cursor-pointer">
+            {/* <button className="flex items-center justify-center text-slate-400 hover:text-slate-100 transition-colors shrink-0 cursor-pointer">
               <Menu className="w-7 h-7 md:w-8 md:h-8" />
-            </button>
+            </button> */}
             <span className="text-4xl sm:text-4xl md:text-4xl font-black tracking-tighter bg-clip-text text-transparent bg-linear-to-r from-[#afc6ff] to-[#1f6feb] whitespace-nowrap">
               Stockify
             </span>

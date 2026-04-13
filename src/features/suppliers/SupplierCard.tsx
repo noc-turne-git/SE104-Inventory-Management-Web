@@ -28,14 +28,14 @@ const SupplierCard = ({ supplier, onDelete, onEdit }: Props) => {
             onClick={() => onEdit(supplier)}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
           >
-            <Edit className="w-4 h-4" />
+            <Edit className="w-6 h-6" />
           </button>
 
           <button
             onClick={() => onDelete(supplier.id)}
             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-6 h-6" />
           </button>
         </div>
       </div>

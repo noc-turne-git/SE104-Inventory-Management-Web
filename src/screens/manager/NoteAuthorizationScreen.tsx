@@ -21,6 +21,23 @@ const NoteAuthorizationScreen: React.FC = () => {
     updateStatus(id, status, rejectionRemarks[id]);
   };
 
+    const getStatusColor = (status: string): string => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-700 border border-green-200';
+      case 'in process':
+        return 'bg-blue-100 text-blue-700 border border-blue-200';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
+      case 'rejected':
+        return 'bg-red-100 text-red-700 border border-red-200';
+      case 'new':
+        return 'bg-purple-100 text-purple-700 border border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-700 border border-gray-200';
+    }
+  };
+
   const noteToDisplay = allNotes.filter(n => {
     const filterResult = activeTab === 'ALL' ? true : n.status.toLowerCase() === activeTab.toLowerCase();
     const searchResult = n.noteNumber.toLowerCase().includes(searchTerm.toLowerCase()) || n.operator.toLowerCase().includes(searchTerm.toLowerCase());
@@ -79,7 +96,7 @@ const NoteAuthorizationScreen: React.FC = () => {
                       <ChevronRight size={14} className="text-gray-300" />
                       {/* <span className="text-blue-600 uppercase text-md tracking-widest">{n.type.replace('_', ' ')}</span> */}
                       <span className="text-blue-600 uppercase text-md tracking-widest">{n.operator}</span>
-                      <div className="capitalize ml-10 w-fit px-3 py-1 rounded-full text-sm font-bold bg-blue-200">{n.status}</div>
+                      <div className={`capitalize ml-10 w-fit px-3 py-1 rounded-full ${getStatusColor(n.status)} text-sm font-bold bg-blue-200`}>{n.status}</div>
                     </h3>
                     <div className="flex items-center gap-4 mt-1 text-md text-gray-500">
                       {n.type === 'DELIVERY' && <span className="text-gray-400">To: {n.destination}</span>}

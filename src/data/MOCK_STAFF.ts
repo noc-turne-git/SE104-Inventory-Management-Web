@@ -9,6 +9,9 @@ export const MOCK_STAFF: Staff[] = [
     accountStatus: 'Active',
     salary: 65000,
     hireDate: '2023-01-15',
+    dob: '1990-05-12',
+    phone: '0123-456-789',
+    address: '123 Maple St, Springfield',
     infractions: [
       {
         id: 'inf-1',
@@ -26,6 +29,9 @@ export const MOCK_STAFF: Staff[] = [
     accountStatus: 'Active',
     salary: 45000,
     hireDate: '2023-03-20',
+    dob: '1995-08-22',
+    phone: '0987-654-321',
+    address: '456 Oak Ave, Riverdale',
     infractions: [],
   },
   {
@@ -36,7 +42,9 @@ export const MOCK_STAFF: Staff[] = [
     accountStatus: 'Active',
     salary: 85000,
     hireDate: '2022-11-10',
-    infractions: [],
+    dob: '1988-12-05',
+    phone: '0555-123-4567',
+    infractions: [], // Ví dụ không có address vì nó là optional (?)
   },
   {
     id: '4',
@@ -46,6 +54,9 @@ export const MOCK_STAFF: Staff[] = [
     accountStatus: 'Inactive',
     salary: 48000,
     hireDate: '2023-06-01',
+    dob: '1992-02-28',
+    phone: '0444-987-654',
+    address: '789 Pine Rd, Lakeside',
     infractions: [
       {
         id: 'inf-2',
@@ -63,6 +74,9 @@ export const MOCK_STAFF: Staff[] = [
     accountStatus: 'Active',
     salary: 52000,
     hireDate: '2024-02-10',
+    dob: '1998-11-15',
+    phone: '0333-222-111',
+    address: '321 Elm St, Hill Valley',
     infractions: [],
   },
   {
@@ -73,6 +87,8 @@ export const MOCK_STAFF: Staff[] = [
     accountStatus: 'Inactive',
     salary: 38000,
     hireDate: '2022-05-25',
+    dob: '1985-04-30',
+    phone: '0111-555-999',
     infractions: [],
   },
 ];
