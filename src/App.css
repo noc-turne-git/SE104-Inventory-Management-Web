@@ -1,8 +1,0 @@
-.table-header {
-    padding: 1rem 1.5rem;       /* Tương ứng px-6 (1.5rem) và py-4 (1rem) */
-    text-align: center;         /* text-center */
-    font-size: 70em;            /* text-base (thường là 16px) */
-    font-weight: 500;           /* font-medium */
-    color: rgb(75, 85, 99);     /* text-gray-600 */
-    text-transform: uppercase;  /* uppercase */
-}

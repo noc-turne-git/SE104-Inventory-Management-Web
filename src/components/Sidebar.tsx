@@ -1,4 +1,4 @@
-import { Van, Home, LayoutDashboard, Package, Users, Calendar, LogOut, NotebookPen, UserRoundPen, BookUser, PackagePlus, ArrowLeft } from 'lucide-react';
+import { Van, LayoutDashboard, Package, Users, Calendar, LogOut, NotebookPen, BookUser, PackagePlus, ArrowLeft } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import './Sidebar.css';
@@ -50,7 +50,7 @@ export const Sidebar = () => {
 
         <button 
           onClick={() => setIsProfileOpen(true)}
-          className="user-card hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-[#2563EB] active:scale-90 active:shadow-inner border border-white/10"
+          className="user-card hover: bg-blue-100"
         >
           <div className="avatar">{user?.role ? 'M' : 'S'}</div>
           <div className="user-info">

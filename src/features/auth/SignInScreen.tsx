@@ -5,6 +5,8 @@ import bgImage from "../../assets/stockify.png";
 import { useAuth } from "../../context/AuthContext";
 import { MOCK_USERS } from "../../data/MOCK_USER";
 
+import './auth.css';
+
 const SignInScreen = () => {
   const navigate = useNavigate();
   const {login} = useAuth();
@@ -41,22 +43,22 @@ const SignInScreen = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-blue-700/60 to-transparent"></div>
 
         <div className="relative z-10 px-16 text-left">
-          <h1 className="text-xl font-bold mb-4">Stockify</h1>
-          <p className="text-lg text-gray-200 max-w-md mb-10">
+          <h1 className="text-8xl font-bold mb-4">Stockify</h1>
+          <p className="text-xl text-gray-100 max-w-md mb-10">
             Elevate your warehouse operations. Manage inventory, staff and logistics efficiently.
           </p>
         </div>
       </div>
 
       {/* RIGHT */}
-      <div className="flex w-full lg:w-1/2 items-center justify-center bg-gray-50 min-h-screen px-6">
+      <div className="flex w-full lg:w-1/2 items-center justify-center bg-gray-100 min-h-screen px-6">
 
         <form className="w-full max-w-md">
 
           {/* TITLE */}
           <div className="mb-6">
             <h2 className="text-3xl font-bold">Sign In</h2>
-            <p className="text-gray-500 mt-1">Welcome back to Stockify</p>
+            <p className="text-gray-500 text-md mt-1">Welcome back to Stockify</p>
           </div>
 
           <div className="items-start">
@@ -67,27 +69,27 @@ const SignInScreen = () => {
 
           {/* EMAIL */}
           <div className="">
-            <label className="modal-label">
+            <label className="auth-label">
               Email
             </label>
             <input
               type="email"
               placeholder="Email"
-              className="modal-input h-12"
+              className="auth-input w-full h-12"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
           </div>
 
           {/* PASSWORD */}
-          <div className="my-4">
-            <label className="modal-label">Password</label>
+          <div className="mt-4 mb-1">
+            <label className="authl-label">Password</label>
 
-            <div className="relative">
+            <div className="relative ">
               <input
                 type={showPass ? "text" : "password"}
                 placeholder="Password"
-                className="modal-input h-12 pr-10"
+                className="auth-input h-12 pr-10 bg-white"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
@@ -102,28 +104,28 @@ const SignInScreen = () => {
           </div>
 
           {/* FORGOT */}
-          <div className="text-right mb-4">
+          <div className="text-right mb-6">
             <span 
               onClick={() => navigate("/forgotpassword")}
-              className="text-sm text-blue-600 cursor-pointer hover:underline"
+              className="text-md font-semibold text-blue-600 cursor-pointer hover:underline"
             >
               Forgot password?
             </span>
           </div>
 
           {/* BUTTON */}
-          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition"
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-xl hover:bg-blue-700 transition"
             onClick={(e) => handleSignIn(e)}
           >
             Sign In
           </button>
 
           {/* SIGNUP */}
-          <p className="text-center text-sm text-gray-500 mt-5">
+          <p className="text-center text-lg text-gray-500 mt-5">
             Don’t have an account?{" "}
             <span
               onClick={() => navigate("/signup")}
-              className="text-blue-600 cursor-pointer hover:underline"
+              className="text-blue-600 font-semibold cursor-pointer hover:underline"
             >
               Sign up
             </span>

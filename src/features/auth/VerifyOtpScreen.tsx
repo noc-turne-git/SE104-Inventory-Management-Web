@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router";
 
+import './auth.css';
+
 const VerifyOtpScreen = () => {
   const navigate = useNavigate();
 
@@ -32,15 +34,15 @@ const VerifyOtpScreen = () => {
       <div className="w-full max-w-xl">
 
         {/* LOGO */}
-        <div className="text-center mb-10">
-          <div className="w-14 h-14 mx-auto mb-3 rounded-xl bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
+        <div className="auth-logo-container">
+          <div className="auth-logo-box">
             📦
           </div>
-          <p className="text-sm tracking-widest text-gray-500">STOCKIFY</p>
+          <p className="auth-logo-text">STOCKIFY</p>
         </div>
 
         {/* CARD */}
-        <div className="bg-white p-10 rounded-2xl shadow-lg border border-gray-300">
+        <div className="auth-card-container">
 
           {/* TITLE */}
           <div className="text-center mb-8">
@@ -74,14 +76,13 @@ const VerifyOtpScreen = () => {
           {/* BUTTON */}
           <button
             onClick={() => navigate("/resetpassword")}
-            className="w-full py-3 rounded-xl text-white font-semibold text-lg
-            bg-blue-600 hover:bg-blue-700 transition"
+            className="auth-button-primary"
           >
             Verify
           </button>
 
           {/* RESEND */}
-          <div className="text-center mt-6 text-sm text-gray-500">
+          <div className="auth-back-container text-sm text-gray-500">
             Didn’t receive code?{" "}
             <span className="text-blue-600 cursor-pointer hover:underline">
               Resend

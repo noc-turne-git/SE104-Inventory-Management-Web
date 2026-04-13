@@ -2,6 +2,8 @@ import { Mail, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 
+import './auth.css';
+
 const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -13,39 +15,39 @@ const ForgotPasswordScreen = () => {
       <div className="w-full max-w-lg">
 
         {/* LOGO */}
-        <div className="text-center mb-10">
-          <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
+        <div className="auth-logo-container">
+          <div className="auth-logo-box">
             📦
           </div>
-          <p className="text-xs tracking-widest text-gray-500">STOCKIFY</p>
+          <p className="auth-logo-text">STOCKIFY</p>
         </div>
 
         {/* CARD */}
-        <div className="bg-white p-10 rounded-2xl shadow-lg border border-gray-300">
+        <div className="auth-card-container">
 
           {/* TITLE */}
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold mb-2">
+          <div className="auth-header">
+            <h2 className="auth-title">
               Forgot Password
             </h2>
-            <p className="text-gray-500 text-sm leading-relaxed">
+            <p className="auth-subtitle">
               Enter your registered email address below. We'll send you a 6-digit verification code to reset your access.
             </p>
           </div>
 
           {/* INPUT */} 
           <div className="my-5">
-            <label className="modal-label">
+            <label className="auth-label">
               Email Address
             </label>
 
-            <div className="flex items-center border border-gray-300 rounded-lg px-3 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
-              <Mail className="w-4 h-4 text-gray-400 mr-2" />
+            <div className="auth-input flex items-center border border-gray-300 rounded-lg px-3 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+              <Mail className="w-5 h-5 text-gray-400 mr-2" />
 
               <input
                 type="email"
                 placeholder="name@company.com"
-                className="w-full h-12 outline-none text-gray-700 bg-transparent"
+                className="w-full text-xl outline-none text-gray-700 bg-transparent"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 />
@@ -55,17 +57,16 @@ const ForgotPasswordScreen = () => {
           {/* BUTTON */}
           <button
             onClick={() => navigate("/verifyotp")}
-            className="w-full py-3 rounded-xl text-white font-semibold text-lg
-            bg-blue-600 hover:bg-blue-700 transition"
+            className="auth-button-primary"
           >
             Send Reset Code
           </button>
 
           {/* BACK */}
-          <div className="text-center mt-6">
+          <div className="auth-back-container">
             <span
               onClick={() => navigate("/signin")}
-              className="inline-flex items-center gap-2 text-blue-600 text-sm cursor-pointer hover:underline"
+              className="auth-back-link"
             >
               <ArrowLeft size={16} />
               Back to Login

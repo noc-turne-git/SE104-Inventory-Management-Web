@@ -3,3 +3,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* src/index.css */
+
+:root {
+  /* Bảng màu chính */
+  --primary: #2560df;
+  --primary-hover: #164ce0;
+  /* --primary-light: rgba(37, 99, 235, 0.1); màu thay đổi sau khi focus input*/
+  
+  /* Màu trung tính (Neutral) */
+  --bg-body: #f9fafb;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --border-color: #b5b5b5;
+  
+  /* Trạng thái khác */
+  --success: #10b981;
+  --error: #ef4444;
+}

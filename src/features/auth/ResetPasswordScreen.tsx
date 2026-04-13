@@ -2,6 +2,8 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+import './auth.css';
+
 const ResetPasswordScreen = () => {
   const navigate = useNavigate();
 
@@ -44,35 +46,35 @@ const ResetPasswordScreen = () => {
       <div className="w-full max-w-lg">
 
         {/* LOGO */}
-        <div className="text-center mb-10">
-          <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-blue-600 flex items-center justify-center text-white text-xl font-bold">
+        <div className="auth-logo-container">
+          <div className="auth-logo-box">
             📦
           </div>
-          <p className="text-xs tracking-widest text-gray-500">STOCKIFY</p>
+          <p className="auth-logo-text">STOCKIFY</p>
         </div>
 
         {/* CARD */}
-        <div className="bg-white p-10 rounded-2xl shadow-lg border border-gray-300">
+        <div className="auth-card-container">
 
           {/* TITLE */}
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold mb-2">
+          <div className="auth-header">
+            <h2 className="auth-title">
               Reset Password
             </h2>
-            <p className="text-gray-500 text-sm">
+            <p className="auth-subtitle">
               Enter your new password below
             </p>
           </div>
 
           {/* PASSWORD */}
           <div className="my-5">
-            <label className="modal-label">New Password</label>
+            <label className="auth-label">New Password</label>
 
             <div className="relative">
               <input
                 type={showPass ? "text" : "password"}
                 placeholder="Enter new password"
-                className="modal-input h-12 pr-10"
+                className="auth-input h-12 pr-10"
                 value={form.password}
                 onChange={(e) =>
                   setForm({ ...form, password: e.target.value })
@@ -90,13 +92,13 @@ const ResetPasswordScreen = () => {
 
           {/* CONFIRM */}
           <div className="my-5">
-            <label className="modal-label">Confirm Password</label>
+            <label className="auth-label">Confirm Password</label>
 
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
                 placeholder="Confirm password"
-                className="modal-input h-12 pr-10"
+                className="auth-input h-12 pr-10"
                 value={form.confirmPassword}
                 onChange={(e) =>
                   setForm({ ...form, confirmPassword: e.target.value })
@@ -115,8 +117,7 @@ const ResetPasswordScreen = () => {
           {/* BUTTON */}
           <button
             onClick={handleSubmit}
-            className="w-full py-3 rounded-xl text-white font-semibold text-lg
-            bg-blue-600 hover:bg-blue-700 transition"
+            className="auth-button-primary"
           >
             Reset Password
           </button>
@@ -127,10 +128,10 @@ const ResetPasswordScreen = () => {
           )}
 
           {/* BACK */}
-          <div className="text-center mt-6">
+          <div className="auth-back-container">
             <span
               onClick={() => navigate("/signin")}
-              className="inline-flex items-center gap-2 text-blue-600 text-sm cursor-pointer hover:underline"
+              className="auth-back-link"
             >
               <ArrowLeft size={16} />
               Back to Sign in
