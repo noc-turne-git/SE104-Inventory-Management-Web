@@ -22,7 +22,7 @@ const SignInScreen = () => {
     if (e) e.preventDefault(); // ngăn refresh lại vì dùng thẻ form 
 
     const userData = MOCK_USERS.find(u => u.email === form.email);
-    console.log(userData?.email);
+    console.log(userData?.email);                                                                                                                                                                                                                                                         
     if(userData) {
       login(userData);
     } else {
