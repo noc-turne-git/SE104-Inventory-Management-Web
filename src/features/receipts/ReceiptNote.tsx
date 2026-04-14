@@ -1,11 +1,11 @@
 import React from 'react';
 import { type Receipt } from '../../types/note';
-import { Edit, Package, Calendar, ClipboardList, FileDown} from 'lucide-react';
+import { Edit, Package, XCircle, Calendar, ClipboardList, FileDown} from 'lucide-react';
 
 interface Props {
   receipt: Receipt;
   onOpenEditModal: (receipt: Receipt) => void;
-  //onDelete: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 interface ItemProps {
@@ -57,13 +57,13 @@ const ReceiptItem = ({ordered, received, defective, product} : ItemProps) => {
   );
 }
 
-export const ReceiptNote = ({receipt, onOpenEditModal} : Props) => {
+export const ReceiptNote = ({receipt, onOpenEditModal, onDelete} : Props) => {
   return (
     <div key={receipt.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-4">
           <div className="p-3 bg-green-50 rounded-lg">
-            <ClipboardList className="w-6 h-6 text-green-600" />
+            <ClipboardList className="w-5 h-5 text-green-600" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{receipt.noteNumber}</h3>
@@ -103,19 +103,27 @@ export const ReceiptNote = ({receipt, onOpenEditModal} : Props) => {
         </div>
       </div>    
       
-      <div className="flex items-center gap-2 pt-4 border-gray-200">
-        <button
-          // onClick={}
-          className="flex items-center gap-2 px-4 py-2 text-md text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-        >
-          <FileDown className="w-4 h-4" />
-          Export PDF
-        </button>
-        <button className="flex items-center gap-2 px-4 py-2 text-md text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                onClick={() => onOpenEditModal(receipt)}>
-          <Edit className="w-4 h-4" />
-            Edit
+      <div className="flex items-between pt-4 border-gray-200">
+        <div className="gap-2 flex flex-cols">
+          <button
+            // onClick={}
+            className="flex items-center gap-2 px-4 py-2 text-md text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          >
+            <FileDown className="w-5 h-5" />
+            Export PDF
           </button>
+          <button className="flex items-center gap-2 px-4 py-2 text-md text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  onClick={() => onOpenEditModal(receipt)}>
+            <Edit className="w-5 h-5" />
+              Edit
+            </button>
+        </div>
+        {receipt.status !== 'approved' && <button onClick={() => onDelete(receipt.id)}
+            className="flex items-center gap-2 px-4 py-2 text-md text-red-600 hover:bg-red-50 hover:rounded-lg transition-colors ml-auto">
+            <XCircle className='w-5 h-5'/>
+            Cancel
+          </button>
+        }
       </div>      
     </div>
   );

@@ -1,10 +1,11 @@
 import React from 'react';
 import { type Delivery } from '../../types/note';
-import { Edit, Package, Calendar, Truck, FileDown } from 'lucide-react';
+import { Edit, Package, XCircle, Calendar, Truck, FileDown } from 'lucide-react';
 
 interface Props {
   delivery: Delivery;
   onOpenEditModal: (delivery: Delivery) => void;
+  onDelete: (id: string) => void;
 }
 
 interface ItemProps {
@@ -44,13 +45,13 @@ const DeliveryItem = ({ product, quantity }: ItemProps) => {
   );
 }
 
-export const DeliveryNote = ({ delivery, onOpenEditModal }: Props) => {
+export const DeliveryNote = ({ delivery, onOpenEditModal, onDelete }: Props) => {
   return (
     <div key={delivery.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-4">
           <div className="p-3 bg-blue-50 rounded-lg">
-            <Truck className="w-6 h-6 text-blue-600" />
+            <Truck className="w-5 h-5 text-blue-600" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{delivery.noteNumber}</h3>
@@ -91,7 +92,8 @@ export const DeliveryNote = ({ delivery, onOpenEditModal }: Props) => {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 pt-4 border-gray-200">
+      <div className="flex items-between pt-4 border-gray-200">
+        <div className="gap-2 flex flex-cols">
         <button
           className="flex items-center gap-2 px-4 py-2 text-md font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
         >
@@ -99,13 +101,20 @@ export const DeliveryNote = ({ delivery, onOpenEditModal }: Props) => {
           Export Waybill
         </button>
         <button 
-          className="flex items-center gap-2 px-4 py-2 text-md font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-md font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
           onClick={() => onOpenEditModal(delivery)}
         >
           <Edit className="w-4 h-4" />
           Edit Order
         </button>
-      </div>
+        </div>
+        {delivery.status !== 'approved' &&  <button onClick={() => onDelete(delivery.id)}
+          className="flex items-center gap-2 px-4 py-2 text-md text-red-600 hover:bg-red-50 hover:rounded-lg transition-colors ml-auto">
+            <XCircle className='w-5 h-5'/>
+            Cancel
+          </button>
+        }
+      </div>  
     </div>
   );
 }

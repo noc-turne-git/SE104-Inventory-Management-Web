@@ -11,7 +11,7 @@ const RevenueChart = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-4xl font-semibold text-gray-900">Revenue Overview</h3>
+          <h3 className="text-2xl font-semibold text-gray-900">Revenue Overview</h3>
           <select 
             value={selectedYear}
             onChange={(e) => setSelectedYear(parseInt(e.target.value))}

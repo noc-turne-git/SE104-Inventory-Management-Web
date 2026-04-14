@@ -42,10 +42,10 @@ export type InventoryCheckFormData = Omit<InventoryCheck, 'id' | 'noteNumber' | 
     
 }
 
-export type ReceiptFormData = Omit<Receipt, 'id' | 'noteNumber' | 'type'> & {
+export type ReceiptFormData = Omit<Receipt, 'id' | 'noteNumber' | 'operator' | 'type'> & {
 
 };
 
-export type DeliveryFormData = Omit<Delivery, 'id' | 'noteNumber' | 'type'> & {
+export type DeliveryFormData = Omit<Delivery, 'id' | 'noteNumber' | 'operator' | 'type'> & {
 
 }

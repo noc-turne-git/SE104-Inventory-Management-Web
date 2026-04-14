@@ -238,7 +238,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ data, themeColor }) => {
                   <ul className="flex flex-col gap-4">
                     {benefit.points.map((point, idx) => (
                       <li key={idx} className="flex items-center gap-4 text-sm text-slate-500 font-bold">
-                        <CheckCircleIcon className="w-6 h-6 text-[#1f6feb]" />
+                        <CheckCircleIcon className="w-5 h-5 text-[#1f6feb]" />
                         {point}
                       </li>
                     ))}
@@ -263,10 +263,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ data, themeColor }) => {
             </div>
             <div className="flex items-center gap-6">
               <button className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#1f6feb] transition-colors">
-                <LanguageIcon className="w-6 h-6" />
+                <LanguageIcon className="w-5 h-5" />
               </button>
               <button className="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#1f6feb] transition-colors">
-                <TerminalIcon className="w-6 h-6" />
+                <TerminalIcon className="w-5 h-5" />
               </button>
             </div>
           </div>
