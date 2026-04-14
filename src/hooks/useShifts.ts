@@ -2,14 +2,18 @@ import { useState } from 'react';
 import { type Shift, type ShiftFormData } from '../types/shift';
 import { MOCK_SHIFTS } from '../data/MOCK_SHIFTS';
 import { toast } from 'sonner';
+import { useAuth } from '../context/AuthContext';
 
 export const useShifts = () => {
   const [shifts, setShifts] = useState<Shift[]>(MOCK_SHIFTS);
   const [currentDate, setCurrentDate] = useState(new Date()); // mặc định là hôm nay
 
+  const {user} = useAuth();
+
   const deleteShift = (id: string) => {
     setShifts(prev => prev.filter(s => s.id !== id));
     toast.success('Shift deleted');
+    
   };
 
   const addShift = (formData : ShiftFormData) => {

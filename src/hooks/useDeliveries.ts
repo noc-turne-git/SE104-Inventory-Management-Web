@@ -1,4 +1,5 @@
-import { useNotes } from '../context/NoteContext'; // Import hook từ Context
+import { useAuth } from '../context/AuthContext';
+import { useNotes } from '../context/NoteContext';
 import { type Delivery, type DeliveryFormData } from '../types/note';
 
 export function useDeliveries() {
@@ -6,6 +7,8 @@ export function useDeliveries() {
 
   // Lấy danh sách phiếu giao hàng từ kho tổng
   const deliveries = getDeliveries();
+
+  const {user} = useAuth();
 
   // Logic lọc dữ liệu
   const filterDeliveries = (searchTerm: string, statusFilter: string) => {
@@ -22,6 +25,7 @@ export function useDeliveries() {
     const newDelivery: Delivery = {
       ...data,
       id: Date.now().toString(),
+      operator: user?.userName || "",
       type: 'DELIVERY',
       noteNumber: `DLV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,
     };
