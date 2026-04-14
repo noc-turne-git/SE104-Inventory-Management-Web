@@ -66,10 +66,10 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
       <td className="px-6 py-4">
         <div className="flex justify-end gap-5">
           <button onClick={() => onEdit(staff)}>
-            <Edit className="w-6 h-6 text-blue-600" />
+            <Edit className="w-5 h-5 text-blue-600" />
           </button>
           <button onClick={() => onDelete(staff.id)}>
-            <Trash2 className="w-6 h-6 text-red-600" />
+            <Trash2 className="w-5 h-5 text-red-600" />
           </button>
         </div>
       </td>

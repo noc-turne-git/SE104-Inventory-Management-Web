@@ -137,7 +137,7 @@ const WareHouseScreen = () => {
           <section className="mb-20">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <Icons.Mail className="w-6 h-6 text-primary fill-primary/10" />
+                <Icons.Mail className="w-5 h-5 text-primary fill-primary/10" />
                 <h2 className="text-4xl font-headline font-bold text-inverse-surface">Warehouse Invitations</h2>
               </div>
               <span className="px-3 py-1 bg-[#FFDBCF] text-[#812800] rounded-full text-xs font-bold uppercase tracking-wider">
@@ -161,7 +161,7 @@ const WareHouseScreen = () => {
         <section>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <Icons.Warehouse className="w-6 h-6 text-primary fill-primary/10" />
+              <Icons.Warehouse className="w-5 h-5 text-primary fill-primary/10" />
               <h2 className="text-4xl font-headline font-bold text-inverse-surface">Select a Warehouse</h2>
             </div>
           </div>

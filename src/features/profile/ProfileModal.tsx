@@ -37,7 +37,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl'
             onClick={onClose}
             className="text-[#94a3b8] hover:text-[#64748b] transition-colors"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
         <div className="p-6 overflow-y-auto max-h-[80vh] custom-scrollbar">

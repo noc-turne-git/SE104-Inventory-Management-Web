@@ -83,11 +83,11 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
         >
           {user?.role === 'manager' ? 'M' : 'S'}
           <div className="absolute inset-0 bg-black/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <Plus className="w-6 h-6 text-white/80" />
+            <Plus className="w-5 h-5 text-white/80" />
           </div>
         </button>
         <div>
-          <h2 className="text-4xl font-bold text-[#1e293b]">{formData?.userName}</h2>
+          <h2 className="text-2xl font-bold text-[#1e293b]">{formData?.userName}</h2>
           <p className="text-[#64748b] text-lg">{formData?.role}</p>
         </div>
       </div>

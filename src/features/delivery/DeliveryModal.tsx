@@ -17,7 +17,7 @@ const DEFAULT_FORM: DeliveryFormData = {
   destination: '',
   items: [{ product: '', quantity: 1 }],
   status: 'new',
-  operator: '',
+  //operator: '',
 };
 
 const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
@@ -74,8 +74,8 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
               required
             />
           </div>
-          <div className='grid grid-cols-3 gap-4'>
-          <div>
+          <div className='grid grid-cols-2 gap-4'>
+          {/* <div>
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>operator *</label>
             <input
               className='modal-input w-full'
@@ -84,7 +84,7 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
               onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
               required
             />
-          </div>
+          </div> */}
 
           <div>
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>

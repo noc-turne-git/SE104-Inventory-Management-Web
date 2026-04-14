@@ -69,6 +69,7 @@ const ReceiptScreen = () => {
                 receipt={rec}
                 key={rec.id}
                 onOpenEditModal={handleOpenEditModal}
+                onDelete={deleteReceipt}
             />
             ))
         }

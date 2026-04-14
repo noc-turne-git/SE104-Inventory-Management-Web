@@ -6,7 +6,7 @@ import { InventoryTrendData } from '../../../data/dashboard/MOCK_STAFF_DASHBOARD
 const InventoryMovement: React.FC = () => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <h3 className="text-4xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+      <h3 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
         <Activity className="w-7 h-7 text-blue-500" /> Inventory Movement
       </h3>
       <ResponsiveContainer width="100%" height={550}>

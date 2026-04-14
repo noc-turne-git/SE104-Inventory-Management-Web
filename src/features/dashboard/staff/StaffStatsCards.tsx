@@ -28,7 +28,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({ data }) => {
           <div className="flex items-center justify-between mb-4">
             {/* Icon bao quanh bởi nền màu nhạt */}
             <div className={`${stat.bgColor} p-3 rounded-lg`}>
-              <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
+              <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
             </div>
             
             {/* Badge hiển thị % tăng trưởng */}
@@ -46,7 +46,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({ data }) => {
             <p className="text-md font-semibold text-gray-400 uppercase tracking-wider">
               {stat.title}
             </p>
-            <h3 className="text-4xl font-bold text-gray-900 mt-1">
+            <h3 className="text-2xl font-bold text-gray-900 mt-1">
               {stat.value}
             </h3>
             <p className="text-sm text-gray-400 mt-2 font-medium">

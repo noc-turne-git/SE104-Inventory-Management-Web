@@ -31,11 +31,11 @@ export const MOCK_SHIFTS: Shift[] = [
   },
   {
     id: '3',
-    date: '2026-03-21',
+    date: '2026-03-20',
     startTime: ShiftTimes.Morning.start,
     endTime: ShiftTimes.Morning.end,
     position: 'Inventory Clerk',
-    assignedTo: 'Bob Wilson',
+    assignedTo: '',
     status: 'urgent',
     shiftType: 'Morning',
   },

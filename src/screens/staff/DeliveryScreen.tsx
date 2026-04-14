@@ -79,7 +79,7 @@ const DeliveryScreen = () => {
               delivery={delivery}
               key={delivery.id}
               onOpenEditModal={handleOpenEditModal}
-              //onDelete={() => deleteDelivery(delivery.id)}
+              onDelete={() => deleteDelivery(delivery.id)}
             />
           ))
         ) : (

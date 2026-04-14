@@ -16,7 +16,7 @@ const DEFAULT_FORM: ReceiptFormData = {
   supplier: '',
   items: [{ product: '', ordered: 0, received: 0, defective: 0 }],
   status: 'new',
-  operator: '',
+  //operator: '',
 };
 
 const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
@@ -63,8 +63,8 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
     >
       <form onSubmit={handleSubmit} className="space-y-8">
         
-        {/* Hàng thông tin chung: Chia 4 cột */}
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100'>
+        {/* Hàng thông tin chung: Chia 2 cột */}
+        <div className='grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100'>
           <div>
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Supplier *</label>
             <input
@@ -75,7 +75,7 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
               required
             />
           </div>
-          <div>
+          {/* <div>
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>operator *</label>
             <input
               className='modal-input w-full'
@@ -84,7 +84,7 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
               onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
               required
             />
-          </div>
+          </div> */}
           <div>
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>
             <input

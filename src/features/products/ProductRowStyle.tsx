@@ -56,13 +56,13 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
             onClick={() => onOpenEditModal(product)}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
             >
-            <Edit className="w-6 h-6" />
+            <Edit className="w-5 h-5" />
           </button>
           <button
             onClick={() => onDelete(product.id)}
             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             >
-            <Trash2 className="w-6 h-6" />
+            <Trash2 className="w-5 h-5" />
           </button>
         </div>
       </td>
