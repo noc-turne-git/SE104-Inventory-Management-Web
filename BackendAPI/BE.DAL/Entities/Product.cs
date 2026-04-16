@@ -1,4 +1,5 @@
 namespace BackendAPI.BE.DAL.Entities;
+using BackendAPI.BE.BLL.Interfaces;
 // Product
 // -------------------------
 // productId (PK)
@@ -10,7 +11,7 @@ namespace BackendAPI.BE.DAL.Entities;
 // damagedQuantity
 // sellPrice
 
-public class Product
+public class Product: IEntity
 {
     public int ProductId { get; set; }    
     public int WarehouseId { get; set; } 
@@ -31,4 +32,6 @@ public class Product
     public ICollection<DamageItem> DamageItems { get; set; }
     public ICollection<ProductSupplier> ProductSuppliers { get; set; }
     public Warehouse Warehouse { get; set; }
+
+    public string getKey() => ProductId.ToString();
 }

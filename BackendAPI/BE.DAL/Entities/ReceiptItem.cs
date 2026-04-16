@@ -1,6 +1,8 @@
+using BackendAPI.BE.BLL.Interfaces;
+
 namespace BackendAPI.BE.DAL.Entities;
 
-public class ReceiptItem
+public class ReceiptItem: IEntity
 {
     public int ReceiptItemId { get; set; }
     public int NoteId { get; set; } // FK
@@ -11,4 +13,5 @@ public class ReceiptItem
     public GoodsReceipt GoodReceipt { get; set; }
 
     public Product Product { get; set; }
+    public string getKey() => ReceiptItemId.ToString();
 }

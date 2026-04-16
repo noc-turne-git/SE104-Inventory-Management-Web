@@ -1,30 +1,18 @@
 namespace BackendAPI.Controllers;
 
-using BackendAPI.BE.DAL.Interfaces;
 using BackendAPI.BE.API.DTO;
-using BackendAPI.BE.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using BackendAPI.BE.DAL.Entities;
 using BackendAPI.BE.BLL.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
 
-
-    public AuthController(IMapper mapper, IUserRepository userRepository
-        ,IEmailService emailService, IRepository<PasswordResetToken> PasswordResetTokenRepository
-        ,IRepository<VerifyEmailToken> verifyEmailTokenRepository
-        ,ITokenService tokenService, IRepository<RefreshToken> refreshTokenRepository
-        ,IOTPRepository OTPRepository, IHttpContextAccessor httpContextAccessor)
-    {        
-        _authService = new AuthService(userRepository, OTPRepository
-            , PasswordResetTokenRepository, verifyEmailTokenRepository, mapper, emailService, tokenService
-            , refreshTokenRepository, httpContextAccessor);        
+    public AuthController(IAuthService authService)
+    {
+        _authService = authService;
     }
 
 

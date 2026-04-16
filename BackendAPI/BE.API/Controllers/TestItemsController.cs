@@ -1,9 +1,6 @@
-using BackendAPI.BE.DAL.Interfaces;
 using BackendAPI.BE.API.DTO;
+using BackendAPI.BE.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using TestItemModel = BackendAPI.BE.DAL.Entities.TestItem;
-
-using AutoMapper;
 
 namespace BackendAPI.Controllers;
 
@@ -11,42 +8,33 @@ namespace BackendAPI.Controllers;
 [ApiController]
 public class TestItemsController : ControllerBase
 {
-    private readonly IRepository<TestItemModel> _repository;
-    private readonly IMapper _mapper;
+    private readonly ITestItemService _items;
 
-    public TestItemsController(IMapper mapper)
+    public TestItemsController(ITestItemService items)
     {
-        _mapper = mapper;
-    }
-
-    public TestItemsController(IRepository<TestItemModel> repository)
-    {
-        _repository = repository;
+        _items = items;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<TestItemDTO>> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        var items = await _repository.GetAllAsync();
-        return _mapper.Map<IEnumerable<TestItemDTO>>(items);
+        var items = await _items.GetAllAsync(cancellationToken);
+        return Ok(items.Select(i => new TestItemDTO { Id = i.Id, Name = i.Name }));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<TestItemDTO>> GetById(int id)
+    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
-        var item = await _repository.GetByIdAsync(id);
-
-        if (item == null)
-            return NotFound();
-
-        return _mapper.Map<TestItemDTO>(item);
+        var item = await _items.GetByIdAsync(id, cancellationToken);
+        if (item == null) return NotFound();
+        return Ok(new TestItemDTO { Id = item.Id, Name = item.Name });
     }
 
     [HttpPost]
-    public async Task<ActionResult<TestItemDTO>> Create(TestItemDTO model)
+    public async Task<IActionResult> Create(TestItemDTO model, CancellationToken cancellationToken)
     {
-        var item = await _repository.AddAsync(_mapper.Map<TestItemModel>(model));
-        return CreatedAtAction(nameof(GetById), new { id = item.Id }, _mapper.Map<TestItemDTO>(item));
+        var item = await _items.CreateAsync(model.Name, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id = item.Id }, new TestItemDTO { Id = item.Id, Name = item.Name });
     }
 
     // [HttpPut("{id}")]
@@ -60,10 +48,10 @@ public class TestItemsController : ControllerBase
     // }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        await _repository.DeleteAsync(id);
-        return NoContent();
+        var ok = await _items.DeleteAsync(id, cancellationToken);
+        return ok ? NoContent() : NotFound();
     }
 
     // private static TestItemDTO MapToDto(TestItemModel model) => new()

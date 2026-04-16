@@ -1,6 +1,6 @@
 namespace BackendAPI.BE.DAL.Entities;
-
-public class DeliveryItem
+using BackendAPI.BE.BLL.Interfaces;
+public class DeliveryItem : IEntity
 {
     public int DeliveryItemId { get; set; }
     public int NoteId { get; set; } // FK
@@ -11,4 +11,6 @@ public class DeliveryItem
     public DeliveryNote DeliveryNote { get; set; }
 
     public Product Product { get; set; }
+    public string getKey() => DeliveryItemId.ToString();
+
 }

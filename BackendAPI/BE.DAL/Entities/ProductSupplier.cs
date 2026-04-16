@@ -1,5 +1,6 @@
 namespace BackendAPI.BE.DAL.Entities;
-public class ProductSupplier
+using BackendAPI.BE.BLL.Interfaces;
+public class ProductSupplier : IEntity
 {
     public int ProductId { get; set; }    // PK, FK
     public int SupplierId { get; set; }   // PK, FK
@@ -8,4 +9,5 @@ public class ProductSupplier
     // Navigation properties
     public Product Product { get; set; }
     public Supplier Supplier { get; set; }
+    public string getKey() => $"{ProductId}:{SupplierId}";
 }

@@ -4,14 +4,18 @@ using BackendAPI.BE.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using BackendAPI.BE.BLL.Interfaces;
 using BackendAPI.BE.BLL.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
+using Hangfire;
+using BackendAPI.Infrastructure.RedisCacheDecorator;
+using Microsoft.AspNetCore.Authorization;
+using BackendAPI.Infrastructure.Authorization;
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 builder.Services.AddCors(options =>
 {
@@ -27,11 +31,6 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
 
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
 builder.Services.AddAuthentication("Bearer")
@@ -53,21 +52,69 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+
+builder.Services.AddHangfire(config =>
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHangfireServer();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379"; // Địa chỉ Redis server
+    options.InstanceName = "Warehouse_";      // Prefix cho các key để tránh trùng lặp
+});
+
+
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<IInfractionService, InfractionService>();
+builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<ITestItemService, TestItemService>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IWarehouseStaffService, WarehouseStaffService>();
+builder.Services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IOTPRepository, OTPRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductSupplierRepository, ProductSupplierRepository>();
 builder.Services.AddControllers();
 
+
+builder.Services.Decorate(typeof(IRepository<>), typeof(GenericCacheDecorator<>));
+builder.Services.Decorate<IUserRepository, UserCacheDecorator>();
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) // Tự động chạy migration khi khởi động ứng dụng
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<DbContext>();
+        context.Database.Migrate(); 
+    }
+    catch (Exception ex)
+    {
+        // Log lỗi nếu có (ví dụ: chưa bật SQL Server)
+    }
+}
 
 app.UseCors("DevCors");
 app.UseAuthentication();
@@ -75,5 +122,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
+app.UseHangfireDashboard();
 app.Run();

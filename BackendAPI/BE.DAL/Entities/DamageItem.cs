@@ -1,5 +1,5 @@
 namespace BackendAPI.BE.DAL.Entities;
-
+using BackendAPI.BE.BLL.Interfaces;
 // class DamageItem {
 //     - damageItemId: String
 //     - productId: String
@@ -7,7 +7,7 @@ namespace BackendAPI.BE.DAL.Entities;
 //     - reason: String
 // }
 
-public class DamageItem
+public class DamageItem : IEntity
 {
     public int DamageItemId { get; set; }
     public int ProductId { get; set; }
@@ -18,4 +18,6 @@ public class DamageItem
     // Navigation property
     public DamageNote DamageNote { get; set; }
     public Product Product { get; set; }
+
+    public string getKey() => DamageItemId.ToString();
 }

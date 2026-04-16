@@ -11,47 +11,105 @@ public class WarehouseService : IWarehouseService
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly IEmailService _emailService;
+    private readonly IRepository<Invitation> _invitationRepository;
+    private readonly ICacheService<Invitation> _cacheService;
+    private readonly ITokenService _tokenService;
+    private readonly IWarehouseStaffService _warehouseStaffService;
+    //private readonly IRepository<InviteToken> _inviteTokenRepository;
 
     public WarehouseService(IRepository<Warehouse> warehouseRepository, IRepository<WarehouseStaff> warehouseStaffRepository
-    , IUserRepository userRepository, IMapper mapper, IEmailService emailService)
+    , IUserRepository userRepository, IMapper mapper, IEmailService emailService
+    /*, IRepository<InviteToken> inviteTokenRepository*/, IRepository<Invitation> invitationRepository
+    ,IWarehouseStaffService warehouseStaffService)
     {
         _warehouseRepository = warehouseRepository;
         _warehouseStaffRepository = warehouseStaffRepository;
         _userRepository = userRepository;
         _mapper = mapper;
         _emailService = emailService;
+        _invitationRepository = invitationRepository;
+        _warehouseStaffService = warehouseStaffService;
+       // _inviteTokenRepository=inviteTokenRepository;
     }
 
     public async Task<bool> CreateWarehouseAsync(CreateWarehouseDTO model)
     {
+        
+
         var warehouse = _mapper.Map<Warehouse>(model);
         await _warehouseRepository.AddAsync(warehouse);
         var staff = new WarehouseStaff
         {
             WarehouseId = warehouse.WarehouseId,
             UserId = model.CreatorId,
-            Role = "Manager"
+            RoleId = 1 // Assuming 1 is the role ID for the creator/owner
         };
         await _warehouseStaffRepository.AddAsync(staff);
 
         return await Task.FromResult(true);
     }
 
-    public async Task<bool> InviteStaffAsync(InviteStaffDTO model)
+    public async Task<bool> InviteStaffAsync(InviteStaffDTO model, int inviterUserId)
     {
         var user = await _userRepository.GetByEmailAsync(model.Email);
         var warehouse = await _warehouseRepository.GetByIdAsync(model.WarehouseId);
         if (warehouse == null) return await Task.FromResult(false); // Warehouse does not exist
         
+        if (user == null) return await Task.FromResult(false); // User does not exist
+
+        var existingStaff = await _warehouseStaffRepository.GetAsync(ws => ws.WarehouseId == model.WarehouseId && ws.UserId == user.UserId);
+        var invitations = await _cacheService.GetAsync<Invitation>($"invitations:warehouse:{model.WarehouseId}:user:{user.UserId}");
+        var existingInvitation = await _invitationRepository.GetAsync(i => i.WarehouseId == model.WarehouseId && i.InvitedUserId == user.UserId);
+        if (existingInvitation.Any()) return await Task.FromResult(false); // Invitation already exists
+        
+        if (existingStaff != null) return await Task.FromResult(false); // User is already staff
+        
+        var invitation = new Invitation
+        {
+            WarehouseId = model.WarehouseId,
+            InvitedUserId = user.UserId,
+            InviterUserId = inviterUserId,
+            Role = model.Role,
+            CreatedAt = DateTime.UtcNow
+        };
+        await _invitationRepository.AddAsync(invitation);
+        //cache invitation for 1 hours
+        await _cacheService.SetAsync($"invitations:warehouse:{model.WarehouseId}:user:{user.UserId}", invitation, TimeSpan.FromHours(1));
+        return await Task.FromResult(true);
+    }
+
+    public async Task<bool> JoinWarehouse(JoinWarehouseDTO model, int userId)
+    {
+    //     if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.InviteToken))
+    //         return false;
+
+    //     var tokens = await _inviteTokenRepository.GetAsync(t =>
+    //         t.Email == model.Email && t.Token == model.InviteToken);
+
+    //     var tokenEntity = tokens.FirstOrDefault();
+    //     if (tokenEntity == null)
+    //         return false;
+
+    //     if (tokenEntity.Expiration < DateTime.UtcNow)
+    //         return false;
+
+        // var principal = _tokenService.GetPrincipalFromExpiredToken(model.accessToken);
+
+        // var userid = principal.FindFirstValue("sub");
+         var user = await _userRepository.GetByIdAsync(userId);
+         if (user == null )  return false;
+
+        
         if (user != null)
         {
-            var existingStaff = await _warehouseStaffRepository.GetAsync(ws => ws.WarehouseId == model.WarehouseId && ws.UserId == user.UserId);
+             var existingStaff = await _warehouseStaffRepository.GetAsync(ws => ws.WarehouseId == model.WarehouseId && ws.UserId == user.UserId);
             if (existingStaff != null) return await Task.FromResult(false); // User is already staff
         }
+        
+        await _warehouseStaffService.AddAsync(model, userId);        
 
-        await _emailService.SendInvitationEmailAsync(model.Email, warehouse.Name);
-
-        return await Task.FromResult(true);
+         await _invitationRepository.DeleteAsync(model.WarehouseId, user.UserId);
+         return true;
     }
 
 }

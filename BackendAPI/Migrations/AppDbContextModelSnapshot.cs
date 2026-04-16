@@ -111,6 +111,28 @@ namespace BackendAPI.Migrations
                     b.ToTable("InfractionTickets");
                 });
 
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Invitation", b =>
+                {
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("WarehouseId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Invitations");
+                });
+
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Note", b =>
                 {
                     b.Property<int>("NoteId")
@@ -215,6 +237,23 @@ namespace BackendAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PasswordResetTokens");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Permission", b =>
+                {
+                    b.Property<int>("PermissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PermissionId"));
+
+                    b.Property<string>("PermissionCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PermissionId");
+
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Product", b =>
@@ -328,6 +367,38 @@ namespace BackendAPI.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Role", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.RolePermission", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoleId", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("RolePermissions");
+                });
+
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Shift", b =>
                 {
                     b.Property<int>("ShiftId")
@@ -428,6 +499,10 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
@@ -436,10 +511,6 @@ namespace BackendAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -514,11 +585,12 @@ namespace BackendAPI.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("WarehouseId", "UserId");
+
+                    b.HasIndex("RoleId");
 
                     b.HasIndex("UserId");
 
@@ -630,6 +702,25 @@ namespace BackendAPI.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Invitation", b =>
+                {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
+                        .WithMany("Invitations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Warehouse", "Warehouse")
+                        .WithMany("Invitations")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Note", b =>
                 {
                     b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
@@ -720,6 +811,25 @@ namespace BackendAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.RolePermission", b =>
+                {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Role", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Shift", b =>
                 {
                     b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
@@ -774,6 +884,12 @@ namespace BackendAPI.Migrations
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.WarehouseStaff", b =>
                 {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Role", null)
+                        .WithMany("WarehouseStaffs")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
                         .WithMany("WarehouseStaffs")
                         .HasForeignKey("UserId")
@@ -802,6 +918,11 @@ namespace BackendAPI.Migrations
                     b.Navigation("Supplier");
                 });
 
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Permission", b =>
+                {
+                    b.Navigation("RolePermissions");
+                });
+
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Product", b =>
                 {
                     b.Navigation("DamageItems");
@@ -813,6 +934,13 @@ namespace BackendAPI.Migrations
                     b.Navigation("ReceiptItems");
                 });
 
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Role", b =>
+                {
+                    b.Navigation("RolePermissions");
+
+                    b.Navigation("WarehouseStaffs");
+                });
+
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Supplier", b =>
                 {
                     b.Navigation("ProductSuppliers");
@@ -821,6 +949,8 @@ namespace BackendAPI.Migrations
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.User", b =>
                 {
                     b.Navigation("InfractionTickets");
+
+                    b.Navigation("Invitations");
 
                     b.Navigation("Notes");
 
@@ -838,6 +968,8 @@ namespace BackendAPI.Migrations
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Warehouse", b =>
                 {
                     b.Navigation("InfractionTickets");
+
+                    b.Navigation("Invitations");
 
                     b.Navigation("Products");
 

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Hangfire;
 
 public class AuthService: IAuthService
 {
@@ -24,7 +25,7 @@ public class AuthService: IAuthService
     private readonly ITokenService _tokenService;
     private readonly IRepository<RefreshToken> _refreshTokenRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    //private readonly IConfiguration _configuration;
+    //private readonly ICacheService<User> _cacheService;
     public AuthService(
         IUserRepository userRepository,
         IOTPRepository OTPRepository,
@@ -45,12 +46,16 @@ public class AuthService: IAuthService
         _tokenService = tokenService;
         _refreshTokenRepository = refreshTokenRepository;
         _httpContextAccessor = httpContextAccessor;
+        //_cacheService = cacheService;
+
         //_configuration = configuration;
     }
     public async Task<TokenDTO> LoginAsync(LoginDTO model)
     {
-        var user = await _userRepository.GetByUsernameAsync(model.Username);
+        //string cacheKey = $"user:profile:{model.Username.ToLower()}";
+        var user = await _userRepository.GetByEmailAsync(model.Email);
         if (user==null) return null;
+
         if (!BCrypt.Verify(model.Password, user.PasswordHash))
             return null; // Invalid password
         var userDTO = _mapper.Map<UserDTO>(user);
@@ -69,25 +74,22 @@ public class AuthService: IAuthService
 
     public async Task<bool> SignupAsync(SignupDTO model)
     {
-        if (await _userRepository.GetByUsernameAsync(model.Username) != null)
-            return false; // Username already exists        
-
-        if(await _userRepository.GetByEmailAsync(model.Email) != null)
-            return false;
-
+        if (await _userRepository.GetByEmailAsync(model.Email) != null)
+            return false; // Email already exists        
+        
+        if(model.Password != model.ConfirmPassword)
+            return false; // Password and Confirm Password do not match
         
         var user = _mapper.Map<User>(model);
         user.PasswordHash = BCrypt.HashPassword(model.Password);  
         user = await _userRepository.AddAsync(user);
 
-        await _emailService.SendConfirmationEmailAsync(model.Email, user.UserId);   
+        //await _emailService.SendConfirmationEmailAsync(model.Email, user.UserId);   
+        BackgroundJob.Enqueue<IEmailService>(x => x.SendConfirmationEmailAsync(model.Email, user.UserId));
 
-
-        
         return true;
     }
 
-    //public async Task<bool> verifyUser
     public async Task<bool> VerifyEmailAsync(VerifyEmailDTO model)
     {
         if (string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Token))
@@ -106,7 +108,7 @@ public class AuthService: IAuthService
         var user = await _userRepository.GetByIdAsync(tokenEntity.UserId);
         if (user == null || !string.Equals(user.Email, model.Email, StringComparison.OrdinalIgnoreCase))
             return false;
-
+        Console.WriteLine($"Đang xác thực cho: {model.Email} lúc {DateTime.Now.Ticks}");
         if (!user.IsVerified)
         {
             user.IsVerified = true;
@@ -114,6 +116,7 @@ public class AuthService: IAuthService
         }
 
         await _verifyEmailTokenRepository.DeleteAsync(tokenEntity.VerifyEmailTokenId);
+        Console.WriteLine($"Đã xóa token cho email: {model.Email} lúc {DateTime.Now.Ticks}");
         return true;
     }
 
@@ -154,6 +157,7 @@ public class AuthService: IAuthService
 
     public async Task<bool> ResetPasswordAsync(ChangePasswordDTO model)
     {
+        if(model.newPass != model.confirmNewPass) return false;
         var tokens = await _PasswordResetTokenRepository.GetAsync(t => t.Token == model.resetPassToken); 
 
         var tokenEntity = tokens.FirstOrDefault(t => t.Token == model.resetPassToken);

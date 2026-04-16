@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
-    "composite": true,
+    "composite": true, // Đây là dòng quan trọng nhất để cho phép "references" hoạt động
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true
   },
   "include": ["vite.config.js"]
 }

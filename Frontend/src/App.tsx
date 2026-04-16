@@ -1,67 +1,33 @@
-import { useEffect, useMemo, useState, FormEvent, ChangeEvent } from 'react'
+import { useEffect, useState, FormEvent, ChangeEvent } from 'react'
 import './App.css'
-
-const STORAGE_USERS = 'auth_users'
-const STORAGE_AUTH = 'auth_current_user'
+import { clearAuthSession, loadAuthSession, login, signup } from './api/auth'
+import VerifyEmailPage from './VerifyEmailPage'
 
 interface User {
-  email: string
-  name: string
-}
-
-interface Users {
-  [email: string]: {
-    email: string
-    name: string
-    password: string
-  }
-}
-
-const loadUsers = (): Users => {
-  try {
-    const raw = localStorage.getItem(STORAGE_USERS)
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveUsers = (users: Users): void => {
-  localStorage.setItem(STORAGE_USERS, JSON.stringify(users))
-}
-
-const loadCurrentUser = (): User | null => {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_AUTH) ?? 'null')
-  } catch {
-    return null
-  }
-}
-
-const saveCurrentUser = (user: User): void => {
-  localStorage.setItem(STORAGE_AUTH, JSON.stringify(user))
-}
-
-const clearCurrentUser = (): void => {
-  localStorage.removeItem(STORAGE_AUTH)
+  username: string
 }
 
 function App() {
+  if (window.location.pathname === '/verify-email') {
+    return <VerifyEmailPage />
+  }
+
   const [mode, setMode] = useState<'login' | 'register'>('login')
+  const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
-  const [name, setName] = useState<string>('')
+  const [phone, setPhone] = useState<string>('')
+  const [address, setAddress] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [success, setSuccess] = useState<string>('')
   const [user, setUser] = useState<User | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   useEffect(() => {
-    const saved = loadCurrentUser()
-    if (saved) setUser(saved)
+    const session = loadAuthSession()
+    if (session) setUser({ username: session.username })
   }, [])
-
-  const users = useMemo(() => loadUsers(), [user])
 
   const resetMessages = (): void => {
     setError('')
@@ -69,23 +35,25 @@ function App() {
   }
 
   const clearForm = (): void => {
+    setUsername('')
     setEmail('')
-    setName('')
+    setPhone('')
+    setAddress('')
     setPassword('')
     setConfirmPassword('')
-    resetMessages()
   }
 
   const switchMode = (nextMode: 'login' | 'register'): void => {
     setMode(nextMode)
     clearForm()
+    resetMessages()
   }
 
-  const handleRegister = (e: FormEvent<HTMLFormElement>): void => {
+  const handleRegister = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
     resetMessages()
 
-    if (!email.trim() || !password.trim() || !name.trim()) {
+    if (!username.trim() || !email.trim() || !password.trim() || !phone.trim() || !address.trim()) {
       setError('Vui lòng điền đầy đủ thông tin.')
       return
     }
@@ -95,43 +63,43 @@ function App() {
       return
     }
 
-    if (users[email]) {
-      setError('Email này đã được đăng ký.')
-      return
+    setIsSubmitting(true)
+    try {
+      await signup({ username, email, password, phone, address })
+      setSuccess('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.')
+      clearForm()
+      setMode('login')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Đăng ký thất bại.')
+    } finally {
+      setIsSubmitting(false)
     }
-
-    const nextUsers: Users = { ...users, [email]: { email, name, password } }
-    saveUsers(nextUsers)
-
-    setSuccess('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.')
-    clearForm()
-    setMode('login')
   }
 
-  const handleLogin = (e: FormEvent<HTMLFormElement>): void => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
     resetMessages()
 
-    if (!email.trim() || !password.trim()) {
-      setError('Vui lòng điền email và mật khẩu.')
+    if (!username.trim() || !password.trim()) {
+      setError('Vui lòng điền tên đăng nhập và mật khẩu.')
       return
     }
 
-    const found = users[email]
-    if (!found || found.password !== password) {
-      setError('Email hoặc mật khẩu không đúng.')
-      return
+    setIsSubmitting(true)
+    try {
+      const session = await login({ username, password })
+      setUser({ username: session.username })
+      setSuccess('Đăng nhập thành công!')
+      clearForm()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Đăng nhập thất bại.')
+    } finally {
+      setIsSubmitting(false)
     }
-
-    const currentUser: User = { email: found.email, name: found.name }
-    setUser(currentUser)
-    saveCurrentUser(currentUser)
-    setSuccess('Đăng nhập thành công!')
-    clearForm()
   }
 
   const handleLogout = (): void => {
-    clearCurrentUser()
+    clearAuthSession()
     setUser(null)
     setSuccess('Bạn đã đăng xuất.')
   }
@@ -140,8 +108,8 @@ function App() {
     return (
       <main className="auth-root">
         <section className="auth-card">
-          <h1>Xin chào, {user.name}!</h1>
-          <p>Bạn đã đăng nhập bằng email <strong>{user.email}</strong>.</p>
+          <h1>Xin chào, {user.username}!</h1>
+          <p>Bạn đã đăng nhập.</p>
           <button className="primary" onClick={handleLogout}>
             Đăng xuất
           </button>
@@ -156,10 +124,7 @@ function App() {
         <header className="auth-header">
           <h1>{mode === 'login' ? 'Đăng nhập' : 'Đăng ký'}</h1>
           <p>
-            {mode === 'login'
-              ? 'Chưa có tài khoản?'
-              : 'Đã có tài khoản?'}
-            {' '}
+            {mode === 'login' ? 'Chưa có tài khoản?' : 'Đã có tài khoản?'}{' '}
             <button className="link" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>
               {mode === 'login' ? 'Đăng ký' : 'Đăng nhập'}
             </button>
@@ -168,28 +133,55 @@ function App() {
 
         <form onSubmit={mode === 'login' ? handleLogin : handleRegister} className="auth-form">
           <label>
-            Email
+            Tên đăng nhập
             <input
-              type="email"
-              value={email}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              type="text"
+              value={username}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
               required
-              autoComplete="email"
-              placeholder="you@example.com"
+              autoComplete="username"
+              placeholder="username"
             />
           </label>
 
           {mode === 'register' && (
-            <label>
-              Họ và tên
-              <input
-                type="text"
-                value={name}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                required
-                placeholder="Nguyen Van A"
-              />
-            </label>
+            <>
+              <label>
+                Email
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                />
+              </label>
+
+              <label>
+                Số điện thoại
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
+                  required
+                  autoComplete="tel"
+                  placeholder="09xxxxxxxx"
+                />
+              </label>
+
+              <label>
+                Địa chỉ
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
+                  required
+                  autoComplete="street-address"
+                  placeholder="Số nhà, đường, quận/huyện..."
+                />
+              </label>
+            </>
           )}
 
           <label>
@@ -221,8 +213,8 @@ function App() {
           {error && <div className="alert error">{error}</div>}
           {success && <div className="alert success">{success}</div>}
 
-          <button type="submit" className="primary">
-            {mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
+          <button type="submit" className="primary" disabled={isSubmitting}>
+            {isSubmitting ? 'Đang xử lý...' : mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
           </button>
         </form>
       </section>

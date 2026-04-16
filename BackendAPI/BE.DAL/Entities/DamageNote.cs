@@ -7,4 +7,5 @@ public class DamageNote : Note
 
     // navigation
     public ICollection<DamageItem> DamageItems { get; set; }
+
 }

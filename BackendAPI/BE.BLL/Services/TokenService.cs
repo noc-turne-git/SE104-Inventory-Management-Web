@@ -22,11 +22,12 @@ public class TokenService : ITokenService
         // 1. Định nghĩa thông tin người dùng (Claims)
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            //new Claim(JwtRegisteredClaimNames.Email, user.Email),
             // Sử dụng ClaimTypes.NameIdentifier cho ID để đồng bộ với hệ thống .NET
             new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()), 
             new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()), // Giữ lại sub nếu muốn
-            new Claim(ClaimTypes.Role, user.Role ?? "") 
+            //new Claim(ClaimTypes.Role, user.Role ?? "") 
+            
         };
 
         // 2. Lấy Key từ cấu hình và tạo Key bảo mật
@@ -75,7 +76,7 @@ public class TokenService : ITokenService
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Key"])),
-            ValidateLifetime = false // Quan trọng: Không check hạn sử dụng ở đây
+            ValidateLifetime = false 
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
