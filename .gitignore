@@ -53,4 +53,7 @@ coverage/
 TestResults/
 
 ## dotenv (nếu có)
+## TypeScript incremental build
+*.tsbuildinfo
+
 .env

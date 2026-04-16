@@ -13,8 +13,8 @@ public static class PermissionCode
     
     public const string WAREHOUSE_MANAGE = "WAREHOUSE_MANAGE";//crud
     
-    public const string PRODUCT_MANAGE = "PRODUCT_ADD";//chỉ add, ko edit hay delete 
-    public const string PRODUCT_EDIT = "PRODUCT_DELETE"; //chỉ delete, ko add hay edit
+    public const string PRODUCT_ADD = "PRODUCT_ADD";//chỉ add, ko edit hay delete 
+    public const string PRODUCT_DELETE = "PRODUCT_DELETE"; //chỉ delete, ko add hay edit
     public const string SUPPLIER_MANAGE = "SUPPLIER_MANAGE";    //crud
     public const string SHIFT_MANAGE = "SHIFT_MANAGE";  //crud
     public const string INVITATION_MANAGE = "INVITATION_MANAGE";    //add và delete invitation, ko edit

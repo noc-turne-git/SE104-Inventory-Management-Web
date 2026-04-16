@@ -49,7 +49,7 @@ public class WarehouseProductsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = PermissionCode.PRODUCT_MANAGE)]
+    [Authorize(Policy = PermissionCode.PRODUCT_ADD)]
     public async Task<IActionResult> Create(int warehouseId, ProductDTO model, CancellationToken cancellationToken)
     {
         var entity = await _products.CreateAsync(warehouseId, model, cancellationToken);
@@ -57,7 +57,7 @@ public class WarehouseProductsController : ControllerBase
     }
 
     [HttpDelete("{productId:int}")]
-    [Authorize(Policy = PermissionCode.PRODUCT_EDIT)]
+    [Authorize(Policy = PermissionCode.PRODUCT_DELETE)]
     public async Task<IActionResult> Delete(int warehouseId, int productId, CancellationToken cancellationToken)
     {
         var ok = await _products.DeleteAsync(warehouseId, productId, cancellationToken);
