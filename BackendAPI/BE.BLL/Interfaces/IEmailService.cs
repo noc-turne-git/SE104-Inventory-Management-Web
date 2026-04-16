@@ -5,5 +5,5 @@ public interface IEmailService {
     Task SendEmailAsync(EmailMessageDTO emailMessage);
     Task SendResetPasswordEmailAsync(string toEmail);
     Task SendConfirmationEmailAsync(string toEmail, int UserId);
-    //Task SendInvitationEmailAsync(string toEmail, int warehouseId);
+    Task SendInvitationEmailAsync(string toEmail, string warehouseName);
 }
