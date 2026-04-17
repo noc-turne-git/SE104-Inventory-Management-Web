@@ -25,7 +25,8 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:5173",
                 "http://localhost:5174",
-                "http://localhost:4173"
+                "http://localhost:4173",
+                "ztomatoz.id.vn"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
