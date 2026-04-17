@@ -1,225 +1,98 @@
-import { useEffect, useState, FormEvent, ChangeEvent } from 'react'
-import './App.css'
-import { clearAuthSession, loadAuthSession, login, signup } from './api/auth'
-import VerifyEmailPage from './VerifyEmailPage'
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Outlet } from 'react-router-dom';
 
-interface User {
-  username: string
-}
+// --- AUTH & PUBLIC ---
+import { HomeScreen } from './screens/HomeScreen';
+import SignInScreen from './features/auth/SignInScreen';
+import SignUp from "./features/auth/SignUpScreen";
+import ForgotPasswordScreen from "./features/auth/ForgotPasswordScreen";
+import VerifyOtpScreen from "./features/auth/VerifyOtpScreen";
+import ResetPasswordScreen from "./features/auth/ResetPasswordScreen"
+import { MOCK_HOME_DATA } from './data/MOCK_HOME';
+
+// --- SELECTION ---
+import WareHouseScreen from './screens/WareHouseScreen';
+
+// --- MANAGER ---
+import { Sidebar } from './components/Sidebar';
+import DashboardManagerScreen from './screens/manager/DashboardScreen';
+import ProductScreen from './screens/manager/ProductScreen';
+import StaffScreen from './screens/manager/StaffScreen';
+import ShiftScreen from './screens/manager/ShiftScreen';
+import SupplierScreen from './screens/manager/SupplierScreen';
+import NoteAuthorizationScreen from './screens/manager/NoteAuthorizationScreen';
+
+// ---  STAFF ---
+import DashboardStaffScreen from './screens/staff/DashboardScreen';
+import ProductViewScreen from './screens/staff/ProductScreen';
+import DeliveryScreen from './screens/staff/DeliveryScreen';
+import ReceiptScreen from './screens/staff/ReceiptScreen';
+
+// --- CONTEXT & CSS ---
+import { NoteProvider } from './context/NoteContext';
+import { AuthProvider } from './context/AuthContext';
+import './index.css';
+
+// 1. Component Layout chứa Sidebar - Chỉ dùng cho các route bên trong hệ thống
+const AppLayout = () => {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar /> 
+      <main className="flex-1 overflow-y-auto p-4">
+        {/* Outlet sẽ render các con của Route /app/* */}
+        <Outlet />
+      </main>
+    </div>
+  );
+};
 
 function App() {
-  if (window.location.pathname === '/verify-email') {
-    return <VerifyEmailPage />
-  }
-
-  const [mode, setMode] = useState<'login' | 'register'>('login')
-  const [username, setUsername] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
-  const [phone, setPhone] = useState<string>('')
-  const [address, setAddress] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [confirmPassword, setConfirmPassword] = useState<string>('')
-  const [error, setError] = useState<string>('')
-  const [success, setSuccess] = useState<string>('')
-  const [user, setUser] = useState<User | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-
-  useEffect(() => {
-    const session = loadAuthSession()
-    if (session) setUser({ username: session.username })
-  }, [])
-
-  const resetMessages = (): void => {
-    setError('')
-    setSuccess('')
-  }
-
-  const clearForm = (): void => {
-    setUsername('')
-    setEmail('')
-    setPhone('')
-    setAddress('')
-    setPassword('')
-    setConfirmPassword('')
-  }
-
-  const switchMode = (nextMode: 'login' | 'register'): void => {
-    setMode(nextMode)
-    clearForm()
-    resetMessages()
-  }
-
-  const handleRegister = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault()
-    resetMessages()
-
-    if (!username.trim() || !email.trim() || !password.trim() || !phone.trim() || !address.trim()) {
-      setError('Vui lòng điền đầy đủ thông tin.')
-      return
-    }
-
-    if (password !== confirmPassword) {
-      setError('Mật khẩu nhập lại không khớp.')
-      return
-    }
-
-    setIsSubmitting(true)
-    try {
-      await signup({ username, email, password, phone, address })
-      setSuccess('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.')
-      clearForm()
-      setMode('login')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Đăng ký thất bại.')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleLogin = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault()
-    resetMessages()
-
-    if (!username.trim() || !password.trim()) {
-      setError('Vui lòng điền tên đăng nhập và mật khẩu.')
-      return
-    }
-
-    setIsSubmitting(true)
-    try {
-      const session = await login({ username, password })
-      setUser({ username: session.username })
-      setSuccess('Đăng nhập thành công!')
-      clearForm()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Đăng nhập thất bại.')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleLogout = (): void => {
-    clearAuthSession()
-    setUser(null)
-    setSuccess('Bạn đã đăng xuất.')
-  }
-
-  if (user) {
-    return (
-      <main className="auth-root">
-        <section className="auth-card">
-          <h1>Xin chào, {user.username}!</h1>
-          <p>Bạn đã đăng nhập.</p>
-          <button className="primary" onClick={handleLogout}>
-            Đăng xuất
-          </button>
-        </section>
-      </main>
-    )
-  }
 
   return (
-    <main className="auth-root">
-      <section className="auth-card">
-        <header className="auth-header">
-          <h1>{mode === 'login' ? 'Đăng nhập' : 'Đăng ký'}</h1>
-          <p>
-            {mode === 'login' ? 'Chưa có tài khoản?' : 'Đã có tài khoản?'}{' '}
-            <button className="link" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>
-              {mode === 'login' ? 'Đăng ký' : 'Đăng nhập'}
-            </button>
-          </p>
-        </header>
+    <Router>
+      <AuthProvider>
+      <NoteProvider>
+        <Routes>
+          {/* --- NHÓM 1: PUBLIC (Không Sidebar) --- */}
+          <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
+          <Route path="/signin" element={<SignInScreen />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/forgotpassword" element={<ForgotPasswordScreen />} />
+          <Route path="/verifyotp" element={<VerifyOtpScreen />} />
+          <Route path="/resetpassword" element={<ResetPasswordScreen />} />
 
-        <form onSubmit={mode === 'login' ? handleLogin : handleRegister} className="auth-form">
-          <label>
-            Tên đăng nhập
-            <input
-              type="text"
-              value={username}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-              required
-              autoComplete="username"
-              placeholder="username"
-            />
-          </label>
+          {/* --- NHÓM 2: SELECTION (Không Sidebar) --- */}
+          <Route path="/warehouse" element={<WareHouseScreen />} />
 
-          {mode === 'register' && (
-            <>
-              <label>
-                Email
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                />
-              </label>
+          {/* --- NHÓM 3: INTERNAL APP (CÓ SIDEBAR) --- */}
+          {/* Tất cả các route bắt đầu bằng /app sẽ được bọc bởi AppLayout */}
+          <Route path="/app" element={<AppLayout />}>
+            {/* Manager Routes */}
+            <Route path="dashboard_manager" element={<DashboardManagerScreen />} />
+            <Route path="products" element={<ProductScreen />} />
+            <Route path="staffs" element={<StaffScreen />} />
+            <Route path="suppliers" element={<SupplierScreen />} />
+            <Route path="notes" element={<NoteAuthorizationScreen/>} />
+            <Route path="shifts" element={<ShiftScreen />} />
+            
+            {/* Staff Routes */}
+            <Route path="dashboard_staff" element={<DashboardStaffScreen />} />
+            <Route path="products_view" element={<ProductViewScreen />} />
+            <Route path="delivery" element={<DeliveryScreen />} />
+            <Route path="receipts" element={<ReceiptScreen />} />
 
-              <label>
-                Số điện thoại
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-                  required
-                  autoComplete="tel"
-                  placeholder="09xxxxxxxx"
-                />
-              </label>
+            {/* Điều hướng mặc định bên trong app */}
+            <Route index element={<Navigate to="dashboard_manager" replace />} />
+          </Route>
 
-              <label>
-                Địa chỉ
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
-                  required
-                  autoComplete="street-address"
-                  placeholder="Số nhà, đường, quận/huyện..."
-                />
-              </label>
-            </>
-          )}
-
-          <label>
-            Mật khẩu
-            <input
-              type="password"
-              value={password}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-              required
-              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-              placeholder="••••••••"
-            />
-          </label>
-
-          {mode === 'register' && (
-            <label>
-              Nhập lại mật khẩu
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-                placeholder="••••••••"
-              />
-            </label>
-          )}
-
-          {error && <div className="alert error">{error}</div>}
-          {success && <div className="alert success">{success}</div>}
-
-          <button type="submit" className="primary" disabled={isSubmitting}>
-            {isSubmitting ? 'Đang xử lý...' : mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
-          </button>
-        </form>
-      </section>
-    </main>
-  )
+          {/* --- ĐIỀU HƯỚNG GỐC --- */}
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="*" element={<div className="p-10">404 - Trang không tồn tại</div>} />
+        </Routes>
+      </NoteProvider>
+      </AuthProvider>
+    </Router>
+  );
 }
 
-export default App
+export default App;
