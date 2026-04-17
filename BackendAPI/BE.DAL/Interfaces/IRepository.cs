@@ -1,6 +1,8 @@
 namespace BackendAPI.BE.DAL.Interfaces;
 using System.Linq.Expressions;
-public interface IRepository<T>
+using BackendAPI.BE.BLL.Interfaces;
+
+public interface IRepository<T> where T : class, IEntity
 {
     Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<T?> GetByIdAsync(object id, CancellationToken cancellationToken = default);

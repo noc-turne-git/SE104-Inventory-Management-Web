@@ -2,6 +2,7 @@ namespace BackendAPI.Infrastructure.RedisCacheDecorator;
 using BackendAPI.BE.DAL.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text;
 using BackendAPI.BE.BLL.Interfaces;
 using System.Linq.Expressions;
@@ -12,6 +13,11 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
     private readonly IDistributedCache _cache;
     private readonly string _entityName;
 
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        ReferenceHandler = ReferenceHandler.IgnoreCycles
+    };
+
     public GenericCacheDecorator(IRepository<T> inner, IDistributedCache cache)
     {
         _inner = inner;
@@ -19,16 +25,16 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
         _entityName = typeof(T).Name; // Tự động lấy tên Class làm Prefix
     }
     
-    private byte[] Serialize<T>(T obj)
+    private static byte[] Serialize(T obj)
     {
-        var json = JsonSerializer.Serialize(obj);
+        var json = JsonSerializer.Serialize(obj, JsonOptions);
         return Encoding.UTF8.GetBytes(json);
     }
 
-    private T? Deserialize<T>(byte[] bytes)
+    private static T? Deserialize(byte[] bytes)
     {
         var json = Encoding.UTF8.GetString(bytes);
-        return JsonSerializer.Deserialize<T>(json);
+        return JsonSerializer.Deserialize<T>(json, JsonOptions);
     }
     public async Task<T?> GetByIdAsync(object id, CancellationToken cancellationToken = default)
     {
@@ -36,7 +42,7 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
         
         // 1. Thử lấy từ Cache
         var cachedData = await _cache.GetAsync(key, cancellationToken);
-        if (cachedData != null) return Deserialize<T>(cachedData);
+        if (cachedData != null) return Deserialize(cachedData);
 
         // 2. Cache miss -> DB
         var entity = await _inner.GetByIdAsync(id, cancellationToken);
@@ -87,7 +93,7 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
         
         // 1. Thử lấy từ Cache
         var cachedData = await _cache.GetAsync(key, cancellationToken);
-        if (cachedData != null) return Deserialize<T>(cachedData);
+        if (cachedData != null) return Deserialize(cachedData);
         // 2. Cache miss -> DB
         return await _inner.GetByIdAsync(id1, id2, cancellationToken);
     }

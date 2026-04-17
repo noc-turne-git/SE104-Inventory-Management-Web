@@ -2,9 +2,10 @@ using BackendAPI.BE.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using BackendAPI.BE.DAL.Data;
 using System.Linq.Expressions;
+using BackendAPI.BE.BLL.Interfaces;
 namespace BackendAPI.BE.DAL.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<T> : IRepository<T> where T : class, IEntity
 {
     protected readonly AppDbContext _context;
 
