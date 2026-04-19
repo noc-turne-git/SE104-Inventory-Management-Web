@@ -4,6 +4,7 @@ using BackendAPI.BE.API.DTO;
 using BackendAPI.BE.DAL.Entities;
 using BackendAPI.BE.DAL.Interfaces;
 using BackendAPI.BE.BLL.Interfaces;
+using BackendAPI.BE.DAL.Constants;
 public class WarehouseService : IWarehouseService
 {
     private readonly IRepository<Warehouse> _warehouseRepository;
@@ -12,8 +13,6 @@ public class WarehouseService : IWarehouseService
     private readonly IMapper _mapper;
     private readonly IEmailService _emailService;
     private readonly IRepository<Invitation> _invitationRepository;
-    private readonly ICacheService<Invitation> _cacheService;
-    private readonly ITokenService _tokenService;
     private readonly IWarehouseStaffService _warehouseStaffService;
     //private readonly IRepository<InviteToken> _inviteTokenRepository;
 
@@ -58,11 +57,11 @@ public class WarehouseService : IWarehouseService
         if (user == null) return await Task.FromResult(false); // User does not exist
 
         var existingStaff = await _warehouseStaffRepository.GetAsync(ws => ws.WarehouseId == model.WarehouseId && ws.UserId == user.UserId);
-        var invitations = await _cacheService.GetAsync<Invitation>($"invitations:warehouse:{model.WarehouseId}:user:{user.UserId}");
+        //var invitations = await _cacheService.GetAsync<Invitation>($"invitations:warehouse:{model.WarehouseId}:user:{user.UserId}");
         var existingInvitation = await _invitationRepository.GetAsync(i => i.WarehouseId == model.WarehouseId && i.InvitedUserId == user.UserId);
         if (existingInvitation.Any()) return await Task.FromResult(false); // Invitation already exists
         
-        if (existingStaff != null) return await Task.FromResult(false); // User is already staff
+        if (existingStaff.Any()) return await Task.FromResult(false); // User is already staff
         
         var invitation = new Invitation
         {
@@ -70,11 +69,12 @@ public class WarehouseService : IWarehouseService
             InvitedUserId = user.UserId,
             InviterUserId = inviterUserId,
             Role = model.Role,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Status = StatusCode.PENDING
         };
         await _invitationRepository.AddAsync(invitation);
         //cache invitation for 1 hours
-        await _cacheService.SetAsync($"invitations:warehouse:{model.WarehouseId}:user:{user.UserId}", invitation, TimeSpan.FromHours(1));
+        //await _cacheService.SetAsync($"invitations:warehouse:{model.WarehouseId}:user:{user.UserId}", invitation, TimeSpan.FromHours(1));
         return await Task.FromResult(true);
     }
 
@@ -103,12 +103,17 @@ public class WarehouseService : IWarehouseService
         if (user != null)
         {
              var existingStaff = await _warehouseStaffRepository.GetAsync(ws => ws.WarehouseId == model.WarehouseId && ws.UserId == user.UserId);
-            if (existingStaff != null) return await Task.FromResult(false); // User is already staff
+            if (existingStaff.Any()) return await Task.FromResult(false); // User is already staff
         }
         
         await _warehouseStaffService.AddAsync(model, userId);        
 
-         await _invitationRepository.DeleteAsync(model.WarehouseId, user.UserId);
+         var invitations = await _invitationRepository.GetAsync(i => i.WarehouseId == model.WarehouseId && i.InvitedUserId == user.UserId);
+         var invitation = invitations.FirstOrDefault();
+         if (invitation != null)
+         {
+            await _invitationRepository.DeleteAsync(invitation.InvitationId);
+         }
          return true;
     }
 

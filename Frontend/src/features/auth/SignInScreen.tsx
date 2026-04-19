@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import bgImage from "../../assets/stockify.png";
 import lgImage from "../../assets/logostockify.png";
 import { useAuth } from "../../context/AuthContext";
-import { MOCK_USERS } from "../../data/MOCK_USER";
-
+//import { MOCK_USERS } from "../../data/MOCK_USER";
+import authApi from "../../api/AuthAPI";
+import { isAxiosError } from "axios";
 import './auth.css';
 
 const SignInScreen = () => {
@@ -18,17 +19,45 @@ const SignInScreen = () => {
   });
   const [error, setError] = useState("");
 
-  const handleSignIn = (e : any) => {
-    if (e) e.preventDefault(); // ngăn refresh lại vì dùng thẻ form 
+  const handleSignIn = async (e: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setError(''); // Xóa lỗi cũ trước khi thử lại
 
-    const userData = MOCK_USERS.find(u => u.email === form.email);
-    console.log(userData?.email);                                                                                                                                                                                                                                                         
-    if(userData) {
-      login(userData);
-    } else {
-      setError('Invalid password or email. Please try again')
+    try {
+      const response = await authApi.signIn(form);
+      login(response.data.user); 
+      localStorage.setItem('access_token', response.data.accessToken);
+      localStorage.setItem('refresh_token', response.data.refreshToken);
+    } catch (err: unknown) {
+      if (!isAxiosError(err)) setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+      else {
+      // --- XỬ LÝ LỖI Ở ĐÂY ---
+      
+        if (!err.response) {
+          // Trường hợp không có response (mất mạng, server không phản hồi)
+          setError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!");
+        } else {
+          // Trường hợp Server có trả về lỗi
+          const status = err.response.status;
+          const message = err.response.data?.message;
+
+          switch (status) {
+            case 401:
+              setError("Email hoặc mật khẩu không chính xác.");
+              break;
+            case 403:
+              setError("Tài khoản của bạn đã bị khóa hoặc không có quyền truy cập.");
+              break;
+            case 500:
+              setError("Lỗi hệ thống phía Server. Vui lòng thử lại sau!");
+              break;
+            default:
+              setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại.");
+          }
+        }
+      }
     }
-  }
+  };
 
   const [showPass, setShowPass] = useState(false);
 

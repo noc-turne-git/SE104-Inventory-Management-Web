@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
         var result = await _authService.LoginAsync(model);
         if (result == null)
             return Unauthorized(new { Success = false, Message = "Invalid username or password." });
-        return Ok(new { Success = true, AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
+        return Ok(new { Success = true, AccessToken = result.AccessToken, RefreshToken = result.RefreshToken, User = result.User });
     }   
 
     [HttpPost("signup")]
@@ -89,4 +89,6 @@ public class AuthController : ControllerBase
         
         return Ok(new { Success = true, AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
     }
+
+    
 }

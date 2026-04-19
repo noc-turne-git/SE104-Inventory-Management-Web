@@ -2,7 +2,7 @@ namespace BackendAPI.BE.BLL.Interfaces;
 using BackendAPI.BE.API.DTO;
 public interface IAuthService
 {
-    Task<TokenDTO> LoginAsync(LoginDTO model);
+    Task<ResponseLoginDTO> LoginAsync(LoginDTO model);
     Task<bool> SignupAsync(SignupDTO model);
 
     Task<bool> VerifyEmailAsync(VerifyEmailDTO model);

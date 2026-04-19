@@ -56,7 +56,9 @@ public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
             new Permission { PermissionId = 16, PermissionCode = PermissionCode.SHIFT_VIEW },
             new Permission {PermissionId = 17, PermissionCode =PermissionCode.INFRACTION_VIEW },
             new Permission { PermissionId = 18, PermissionCode = PermissionCode.STAFF_VIEW },
-            new Permission { PermissionId = 19, PermissionCode = PermissionCode.NOTE_VIEW }
+            new Permission { PermissionId = 19, PermissionCode = PermissionCode.NOTE_VIEW_OWN },
+            new Permission { PermissionId = 20, PermissionCode = PermissionCode.WAREHOUSE_VIEW },
+            new Permission { PermissionId = 21, PermissionCode = PermissionCode.INVITATION_VIEW }
         );
     }
 }

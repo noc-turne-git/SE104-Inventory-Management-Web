@@ -20,7 +20,7 @@ public class WarehouseNotesController : ControllerBase
     }
 
     [HttpGet("mine")]
-    [Authorize(Policy = PermissionCode.NOTE_VIEW)]
+    [Authorize(Policy = PermissionCode.NOTE_VIEW_OWN)]
     public async Task<IActionResult> GetMine(int warehouseId, CancellationToken cancellationToken)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

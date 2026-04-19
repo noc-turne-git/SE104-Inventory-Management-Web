@@ -3,6 +3,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import bgImage from "../../assets/stockify.png";
 import lgImage from "../../assets/logostockify.png";
+import authApi from "../../api/AuthAPI";
+import { isAxiosError } from "axios";
 
 const SignupScreen = () => {
   const navigate = useNavigate();
@@ -22,6 +24,8 @@ const SignupScreen = () => {
 
   const [passwordError, setPasswordError] = useState("");
   const [confirmError, setConfirmError] = useState("");
+  
+  const [error, setError] = useState("");
 
   const handleChange = (key: string, value: string) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -31,8 +35,10 @@ const SignupScreen = () => {
     navigate("/signin");
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setConfirmError("");
+    setPasswordError("");
     let hasError = false;
 
     if (form.password.length < 6) {
@@ -50,8 +56,40 @@ const SignupScreen = () => {
     }
 
     if (!hasError) {
+      try {
+        await authApi.signUp(form);
+      } catch (err: unknown) {
+        
+        hasError = true;
+        if (!isAxiosError(err)) setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+        else {
+          if (!err.response) {
+          // Trường hợp không có response (mất mạng, server không phản hồi)
+          setError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!");
+          } else {
+            // Trường hợp Server có trả về lỗi
+            const status = err.response.status;
+            const message = err.response.data?.message;
+
+            switch (status) {
+              case 403:
+                setError("Tài khoản của bạn đã bị khóa hoặc không có quyền truy cập.");
+                break;
+              case 500:
+                setError("Lỗi hệ thống phía Server. Vui lòng thử lại sau!");
+                break;
+              default:
+                setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại.");
+            }
+          }
+        }
+      }
+    }
+    if(!hasError) {
       handleSignUp();
     }
+
+    
   };
 
   return (
@@ -98,6 +136,12 @@ const SignupScreen = () => {
           <div className="mb-6">
             <h2 className="text-3xl font-bold">Create Account</h2>
             <p className="text-gray-500 mt-1 text-md">Join Stockify system</p>
+          </div>
+
+          <div className="items-start">
+            <span className="text-red-500 text-sm">
+              {error}
+            </span>
           </div>
 
           {/* FULL NAME */}

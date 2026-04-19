@@ -20,6 +20,7 @@ public class User : IEntity
     public string FullName { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
+    public DateTime Dob { get; set; } = DateTime.Now;
     [Required]
     [EmailAddress]
     public string Email { get; set; } = string.Empty;

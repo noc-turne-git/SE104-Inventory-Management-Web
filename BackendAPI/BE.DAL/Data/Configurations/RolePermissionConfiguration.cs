@@ -38,6 +38,9 @@ public class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermissi
             new RolePermission { RoleId = 1, PermissionId = 16 },
             new RolePermission { RoleId = 1, PermissionId = 17 },
             new RolePermission { RoleId = 1, PermissionId = 18 },
+            //new RolePermission { RoleId = 1, PermissionId = 19 },
+            new RolePermission { RoleId = 1, PermissionId = 20 },
+            new RolePermission { RoleId = 1, PermissionId = 21 },
             new RolePermission { RoleId = 2, PermissionId = 1 },
             new RolePermission { RoleId = 2, PermissionId = 2 },
             new RolePermission { RoleId = 2, PermissionId = 3 },
@@ -55,6 +58,8 @@ public class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermissi
             new RolePermission { RoleId = 2, PermissionId = 16 },
             new RolePermission { RoleId = 2, PermissionId = 17 },
             new RolePermission { RoleId = 2, PermissionId = 18 },
+            new RolePermission { RoleId = 2, PermissionId = 20 },
+            new RolePermission { RoleId = 2, PermissionId = 21 },
             new RolePermission { RoleId = 3, PermissionId = 12 },
             new RolePermission { RoleId = 3, PermissionId = 13 },
             new RolePermission { RoleId = 3, PermissionId = 14 },
@@ -62,7 +67,9 @@ public class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermissi
             new RolePermission { RoleId = 3, PermissionId = 16 },
             new RolePermission { RoleId = 3, PermissionId = 17 },
             new RolePermission { RoleId = 3, PermissionId = 18 },
-            new RolePermission { RoleId = 3, PermissionId = 19 }
+            new RolePermission { RoleId = 3, PermissionId = 19 },
+            new RolePermission { RoleId = 3, PermissionId = 20 },
+            new RolePermission { RoleId = 3, PermissionId = 21 }
         );
     }
 }

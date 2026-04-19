@@ -20,7 +20,7 @@ public static class PermissionCode
     public const string INVITATION_MANAGE = "INVITATION_MANAGE";    //add và delete invitation, ko edit
 
     // Staff permissions
-    public const string NOTE_VIEW = "NOTE_VIEW_OWN"; //staff có quyền xem note của mình, nhưng ko có quyền xem note của người khác
+    public const string NOTE_VIEW_OWN = "NOTE_VIEW_OWN"; //staff có quyền xem note của mình, nhưng ko có quyền xem note của người khác
     public const string NOTE_CREATE = "NOTE_CREATE"; //staff chỉ có quyền tạo note, ko có quyền approve/reject
     public const string NOTE_EDIT = "NOTE_EDIT"; //staff có thể edit note khi note ở trạng thái pending, sau khi note được approve/reject thì staff ko được edit nữa
     public const string PRODUCT_VIEW = "PRODUCT_VIEW"; //staff có quyền xem danh sách sản phẩm(THEO WAREHOUSEID) và chi tiết sản phẩm, nhưng ko có quyền add/edit/delete sản phẩm
@@ -28,5 +28,6 @@ public static class PermissionCode
     public const string SHIFT_VIEW = "SHIFT_VIEW"; //staff có quyền xem lịch trực của mình tại warehouse đó, nhưng ko có quyền xem lịch trực của người khác hay edit lịch trực
     public const string INFRACTION_VIEW = "INFRACTION_VIEW"; //staff có quyền xem các lỗi vi phạm của mình, nhưng ko có quyền xem lỗi vi phạm của người khác hay edit lỗi vi phạm
     public const string STAFF_VIEW = "STAFF_VIEW"; //staff có quyền xem danh sách nhân viên trong warehouse đó và chi tiết của nhân viên, nhưng ko có quyền xem danh sách nhân viên của warehouse khác hay edit thông tin nhân viên
-
+    public const string WAREHOUSE_VIEW = "WAREHOUSE_VIEW"; //chỉ read-only: xem danh sách + chi tiết các warehouse mà user là thành viên; không bao gồm tạo/sửa/xoá warehouse (WAREHOUSE_MANAGE)
+    public const string INVITATION_VIEW = "INVITATION_VIEW"; //chỉ read-only: xem danh sách invitation theo warehouseId mà user đang là thành viên; không được tạo/xoá (INVITATION_MANAGE) hay cập nhật trạng thái invitation
 }

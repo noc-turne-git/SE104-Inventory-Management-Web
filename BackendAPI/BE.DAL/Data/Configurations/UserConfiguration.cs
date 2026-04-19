@@ -6,6 +6,8 @@ using BCrypt.Net;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
+    private const string SeedPasswordSalt = "$2a$10$7EqJtq98hPqEX7fNZaFWo.";
+
     // public int UserId { get; set; } =0 ;
     
     // public string FullName { get; set; } = string.Empty;
@@ -26,8 +28,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         {
             UserId = 1,
             FullName = "Manager kho1, staff kho 2",
-            PasswordHash = BCrypt.HashPassword("1"),
+            PasswordHash = BCrypt.HashPassword("1", SeedPasswordSalt),
             Phone = "0123456789",
+            Dob = new DateTime(2000, 01, 01, 0, 0, 0, DateTimeKind.Utc),
             Email = "manager@test.com",
             Address= "123 Main St, City, Country",
             IsVerified = true
@@ -36,8 +39,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         {
             UserId = 2,
             FullName = "Staff kho1, Manager kho 2",
-            PasswordHash = BCrypt.HashPassword("1"),
+            PasswordHash = BCrypt.HashPassword("1", SeedPasswordSalt),
             Phone = "0123456789",
+            Dob = new DateTime(2000, 01, 02, 0, 0, 0, DateTimeKind.Utc),
             Email = "staff@test.com",
             Address= "456 Oak Ave, City, Country",
             IsVerified = false
@@ -46,8 +50,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         {
             UserId = 3,
             FullName = "Gest",
-            PasswordHash = BCrypt.HashPassword("1"),
+            PasswordHash = BCrypt.HashPassword("1", SeedPasswordSalt),
             Phone = "0123456789",
+            Dob = new DateTime(2000, 01, 03, 0, 0, 0, DateTimeKind.Utc),
             Email = "gest@test.com",
             Address= "789 Pine Rd, City, Country",
             IsVerified = false

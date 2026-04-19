@@ -50,9 +50,8 @@ public class AuthService: IAuthService
 
         //_configuration = configuration;
     }
-    public async Task<TokenDTO> LoginAsync(LoginDTO model)
+    public async Task<ResponseLoginDTO> LoginAsync(LoginDTO model)
     {
-        //string cacheKey = $"user:profile:{model.Username.ToLower()}";
         var user = await _userRepository.GetByEmailAsync(model.Email);
         if (user==null) return null;
 
@@ -69,7 +68,7 @@ public class AuthService: IAuthService
         };
         await _refreshTokenRepository.AddAsync(refreshTokenEntity);
 
-        return new TokenDTO { AccessToken = accessToken, RefreshToken = refreshToken };
+        return new ResponseLoginDTO { Success = true, User = userDTO, AccessToken = accessToken, RefreshToken = refreshToken };
     }
 
     public async Task<bool> SignupAsync(SignupDTO model)
@@ -158,6 +157,8 @@ public class AuthService: IAuthService
     public async Task<bool> ResetPasswordAsync(ChangePasswordDTO model)
     {
         if(model.newPass != model.confirmNewPass) return false;
+        if(string.IsNullOrWhiteSpace(model.resetPassToken) || string.IsNullOrWhiteSpace(model.newPass) || string.IsNullOrWhiteSpace(model.confirmNewPass))
+            return false;
         var tokens = await _PasswordResetTokenRepository.GetAsync(t => t.Token == model.resetPassToken); 
 
         var tokenEntity = tokens.FirstOrDefault(t => t.Token == model.resetPassToken);

@@ -18,11 +18,13 @@ public class WarehouseController : ControllerBase
 {
     private readonly IWarehouseService _warehouseService;
     private readonly IWarehouseStaffService _warehouseStaffs;
+    private readonly IWarehouseReadService _warehouseReads;
 
-    public WarehouseController(IWarehouseService warehouseService, IWarehouseStaffService warehouseStaffs)
+    public WarehouseController(IWarehouseService warehouseService, IWarehouseStaffService warehouseStaffs, IWarehouseReadService warehouseReads)
     {
         _warehouseService = warehouseService;
         _warehouseStaffs = warehouseStaffs;
+        _warehouseReads = warehouseReads;
     }
 
     [HttpPost("create")]
@@ -52,6 +54,24 @@ public class WarehouseController : ControllerBase
         if (!result)
             return BadRequest(new { Success = false, Message = "Failed to join warehouse." });
         return Ok(new { Success = true, Message = "Warehouse joined successfully." });
+    }
+
+    [HttpGet("/api/warehouses/mine")]
+    [Authorize(Policy = PermissionCode.WAREHOUSE_VIEW)]
+    public async Task<IActionResult> GetMine(CancellationToken cancellationToken)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var items = await _warehouseReads.GetMineAsync(userId, cancellationToken);
+        return Ok(items);
+    }
+
+    [HttpGet("/api/warehouses/{warehouseId:int}")]
+    [Authorize(Policy = PermissionCode.WAREHOUSE_VIEW)]
+    public async Task<IActionResult> GetById(int warehouseId, CancellationToken cancellationToken)
+    {
+        var item = await _warehouseReads.GetByIdAsync(warehouseId, cancellationToken);
+        if (item == null) return NotFound();
+        return Ok(item);
     }
 
     [HttpGet("/api/warehouses/{warehouseId:int}/staff/search")]

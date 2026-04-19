@@ -3,10 +3,49 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import lgImage from "../../assets/logostockify.png";
 import './auth.css';
+import authApi from "../../api/AuthAPI";
+import { isAxiosError } from "axios";
 
 const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async ( e: React.FormEvent) => {
+    e.preventDefault();
+    let hasError = false;
+    // Handle forgot password logic here
+    try {
+      await authApi.forgotPassword({ email });
+      localStorage.setItem("reset_email", email);
+    } catch (err: unknown) {
+      
+      hasError = true;
+      if (!isAxiosError(err)) setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+      else {
+        if (!err.response) {
+        // Trường hợp không có response (mất mạng, server không phản hồi)
+        setError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!");
+        } else {
+          // Trường hợp Server có trả về lỗi
+          const status = err.response.status;
+          const message = err.response.data?.message;
+
+          switch (status) {
+            case 500:
+              setError("Lỗi hệ thống phía Server. Vui lòng thử lại sau!");
+              break;
+            default:
+              setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại.");
+          }
+        }
+      }
+    }
+    if(!hasError) {
+      navigate("/verifyotp", { state: { email } });
+    }
+
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -37,6 +76,12 @@ const ForgotPasswordScreen = () => {
             </p>
           </div>
 
+          <div className="items-start">
+            <span className="text-red-500 text-sm">
+              {error}
+            </span>
+          </div>
+
           {/* INPUT */} 
           <div className="my-5">
             <label className="auth-label">
@@ -58,7 +103,7 @@ const ForgotPasswordScreen = () => {
 
           {/* BUTTON */}
           <button
-            onClick={() => navigate("/verifyotp")}
+            onClick={handleSubmit}
             className="auth-button-primary"
           >
             Send Reset Code

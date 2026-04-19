@@ -11,6 +11,8 @@ using Hangfire;
 using BackendAPI.Infrastructure.RedisCacheDecorator;
 using Microsoft.AspNetCore.Authorization;
 using BackendAPI.Infrastructure.Authorization;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 var builder = WebApplication.CreateBuilder(args);
@@ -54,14 +56,12 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 builder.Services.AddHangfire(config =>
     config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddHangfireServer();
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
@@ -87,19 +87,30 @@ builder.Services.AddScoped<IInfractionService, InfractionService>();
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<ITestItemService, TestItemService>();
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IWarehouseReadService, WarehouseReadService>();
 builder.Services.AddScoped<IWarehouseStaffService, WarehouseStaffService>();
+builder.Services.AddScoped<IInvitationReadService, InvitationReadService>();
+builder.Services.AddScoped<IInvitationInboxService, InvitationInboxService>();
 builder.Services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IOTPRepository, OTPRepository>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductSupplierRepository, ProductSupplierRepository>();
 builder.Services.AddControllers();
 
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(autofacBuilder =>
+{
+    // Ở đây dùng biến 'autofacBuilder' chứ không dùng 'builder'
+    autofacBuilder.RegisterGeneric(typeof(Repository<>))
+                  .As(typeof(IRepository<>))
+                  .InstancePerLifetimeScope();
 
-builder.Services.Decorate(typeof(IRepository<>), typeof(GenericCacheDecorator<>));
-builder.Services.Decorate<IUserRepository, UserCacheDecorator>();
+    autofacBuilder.RegisterGenericDecorator(
+                  typeof(GenericCacheDecorator<>), 
+                  typeof(IRepository<>));
+});
 
 var app = builder.Build();
 

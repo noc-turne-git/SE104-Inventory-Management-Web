@@ -1,14 +1,16 @@
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
 import lgImage from "../../assets/logostockify.png";
 import './auth.css';
+import authApi from "../../api/AuthAPI";
+import { isAxiosError } from "axios";
 
 const ResetPasswordScreen = () => {
   const navigate = useNavigate();
 
   const [success, setSuccess] = useState(false);
-
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     password: "",
     confirmPassword: ""
@@ -17,27 +19,48 @@ const ResetPasswordScreen = () => {
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e : React.FormEvent) => {
+    e.preventDefault();
+    let hasError = false;
     // validate
     if (!form.password || !form.confirmPassword) {
-      alert("Please fill all fields");
+      hasError = true;
+      setError("Please fill all fields");
       return;
     }
 
     if (form.password.length < 8) {
-      alert("Password must be at least 8 characters");
+      hasError = true;
+      setError("Password must be at least 8 characters");
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match");
+      hasError = true;
+      setError("Passwords do not match");
       return;
     }
 
-    setSuccess(true);
-    setTimeout(() => {
+    if (!hasError) {
+      try {
+        const resetPassFormData = {newPass: form.password,confirmNewPass: form.confirmPassword, resetPassToken: localStorage.getItem("reset_token")};
+        await authApi.resetPassword(resetPassFormData);  
+      } catch (err: unknown) {
+        hasError = true;
+        if (!isAxiosError(err)) {
+          console.error("Error resetting password:", err);
+          setError("An unexpected error occurred. Please try again.");
+        } else {
+          setError(err.response?.data?.message || "Failed to reset password. Please try again.");
+        }
+      }
+    }
+
+    if (!hasError) {
+      setSuccess(true);
+      localStorage.removeItem("reset_token");
       navigate("/signin");
-    }, 2000); // đổi thành công chuyển trang sau 2s
+    };
   };
 
   return (
@@ -66,6 +89,12 @@ const ResetPasswordScreen = () => {
             <p className="auth-subtitle">
               Enter your new password below
             </p>
+          </div>
+
+          <div className="items-start">
+            <span className="text-red-500 text-sm">
+              {error}
+            </span>
           </div>
 
           {/* PASSWORD */}
