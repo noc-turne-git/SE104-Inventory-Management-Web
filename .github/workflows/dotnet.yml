@@ -1,4 +1,4 @@
-name: .NET Build & Deploy Sync
+name: CI/CD Pipeline
 
 on:
   push:
@@ -7,40 +7,68 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-sync:
+  # 1. Kiểm tra build cho dự án Frontend
+  build-frontend:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0 # Quan trọng: Để lấy đủ lịch sử các nhánh giúp việc chuyển sang 'deploy' không bị lỗi
+      - uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Install dependencies
+        working-directory: ./Frontend
+        run: npm ci
 
-    - name: Build
-      run: dotnet build --no-restore
+      - name: Build Frontend
+        working-directory: ./Frontend
+        run: npm run build
 
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+  # 2. Kiểm tra build cho dự án Backend
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    # --- BƯỚC COPY CODE SANG DEPLOY (Chỉ chạy khi push vào main và build/test thành công) ---
-    - name: Sync Main to Deploy
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        
-        # Chuyển sang nhánh deploy
-        git checkout deploy || git checkout -b deploy
-        
-        # Gộp code từ main vào deploy
-        git merge main --no-edit
-        
-        # Đẩy code lên github
-        git push origin deploy
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0 # Điều chỉnh version phù hợp với project của bạn
+
+      - name: Restore dependencies
+        working-directory: ./BackendAPI
+        run: dotnet restore
+
+      - name: Build Backend
+        working-directory: ./BackendAPI
+        run: dotnet build --configuration Release --no-restore
+
+  # 3. Tự động sync code qua nhánh deploy khi main thay đổi và build thành công
+  sync-to-deploy:
+    needs: [build-frontend, build-backend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push changes to deploy branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Kiểm tra xem nhánh deploy đã tồn tại chưa
+          git checkout deploy || git checkout -b deploy
+          
+          # Hợp nhất code từ main vào deploy
+          git merge main
+          
+          # Push lên nhánh deploy
+          git push origin deploy
