@@ -1,0 +1,74 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # 1. Kiểm tra build cho dự án Frontend
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./Frontend
+        run: npm ci
+
+      - name: Build Frontend
+        working-directory: ./Frontend
+        run: npm run build
+
+  # 2. Kiểm tra build cho dự án Backend
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0 # Điều chỉnh version phù hợp với project của bạn
+
+      - name: Restore dependencies
+        working-directory: ./BackendAPI
+        run: dotnet restore
+
+      - name: Build Backend
+        working-directory: ./BackendAPI
+        run: dotnet build --configuration Release --no-restore
+
+  # 3. Tự động sync code qua nhánh deploy khi main thay đổi và build thành công
+  sync-to-deploy:
+    needs: [build-frontend, build-backend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push changes to deploy branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Kiểm tra xem nhánh deploy đã tồn tại chưa
+          git checkout deploy || git checkout -b deploy
+          
+          # Hợp nhất code từ main vào deploy
+          git merge main
+          
+          # Push lên nhánh deploy
+          git push origin deploy
