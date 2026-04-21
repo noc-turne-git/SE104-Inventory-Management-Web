@@ -1,0 +1,67 @@
+@startuml
+title SE104 - Architecture Diagram
+
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment left
+
+actor "User" as User
+node "Browser" as Browser
+component "Frontend\n(Vite + React/TS)" as Frontend
+
+package "BackendAPI (ASP.NET Core)\nSingle project: BackendAPI.csproj" as BackendAPI {
+  package "BE.API (Presentation)" as API {
+    [Controllers] as Controllers
+    [DTOs] as DTOs
+    Controllers ..> DTOs
+  }
+
+  package "BE.BLL (Business)" as BLL {
+    [Services] as Services
+    [Interfaces] as BLLInterfaces
+    [AutoMapper Profiles] as Mappings
+    Services ..> BLLInterfaces
+    Services ..> Mappings
+  }
+
+  package "BE.DAL (Data)" as DAL {
+    [Repositories] as Repositories
+    [Interfaces] as DALInterfaces
+    [Entities] as Entities
+    [AppDbContext\n(EF Core)] as DbContext
+    Repositories ..> DALInterfaces
+    Repositories ..> Entities
+    Repositories --> DbContext
+  }
+
+  component "Auth Middleware\n(JWT Bearer)" as JwtAuth
+  component "Email Service" as EmailService
+  component "Hangfire Server\n(Background Jobs)" as Hangfire
+
+  Controllers --> Services
+  Services --> Repositories
+  Controllers ..> JwtAuth
+  Services --> EmailService
+  Hangfire --> DbContext
+}
+
+database "SQL Server\n(DefaultConnection)" as SqlServer
+cloud "SMTP / Email Provider" as Smtp
+
+User --> Browser
+Browser --> Frontend : HTTP(S)
+Frontend --> Controllers : REST/JSON + JWT
+
+DbContext --> SqlServer
+EmailService --> Smtp
+
+legend right
+== Flow ==
+User -> Frontend -> BackendAPI -> SQL Server
+BackendAPI -> SMTP for emails
+Hangfire uses SQL Server for storage
+endlegend
+
+@enduml
+

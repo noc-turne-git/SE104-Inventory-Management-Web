@@ -1,0 +1,150 @@
+/* Kiểu dáng cho Input */
+.auth-input {
+  width: 100%;
+  padding: 0.625rem;
+  font-size: 1.0rem;
+  line-height: 3rem;
+  
+  /* Đảm bảo nền luôn trắng */
+  background-color: #ffffff; 
+  
+  /* Border mặc định */
+  border: 1.5px solid #d1d5db;
+  border-radius: 0.5rem;
+
+  /* Hiệu ứng chuyển cảnh mượt mà */
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  
+  /* Quan trọng: Để padding không đẩy giãn width */
+  box-sizing: border-box; 
+}
+
+/* Hiệu ứng khi Focus */
+.auth-input:focus {
+  background-color: #ffffff; /* Giữ trắng khi click vào */
+  border-color: #3b82f6;     /* Màu xanh chủ đạo (blue-500) */
+}
+
+/* Kiểu dáng cho nhãn (Label) */
+.auth-label {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #374151;
+  margin-bottom: 0.25rem;
+  text-align: left;
+}
+
+/* Container bọc toàn bộ logo và tên thương hiệu */
+.auth-logo-container {
+  text-align: center;
+  margin-bottom: 2.5rem; /* mb-10 */
+}
+
+/* Hình vuông xanh chứa logo */
+/* .auth-logo-box {
+  width: 6rem;           w-12
+  height: 6rem;          h-12
+  margin-left: auto;     mx-auto
+  margin-right: auto;
+  margin-bottom: 0rem;   mb-3
+  border-radius: 1rem;   rounded-lg
+  background-color: #7da1ef;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 4rem;       text-xl
+  font-weight: 700;      font-bold
+} */
+
+/* Chữ STOCKIFY */
+.auth-logo-text {
+  font-size: 3rem;    /* text-6xl */
+  font-weight: 700;      /* font-bold */
+  /* letter-spacing: 0.1em; tracking-widest */
+  color: #0c1a6d;        /* text-gray-500 */
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.auth-card-container {
+  background-color: #ffffff;    /* bg-white */
+  padding: 2.0rem;              /* p-10 (40px) */
+  border-radius: 1rem;          /* rounded-2xl */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+  border: 1px solid #d1d5db;    /* border border-gray-300 */
+}
+
+/* Kiểu dáng cho Tiêu đề lớn (Title) */
+.auth-title {   
+  font-size: 2.0rem; /* text-3xl */
+  font-weight: 700;    /* font-bold */
+  color: #111827;     /* gray-900 */
+  margin-bottom: 0.25rem;
+}
+
+/* Kiểu dáng cho đoạn mô tả chi tiết (Details) */
+.auth-subtitle {
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.5;    /* leading-relaxed */
+  color: #6b7280;     /* gray-500 */
+  max-width: 90%;      /* Giới hạn độ rộng để chữ dễ đọc hơn */
+  margin: 0 auto;      /* Căn giữa */
+}
+
+/* Container bọc phần header */
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem; /* mb-6 */
+}
+
+.auth-button-primary {
+  width: 100%;
+  padding: 0.875rem;
+  border-radius: 0.75rem; /* rounded-xl */
+  background-color: #2563eb; /* bg-blue-600 */
+  color: #ffffff;
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: block;
+  margin-top: 1.5rem;
+}
+
+.auth-button-primary:hover {
+  background-color: #1d4ed8; /* bg-blue-700 */
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.auth-button-primary:active {
+  transform: scale(0.98); /* Hiệu ứng nhấn nút */
+}
+
+/* Container cho phần quay lại */
+.auth-back-container {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+/* Nút quay lại (Back to Login) */
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #eb2525;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-back-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}

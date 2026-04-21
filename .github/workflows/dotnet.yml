@@ -1,0 +1,46 @@
+name: .NET Build & Deploy Sync
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Quan trọng: Để lấy đủ lịch sử các nhánh giúp việc chuyển sang 'deploy' không bị lỗi
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    # --- BƯỚC COPY CODE SANG DEPLOY (Chỉ chạy khi push vào main và build/test thành công) ---
+    - name: Sync Main to Deploy
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Chuyển sang nhánh deploy
+        git checkout deploy || git checkout -b deploy
+        
+        # Gộp code từ main vào deploy
+        git merge main --no-edit
+        
+        # Đẩy code lên github
+        git push origin deploy

@@ -1,10 +1,10 @@
-
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
 lerna-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
@@ -138,6 +138,7 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+=======
 pnpm-debug.log*
 lerna-debug.log*
 
@@ -156,64 +157,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-## Build results
-bin/
-obj/
-
-## Visual Studio files
-.vs/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-
-## Rider / VS Code
-.idea/
-.vscode/
-
-## Logs
-*.log
-
-## OS files
-.DS_Store
-Thumbs.db
-
-## .NET Core
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-## ASP.NET Scaffolding
-ScaffoldingReadMe.txt
-
-## Entity Framework
-*.mdf
-*.ldf
-
-## User secrets
-secrets.json
-
-## Publish output
-publish/
-
-## NuGet
-*.nupkg
-.nuget/
-packages/
-
-## IIS Express
-iisexpress/
-
-## Coverage / Test
-coverage/
-*.coverage
-*.coveragexml
-TestResults/
-
-## dotenv (nếu có)
-## TypeScript incremental build
-*.tsbuildinfo
-
-.env
-/node_modules
+>>>>>>> ngan
