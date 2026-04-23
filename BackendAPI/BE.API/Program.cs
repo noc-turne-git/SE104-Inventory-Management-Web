@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using BackendAPI.Infrastructure.Authorization;
 using Autofac.Extensions.DependencyInjection;
 using Autofac;
+using Hangfire.PostgreSql;
+
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 var builder = WebApplication.CreateBuilder(args);
@@ -59,17 +61,30 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
-builder.Services.AddHangfire(config =>
-    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddHangfireServer();
+var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+
+var hangfireConnectionString = builder.Configuration.GetConnectionString("HangfireConnection")
+    ?? defaultConnectionString;
+
+var hangfireEnabled = builder.Configuration.GetValue<bool?>("Hangfire:Enabled") ?? true;
+if (hangfireEnabled)
+{
+    builder.Services.AddHangfire(config => config
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UsePostgreSqlStorage(options => options.UseNpgsqlConnection(hangfireConnectionString)));
+    builder.Services.AddHangfireServer();
+}
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
+    options.UseNpgsql(
+        defaultConnectionString
     ));
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = "localhost:6379"; // Địa chỉ Redis server
+    options.Configuration = "redis:6379"; // Địa chỉ Redis server
     options.InstanceName = "Warehouse_";      // Prefix cho các key để tránh trùng lặp
 });
 
@@ -117,13 +132,17 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope()) // Tự động chạy migration khi khởi động ứng dụng
 {
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("DatabaseMigration");
     try
     {
-        var context = services.GetRequiredService<DbContext>();
+        var context = services.GetRequiredService<AppDbContext>();
+        logger.LogInformation("Applying EF Core migrations...");
         context.Database.Migrate(); 
+        logger.LogInformation("EF Core migrations applied successfully.");
     }
     catch (Exception ex)
     {
+        logger.LogError(ex, "Failed to apply EF Core migrations.");
         // Log lỗi nếu có (ví dụ: chưa bật SQL Server)
     }
 }
@@ -134,5 +153,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseHangfireDashboard();
+if (hangfireEnabled)
+{
+    app.UseHangfireDashboard();
+}
 app.Run();
