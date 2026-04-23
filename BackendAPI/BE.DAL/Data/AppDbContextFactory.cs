@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+
 namespace BackendAPI.BE.DAL.Data;
 
 public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
@@ -20,7 +22,8 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         var connectionString = config.GetConnectionString("DefaultConnection")
                                ?? "Data Source=app.db";
 
-        builder.UseSqlServer(connectionString);
+        //builder.UseSqlServer(connectionString);
+        builder.UseNpgsql(connectionString);
 
         return new AppDbContext(builder.Options);
     }
