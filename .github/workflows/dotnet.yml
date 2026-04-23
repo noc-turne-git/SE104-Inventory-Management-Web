@@ -20,6 +20,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: Frontend/package-lock.json
 
+      - name: Clean npm cache  # Add this step
+        run: npm cache clean --force    
       - name: Install dependencies
         working-directory: ./Frontend
         run: npm ci
