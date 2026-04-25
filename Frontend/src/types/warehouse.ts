@@ -10,7 +10,7 @@ export type WarehouseStatusType = typeof WarehouseStatus[keyof typeof WarehouseS
 export interface Warehouse {
   warehouseId: string;
   name: string;
-  address: string;
+  location: string;
   lastUpdate?: string;
   status: WarehouseStatusType;
   productCount?: number;

@@ -87,7 +87,7 @@ export const useWarehouse = (
     try {
       const response = await warehouseApi.create(form);
       const getWarehouseResponse = await warehouseApi.getById(response.data.warehouseId);
-      
+      console.log(getWarehouseResponse.data);
       setWarehouses((prev) => [...prev || [], getWarehouseResponse.data]); // Cập nhật state với warehouse mới
       closeModal();
       toast.success(`Warehouse "${name}" created successfully`);
