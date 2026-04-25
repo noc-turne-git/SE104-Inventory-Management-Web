@@ -48,20 +48,20 @@ public class WarehouseController : ControllerBase
     {
         var inviterUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var result = await _warehouseService.InviteStaffAsync(model, inviterUserId);
-        if (!result)
+        if (result == null)
             return BadRequest(new { Success = false, Message = "Failed to invite staff." });
-        return Ok(new { Success = true, Message = "Staff invited successfully." });
+        return Ok(new { Success = true, Message = "Staff invited successfully.", result });
     }
 
-    [HttpPost("join")]
-    public async Task<IActionResult> joinWarehouse(JoinWarehouseDTO model)
-    {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var result = await _warehouseService.JoinWarehouse(model, userId);
-        if (!result)
-            return BadRequest(new { Success = false, Message = "Failed to join warehouse." });
-        return Ok(new { Success = true, Message = "Warehouse joined successfully." });
-    }
+    // [HttpPost("join")]
+    // public async Task<IActionResult> joinWarehouse(JoinWarehouseDTO model)
+    // {
+    //     var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    //     var result = await _warehouseService.JoinWarehouse(model, userId);
+    //     if (!result)
+    //         return BadRequest(new { Success = false, Message = "Failed to join warehouse." });
+    //     return Ok(new { Success = true, Message = "Warehouse joined successfully." });
+    // }
 
     [HttpGet("/api/warehouses/mine")]
     public async Task<IActionResult> GetMine(CancellationToken cancellationToken)

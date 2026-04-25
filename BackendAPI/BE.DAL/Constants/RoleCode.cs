@@ -5,3 +5,4 @@ public static class RoleCode
     public const string MANAGER = "MANAGER";
     public const string STAFF = "STAFF";
 }
+

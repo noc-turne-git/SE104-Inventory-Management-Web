@@ -4,6 +4,6 @@ using BackendAPI.BE.API.DTO;
 public interface IWarehouseService
 {
     Task<int> CreateWarehouseAsync(CreateWarehouseDTO model, int userid);
-    Task<bool> InviteStaffAsync(InviteStaffDTO model, int inviterUserId);
-    Task<bool> JoinWarehouse(JoinWarehouseDTO model, int UserId);
+    Task<InviteResponseDTO> InviteStaffAsync(InviteStaffDTO model, int inviterUserId);
+    //Task<bool> JoinWarehouse(JoinWarehouseDTO model, int UserId);
 }

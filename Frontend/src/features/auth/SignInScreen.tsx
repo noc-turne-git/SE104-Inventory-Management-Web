@@ -59,7 +59,7 @@ const SignInScreen = () => {
               setError("Lỗi hệ thống phía Server. Vui lòng thử lại sau!");
               break;
             default:
-              setError(status.toString() || "Đã có lỗi xảy ra. Vui lòng thử lại..");
+              setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại..");
           }
         }
       }

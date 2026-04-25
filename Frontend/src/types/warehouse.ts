@@ -24,12 +24,14 @@ export interface FormCreateWarehouse {
 
 export interface Invitation {
   id: string;
-  userId?: string;
-  ownerId: string;
   sendTime?: string;
+  ownerId: string;
   warehouseId: string;
   warehouseName: string;
-  address: string;
-  requestedRole: "manager" | "staff";
+  Role: "manager" | "staff";
   imageUrl?: string;
+}
+
+export interface InvitationForm {
+  InvitationId:string
 }

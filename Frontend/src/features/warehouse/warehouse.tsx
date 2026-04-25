@@ -82,13 +82,13 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, onAc
       </div>
       <div className="grow">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs font-bold text-[#0040a1] uppercase tracking-widest font-headline">{invitation.ownerId}</span>
+          <span className="te</div>xt-xs font-bold text-[#0040a1] uppercase tracking-widest font-headline">{invitation.ownerId}</span>
           <span className="w-1 h-1 rounded-full bg-[#e5e7eb]" />
           <span className="text-xs text-[#666666]">Sent {invitation.sendTime}</span>
         </div>
         <h3 className="text-xl font-headline font-bold text-[#000000] mb-1">{invitation.warehouseName}</h3>
         <p className="text-sm text-[#666666]">
-          Requested your role as <span className="font-semibold text-[#000000] capitalize">{invitation.requestedRole}</span>
+          Requested your role as <span className="font-semibold text-[#000000] capitalize">{invitation.Role}</span>
         </p>
       </div>
       <div className="flex md:flex-col gap-2 w-full md:w-auto">

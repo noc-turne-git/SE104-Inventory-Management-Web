@@ -34,7 +34,8 @@ builder.Services.AddCors(options =>
                 "http://localhost:5173",
                 "http://localhost:5174",
                 "http://localhost:4173",
-                "ztomatoz.id.vn"
+                "https://ztomatoz.id.vn",
+                "http://ztomatoz.id.vn"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
@@ -158,6 +159,8 @@ using (var scope = app.Services.CreateScope()) // Tự động chạy migration 
         // Log lỗi nếu có (ví dụ: chưa bật SQL Server)
     }
 }
+
+app.UseRouting();
 
 app.UseCors("DevCors");
 app.UseAuthentication();
