@@ -41,7 +41,7 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
         <div className="space-y-4 mb-8">
           <div className="flex items-center text-[#666666] gap-3 text-sm font-medium">
             <Icons.MapPin className="w-4 h-4 text-[#666666]" />
-            <span>{warehouse.address}</span>
+            <span>{warehouse.location}</span>
           </div>
           <div className="flex items-center text-[#666666] gap-3 text-sm font-medium">
             <Icons.Package className="w-4 h-4 text-[#666666]" />
