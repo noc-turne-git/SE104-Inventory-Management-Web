@@ -28,7 +28,7 @@ const WareHouseScreen = () => {
     declineInvitation,
     manageWarehouse,
   } = useWarehouse();
-console.log("Dữ liệu kho hàng:", warehouses);
+
   const {logout} = useAuth();
   const navigate = useNavigate();
   
