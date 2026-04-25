@@ -1,5 +1,5 @@
 import axiosClient from './axiosClient';
-import { type FormCreateWarehouse, type Warehouse } from '../types/warehouse';
+import { type FormCreateWarehouse } from '../types/warehouse';
 
 const warehouseApi = {
   getAll() {

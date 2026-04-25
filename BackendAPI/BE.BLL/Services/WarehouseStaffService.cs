@@ -21,11 +21,13 @@ public class WarehouseStaffService : IWarehouseStaffService
         _userRepository = userRepository;
     }
 
-    public async Task<bool> AddAsync(JoinWarehouseDTO model, int userId, CancellationToken cancellationToken = default)
+    public async Task<bool> AddAsync(Invitation model, int userId, CancellationToken cancellationToken = default)
     {
-        var roleEntitys = await _roleRepository.GetAsync(r => r.RoleName == model.Role, cancellationToken);
+        var rolename= model.Role.ToUpper();
+        var roleEntitys = await _roleRepository.GetAsync(r => r.RoleName == rolename, cancellationToken);
         
         var roleEntity = roleEntitys.FirstOrDefault();
+        Console.Write($"role: {roleEntity.RoleName}");
         if (roleEntity == null)
         {
             

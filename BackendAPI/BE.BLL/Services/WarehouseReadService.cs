@@ -22,13 +22,15 @@ public class WarehouseReadService : IWarehouseReadService
         var warehouseIds = memberships.Select(ws => ws.WarehouseId).Distinct().ToList();
         if (warehouseIds.Count == 0) return Array.Empty<WarehouseSummaryDTO>();
 
-        var warehouses = await _warehouses.GetAsync(w => warehouseIds.Contains(w.WarehouseId), cancellationToken);
-
-        var countTasks = warehouses.ToDictionary(
-            w => w.WarehouseId,
-            w => _warehouses.GetProductCountAsync(w.WarehouseId, cancellationToken));
-
-        await Task.WhenAll(countTasks.Values);
+        var warehouses = (await _warehouses.GetAsync(w => warehouseIds.Contains(w.WarehouseId), cancellationToken)).ToList();
+        
+        // EF Core DbContext is not thread-safe; avoid running multiple queries concurrently on the same scope.
+        var productCounts = new Dictionary<int, int>(warehouses.Count);
+        foreach (var warehouse in warehouses)
+        {
+            var count = await _warehouses.GetProductCountAsync(warehouse.WarehouseId, cancellationToken);
+            productCounts[warehouse.WarehouseId] = count;
+        }
 
         return warehouses
             .Select(w => new WarehouseSummaryDTO
@@ -38,7 +40,7 @@ public class WarehouseReadService : IWarehouseReadService
                 Location = w.Location,
                 urlimage = w.urlimage,
                 lastUpdate = w.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-                productCount = countTasks[w.WarehouseId].Result.ToString()
+                productCount = productCounts.TryGetValue(w.WarehouseId, out var count) ? count.ToString() : "0"
             })
             .OrderBy(w => w.Name)
             .ToList();
