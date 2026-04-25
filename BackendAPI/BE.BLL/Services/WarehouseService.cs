@@ -31,21 +31,24 @@ public class WarehouseService : IWarehouseService
        // _inviteTokenRepository=inviteTokenRepository;
     }
 
-    public async Task<bool> CreateWarehouseAsync(CreateWarehouseDTO model)
+    public async Task<int> CreateWarehouseAsync(CreateWarehouseDTO model, int userid)
     {
         
 
         var warehouse = _mapper.Map<Warehouse>(model);
-        await _warehouseRepository.AddAsync(warehouse);
+        warehouse.CreatedAt = DateTime.UtcNow;
+        warehouse.UpdatedAt = DateTime.UtcNow;
+        warehouse.CreatorId = userid;
+        warehouse = await _warehouseRepository.AddAsync(warehouse);
         var staff = new WarehouseStaff
         {
             WarehouseId = warehouse.WarehouseId,
-            UserId = model.CreatorId,
+            UserId = userid,
             RoleId = 1 // Assuming 1 is the role ID for the creator/owner
         };
         await _warehouseStaffRepository.AddAsync(staff);
 
-        return await Task.FromResult(true);
+        return warehouse.WarehouseId;
     }
 
     public async Task<bool> InviteStaffAsync(InviteStaffDTO model, int inviterUserId)

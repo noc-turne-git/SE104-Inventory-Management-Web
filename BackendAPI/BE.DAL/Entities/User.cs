@@ -29,13 +29,13 @@ public class User : IEntity
     public string getKey() => UserId.ToString();
 
     // navigation
-    public List<Shift> Shifts { get; set; }
-    public List<Note> Notes { get; set; }
-    public List<PasswordResetToken> PasswordResetTokens { get; set; }
-    public List<InfractionTicket> InfractionTickets { get; set; }
-    public List<RefreshToken> RefreshTokens { get; set; }
-    public List<WarehouseStaff> WarehouseStaffs { get; set; }
-    public List<VerifyEmailToken> VerifyEmailTokens { get; set; }
-    public List<Invitation> Invitations { get; set; }
+    public List<Shift> Shifts { get; set; } = new();
+    public List<Note> Notes { get; set; } = new();
+    public List<PasswordResetToken> PasswordResetTokens { get; set; } = new();
+    public List<InfractionTicket> InfractionTickets { get; set; } = new();
+    public List<RefreshToken> RefreshTokens { get; set; } = new();
+    public List<WarehouseStaff> WarehouseStaffs { get; set; } = new();
+    public List<VerifyEmailToken> VerifyEmailTokens { get; set; } = new();
+    public List<Invitation> Invitations { get; set; } = new();
     
 }

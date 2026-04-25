@@ -10,7 +10,7 @@ public class OTPRepository : Repository<OTP>, IOTPRepository
     {
     }
 
-    public async Task<OTP> GetByEmailAsync(string email)
+    public async Task<OTP?> GetByEmailAsync(string email)
     {
         return await _context.OTPs.FirstOrDefaultAsync(o => o.Email == email && !o.IsUsed);
     }

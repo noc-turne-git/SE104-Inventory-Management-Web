@@ -47,7 +47,7 @@ public class AppDbContext : DbContext
 
         var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
             v => v.Kind == DateTimeKind.Unspecified ? DateTime.SpecifyKind(v, DateTimeKind.Utc) : v.ToUniversalTime(),
-            v => v // Khi đọc lên thì giữ nguyên
+            v => v
         );
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())

@@ -6,6 +6,6 @@ public class Permission : IEntity
     public string PermissionCode { get; set; } = string.Empty;
     
     // Navigation properties
-    public ICollection<RolePermission> RolePermissions { get; set; }
+    public ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
     public string getKey() => PermissionId.ToString();
 }

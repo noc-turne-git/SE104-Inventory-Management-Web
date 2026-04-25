@@ -10,8 +10,8 @@ public class ReceiptItem: IEntity
     public int Quantity { get; set; }
 
     // navigation
-    public GoodsReceipt GoodReceipt { get; set; }
+    public GoodsReceipt GoodReceipt { get; set; } = null!;
 
-    public Product Product { get; set; }
+    public Product Product { get; set; } = null!;
     public string getKey() => ReceiptItemId.ToString();
 }

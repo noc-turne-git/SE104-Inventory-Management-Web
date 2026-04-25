@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Text;
 using BackendAPI.BE.BLL.Interfaces;
 using System.Linq.Expressions;
+using StackExchange.Redis;
 
 public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
 {
@@ -25,33 +26,60 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
         _entityName = typeof(T).Name; // Tự động lấy tên Class làm Prefix
     }
     
-    private static byte[] Serialize(T obj)
+   protected static byte[] Serialize<TResult>(TResult obj)
     {
         var json = JsonSerializer.Serialize(obj, JsonOptions);
         return Encoding.UTF8.GetBytes(json);
     }
 
-    private static T? Deserialize(byte[] bytes)
+    protected static TResult? Deserialize<TResult>(byte[] bytes)
     {
         var json = Encoding.UTF8.GetString(bytes);
-        return JsonSerializer.Deserialize<T>(json, JsonOptions);
+        return JsonSerializer.Deserialize<TResult>(json, JsonOptions);
     }
+
+    protected async Task<T?> getFromCache(string key, CancellationToken cancellationToken = default)
+    {
+        try 
+        {
+            var cachedData = await _cache.GetAsync(key, cancellationToken);
+            if (cachedData != null) return Deserialize<T>(cachedData);
+        }
+        catch (RedisConnectionException) 
+        {
+            // Log lại lỗi nhưng không để app bị sập
+            Console.WriteLine("Redis is down, cannot get cache...");
+        }
+        return null;
+    }
+
+    protected async Task SetCacheAsync(string key, T entity, int ttlMinutes = 10, CancellationToken cancellationToken = default)
+    {
+        try 
+        {
+            await _cache.SetAsync(key, Serialize(entity), new DistributedCacheEntryOptions {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(ttlMinutes)
+            }, cancellationToken);
+        } catch (RedisConnectionException) {
+            // Log lại lỗi nhưng không để app bị sập
+            Console.WriteLine("Redis is down, cannot set cache...");
+        }
+    }
+
     public async Task<T?> GetByIdAsync(object id, CancellationToken cancellationToken = default)
     {
         string key = $"{_entityName}:{id}";
         
         // 1. Thử lấy từ Cache
-        var cachedData = await _cache.GetAsync(key, cancellationToken);
-        if (cachedData != null) return Deserialize(cachedData);
+        var cacheEntity = await getFromCache(key, cancellationToken);
+        if (cacheEntity != null) return cacheEntity;
 
         // 2. Cache miss -> DB
         var entity = await _inner.GetByIdAsync(id, cancellationToken);
 
         // 3. Lưu vào Cache
         if (entity != null) 
-            await _cache.SetAsync(key, Serialize(entity), new DistributedCacheEntryOptions {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-            });
+            await SetCacheAsync(key, entity, 10, cancellationToken);
 
         return entity;
     }
@@ -92,8 +120,9 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
         string key = $"{_entityName}:{id1}:{id2}";
         
         // 1. Thử lấy từ Cache
-        var cachedData = await _cache.GetAsync(key, cancellationToken);
-        if (cachedData != null) return Deserialize(cachedData);
+        var cacheEntity = await getFromCache(key, cancellationToken);
+        if (cacheEntity != null) return cacheEntity;
+
         // 2. Cache miss -> DB
         return await _inner.GetByIdAsync(id1, id2, cancellationToken);
     }

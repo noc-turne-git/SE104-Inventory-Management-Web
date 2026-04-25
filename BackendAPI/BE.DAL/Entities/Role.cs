@@ -7,7 +7,7 @@ public class Role : IEntity
     public string RoleName { get; set; } = string.Empty;
     
     // Navigation properties
-    public ICollection<WarehouseStaff> WarehouseStaffs { get; set; }
-    public ICollection<RolePermission> RolePermissions { get; set; }
+    public ICollection<WarehouseStaff> WarehouseStaffs { get; set; } = new List<WarehouseStaff>();
+    public ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
     public string getKey() => RoleId.ToString();
 }

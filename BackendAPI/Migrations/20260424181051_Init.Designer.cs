@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BackendAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260423033934_update")]
-    partial class update
+    [Migration("20260424181051_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1233,6 +1233,9 @@ namespace BackendAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("WarehouseId"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("CreatorId")
                         .HasColumnType("integer");
 
@@ -1242,6 +1245,12 @@ namespace BackendAPI.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("urlimage")
                         .HasColumnType("text");
 
                     b.HasKey("WarehouseId");
@@ -1254,16 +1263,20 @@ namespace BackendAPI.Migrations
                         new
                         {
                             WarehouseId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatorId = 1,
                             Location = "Ho Chi Minh City",
-                            Name = "Warehouse 1"
+                            Name = "Warehouse 1",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
                             WarehouseId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             CreatorId = 2,
                             Location = "Ha Noi",
-                            Name = "Warehouse 2"
+                            Name = "Warehouse 2",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 
@@ -1278,14 +1291,9 @@ namespace BackendAPI.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("RoleId1")
-                        .HasColumnType("integer");
-
                     b.HasKey("WarehouseId", "UserId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("RoleId1");
 
                     b.HasIndex("UserId");
 
@@ -1630,15 +1638,11 @@ namespace BackendAPI.Migrations
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.WarehouseStaff", b =>
                 {
-                    b.HasOne("BackendAPI.BE.DAL.Entities.Role", null)
-                        .WithMany()
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Role", "Role")
+                        .WithMany("WarehouseStaffs")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("BackendAPI.BE.DAL.Entities.Role", null)
-                        .WithMany("WarehouseStaffs")
-                        .HasForeignKey("RoleId1");
 
                     b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
                         .WithMany("WarehouseStaffs")
@@ -1651,6 +1655,8 @@ namespace BackendAPI.Migrations
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Role");
 
                     b.Navigation("User");
 

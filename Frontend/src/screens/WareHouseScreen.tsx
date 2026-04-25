@@ -18,6 +18,7 @@ const WareHouseScreen = () => {
   const {user} = useAuth();
   const {
     warehouses,
+    loading,
     invitations,
     isModalOpen,
     openModal,
@@ -26,7 +27,7 @@ const WareHouseScreen = () => {
     acceptInvitation,
     declineInvitation,
     manageWarehouse,
-  } = useWarehouse(MOCK_WAREHOUSES, MOCK_INVITATIONS);
+  } = useWarehouse();
 
   const {logout} = useAuth();
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const WareHouseScreen = () => {
   const [isSettingOpen, setIsSettingOpen] = React.useState(false);
   const [isDarkMode, setIsDarkMode] = React.useState(false); // State cho thanh trượt Day/Night
 
+  if (loading) return <div>Đang tải...</div>;
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Top Navigation Bar */}
