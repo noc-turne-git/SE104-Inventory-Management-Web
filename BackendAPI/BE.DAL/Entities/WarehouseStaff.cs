@@ -13,4 +13,5 @@ public class WarehouseStaff:IEntity
     // Navigation properties
     public Warehouse Warehouse { get; set; } = null!;
     public User User { get; set; } = null!;
+    public Role Role{get; set; } = null!;
 }

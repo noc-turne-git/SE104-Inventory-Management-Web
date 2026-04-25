@@ -14,6 +14,10 @@ using BackendAPI.Infrastructure.Authorization;
 using Autofac.Extensions.DependencyInjection;
 using Autofac;
 using Hangfire.PostgreSql;
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql;
 
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -84,8 +88,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = "redis:6379"; // Địa chỉ Redis server
-    options.InstanceName = "Warehouse_";      // Prefix cho các key để tránh trùng lặp
+    // Kiểm tra xem có đang chạy trong Docker không
+    // (Docker thường tự tạo biến môi trường DOTNET_RUNNING_IN_CONTAINER)
+    bool isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+
+    // Nếu trong Docker thì dùng "redis", nếu ở ngoài thì dùng "localhost"
+    options.Configuration = isDocker ? "redis:6379" : "localhost:6379";
+    
+    options.InstanceName = "Warehouse_";
 });
 
 
@@ -112,12 +122,14 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IOTPRepository, OTPRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductSupplierRepository, ProductSupplierRepository>();
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.Decorate<IUserRepository, UserCacheDecorator>();
+builder.Services.Decorate<IWarehouseRepository, WarehouseCacheDecorator>();
 builder.Services.AddControllers();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(autofacBuilder =>
 {
-    // Ở đây dùng biến 'autofacBuilder' chứ không dùng 'builder'
     autofacBuilder.RegisterGeneric(typeof(Repository<>))
                   .As(typeof(IRepository<>))
                   .InstancePerLifetimeScope();

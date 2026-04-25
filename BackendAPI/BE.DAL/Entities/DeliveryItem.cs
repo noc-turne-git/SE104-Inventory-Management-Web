@@ -8,9 +8,9 @@ public class DeliveryItem : IEntity
     public int Quantity { get; set; }
 
     // navigation
-    public DeliveryNote DeliveryNote { get; set; }
+    public DeliveryNote DeliveryNote { get; set; } = null!;
 
-    public Product Product { get; set; }
+    public Product Product { get; set; } = null!;
     public string getKey() => DeliveryItemId.ToString();
 
 }

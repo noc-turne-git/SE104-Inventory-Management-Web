@@ -11,11 +11,11 @@ public class Shift: IEntity
 
     public int UserId { get; set; }   // FK
 
-    public string Duty { get; set; }
-    public string Note { get; set; }
+    public string Duty { get; set; } = string.Empty;
+    public string Note { get; set; } = string.Empty;
 
     public string getKey() => ShiftId.ToString();
 
-    public User User { get; set; }      // navigation
-    public Warehouse Warehouse { get; set; } // navigation
+    public User User { get; set; } = null!;      // navigation
+    public Warehouse Warehouse { get; set; } = null!; // navigation
 }

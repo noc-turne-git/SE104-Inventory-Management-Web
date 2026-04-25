@@ -8,11 +8,11 @@ public class InfractionTicket: IEntity
     public int UserId { get; set; } // FK
 
     public DateTime Date { get; set; }
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
     public decimal Penalty { get; set; }
 
     // navigation
-    public User User { get; set; }
-    public Warehouse Warehouse { get; set; }
+    public User User { get; set; } = null!;
+    public Warehouse Warehouse { get; set; } = null!;
     public string getKey() => InfractionTicketId.ToString();
 }

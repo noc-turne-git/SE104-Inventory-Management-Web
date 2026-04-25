@@ -8,14 +8,12 @@ namespace BackendAPI.BE.DAL.Entities;
 // }
 public class GoodsReceipt: Note
 {
-    public string qualityCheckStatus { get; set; }
-    public DateTime Date { get; set; }
+    public string qualityCheckStatus { get; set; } = string.Empty;
     public int SupplierId { get; set; } // FK
     public int StockQuantity { get; set; }
     public int DefectiveQuantity { get; set; }
 
     // Navigation properties
-    public Supplier Supplier { get; set; }
-    public ICollection<ReceiptItem> ReceiptItems { get; set; }
+    public Supplier Supplier { get; set; } = null!;
+    public ICollection<ReceiptItem> ReceiptItems { get; set; } = new List<ReceiptItem>();
 }
-

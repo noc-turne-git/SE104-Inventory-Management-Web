@@ -6,6 +6,9 @@ public class Warehouse : IEntity
     public int WarehouseId { get; set; }
     public string Name { get; set; } = null!;
     public string Location { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public string? urlimage { get; set; } = null!;   
     public int CreatorId { get; set; } 
     public string getKey() => WarehouseId.ToString();
     

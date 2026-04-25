@@ -11,17 +11,22 @@ export interface Warehouse {
   warehouseId: string;
   name: string;
   address: string;
-  lastUpdate: string;
+  lastUpdate?: string;
   status: WarehouseStatusType;
-  productCount: number;
+  productCount?: number;
+  imageUrl?: string;
+}
+export interface FormCreateWarehouse {
+  name: string;
+  Location: string;
   imageUrl?: string;
 }
 
 export interface Invitation {
   id: string;
-  userId: string;
+  userId?: string;
   ownerId: string;
-  sendTime: string;
+  sendTime?: string;
   warehouseId: string;
   warehouseName: string;
   address: string;

@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // navigate('/warehouse', {replace: false});
 
     setUser(userData);
-    //console.log(userData.role); // Chắc chắn sẽ ra 'staff'
+    console.log(userData); // Chắc chắn sẽ ra 'staff'
     console.log(userData.email); // Chắc chắn sẽ ra 'bob@example.com'
     navigate('/warehouse');
     localStorage.setItem('user', JSON.stringify(userData));

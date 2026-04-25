@@ -23,7 +23,7 @@ public class InvitationConfiguration : IEntityTypeConfiguration<Invitation>
             .WithMany(u => u.Invitations)
             .HasForeignKey(i => i.InvitedUserId)
             .OnDelete(DeleteBehavior.Restrict);
-
+        
         // No navigation property for inviter user in Invitation.
         builder.HasOne<User>()
             .WithMany()

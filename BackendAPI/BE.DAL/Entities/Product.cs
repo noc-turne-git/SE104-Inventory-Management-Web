@@ -16,9 +16,9 @@ public class Product: IEntity
     public int ProductId { get; set; }    
     public int WarehouseId { get; set; } 
 
-    public string Name { get; set; }
-    public string Category { get; set; }
-    public string Description { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public decimal SellPrice { get; set; }
     public int StockQuantity { get; set; }
     public int DefectiveQuantity { get; set; }
@@ -27,11 +27,11 @@ public class Product: IEntity
 
 
     // Navigation properties
-    public ICollection<DeliveryItem> DeliveryItems { get; set; }
-    public ICollection<ReceiptItem> ReceiptItems { get; set; }
-    public ICollection<DamageItem> DamageItems { get; set; }
-    public ICollection<ProductSupplier> ProductSuppliers { get; set; }
-    public Warehouse Warehouse { get; set; }
+    public ICollection<DeliveryItem> DeliveryItems { get; set; } = new List<DeliveryItem>();
+    public ICollection<ReceiptItem> ReceiptItems { get; set; } = new List<ReceiptItem>();
+    public ICollection<DamageItem> DamageItems { get; set; } = new List<DamageItem>();
+    public ICollection<ProductSupplier> ProductSuppliers { get; set; } = new List<ProductSupplier>();
+    public Warehouse Warehouse { get; set; } = null!;
 
     public string getKey() => ProductId.ToString();
 }

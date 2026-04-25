@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BackendAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -186,6 +186,9 @@ namespace BackendAPI.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Location = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    urlimage = table.Column<string>(type: "text", nullable: true),
                     CreatorId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -348,8 +351,7 @@ namespace BackendAPI.Migrations
                 {
                     WarehouseId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    RoleId = table.Column<int>(type: "integer", nullable: false),
-                    RoleId1 = table.Column<int>(type: "integer", nullable: true)
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -360,11 +362,6 @@ namespace BackendAPI.Migrations
                         principalTable: "Roles",
                         principalColumn: "RoleId",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_WarehouseStaffs_Roles_RoleId1",
-                        column: x => x.RoleId1,
-                        principalTable: "Roles",
-                        principalColumn: "RoleId");
                     table.ForeignKey(
                         name: "FK_WarehouseStaffs_Users_UserId",
                         column: x => x.UserId,
@@ -671,11 +668,11 @@ namespace BackendAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "Warehouses",
-                columns: new[] { "WarehouseId", "CreatorId", "Location", "Name" },
+                columns: new[] { "WarehouseId", "CreatedAt", "CreatorId", "Location", "Name", "UpdatedAt", "urlimage" },
                 values: new object[,]
                 {
-                    { 1, 1, "Ho Chi Minh City", "Warehouse 1" },
-                    { 2, 2, "Ha Noi", "Warehouse 2" }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 1, "Ho Chi Minh City", "Warehouse 1", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, "Ha Noi", "Warehouse 2", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null }
                 });
 
             migrationBuilder.InsertData(
@@ -736,11 +733,11 @@ namespace BackendAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "WarehouseStaffs",
-                columns: new[] { "UserId", "WarehouseId", "RoleId", "RoleId1" },
+                columns: new[] { "UserId", "WarehouseId", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, null },
-                    { 2, 1, 3, null }
+                    { 1, 1, 1 },
+                    { 2, 1, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -930,11 +927,6 @@ namespace BackendAPI.Migrations
                 name: "IX_WarehouseStaffs_RoleId",
                 table: "WarehouseStaffs",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WarehouseStaffs_RoleId1",
-                table: "WarehouseStaffs",
-                column: "RoleId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WarehouseStaffs_UserId",
