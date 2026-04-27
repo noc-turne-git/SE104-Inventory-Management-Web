@@ -31,9 +31,10 @@ import ReceiptScreen from './screens/staff/ReceiptScreen';
 // --- CONTEXT & CSS ---
 import { NoteProvider } from './context/NoteContext';
 import { AuthProvider } from './context/AuthContext';
+import { WarehouseProvider, useWarehouse } from "./context/WarehouseContext";
 import './index.css';
 
-// 1. Component Layout chứa Sidebar - Chỉ dùng cho các route bên trong hệ thống
+// Component Layout chứa Sidebar - Chỉ dùng cho các route bên trong hệ thống
 const AppLayout = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -46,12 +47,42 @@ const AppLayout = () => {
   );
 };
 
-function App() {
+// DefaultRoute theo role
+const DefaultRoute = () => { 
+  const { role } = useWarehouse(); 
+  if (role === "manager") return <Navigate to="dashboard_manager" replace />; 
+  if (role === "staff") return <Navigate to="dashboard_staff" replace />; 
+  return <Navigate to="/warehouse" replace />; 
+};
 
+// Protected route chặn user chưa có role truy cập và quay về trang signin
+const ProtectedRoute = () => { 
+  const { role } = useWarehouse(); 
+  if (!role) { 
+    return <Navigate to="/signin" replace />; 
+  } 
+  return <Outlet />; 
+};
+
+//Role-based route
+const RoleRoute = ({ allow }: { allow: string[] }) => { 
+  const { role } = useWarehouse(); 
+  if (!role) { 
+    return <Navigate to="/signin" replace />; 
+  } 
+  if (!allow.includes(role)) { 
+    return <Navigate to="/app" replace />; 
+  } 
+  return <Outlet />; 
+};
+
+// --- MAIN APP ---
+function App() {
   return (
     <Router>
       <AuthProvider>
       <NoteProvider>
+      <WarehouseProvider>
         <Routes>
           {/* --- NHÓM 1: PUBLIC (Không Sidebar) --- */}
           <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
@@ -65,30 +96,34 @@ function App() {
           <Route path="/warehouse" element={<WareHouseScreen />} />
 
           {/* --- NHÓM 3: INTERNAL APP (CÓ SIDEBAR) --- */}
-          {/* Tất cả các route bắt đầu bằng /app sẽ được bọc bởi AppLayout */}
-          <Route path="/app" element={<AppLayout />}>
-            {/* Manager Routes */}
-            <Route path="dashboard_manager" element={<DashboardManagerScreen />} />
-            <Route path="products" element={<ProductScreen />} />
-            <Route path="staffs" element={<StaffScreen />} />
-            <Route path="suppliers" element={<SupplierScreen />} />
-            <Route path="notes" element={<NoteAuthorizationScreen/>} />
-            <Route path="shifts" element={<ShiftScreen />} />
-            
-            {/* Staff Routes */}
-            <Route path="dashboard_staff" element={<DashboardStaffScreen />} />
-            <Route path="products_view" element={<ProductViewScreen />} />
-            <Route path="delivery" element={<DeliveryScreen />} />
-            <Route path="receipts" element={<ReceiptScreen />} />
-
-            {/* Điều hướng mặc định bên trong app */}
-            <Route index element={<Navigate to="dashboard_manager" replace />} />
+          <Route path="/app" element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              {/* Manager Routes */}
+              <Route element={<RoleRoute allow={["manager"]} />}>
+                <Route path="dashboard_manager" element={<DashboardManagerScreen />} />
+                <Route path="products" element={<ProductScreen />} />
+                <Route path="staffs" element={<StaffScreen />} />
+                <Route path="suppliers" element={<SupplierScreen />} />
+                <Route path="notes" element={<NoteAuthorizationScreen/>} />
+                <Route path="shifts" element={<ShiftScreen />} />
+              </Route>
+              {/* Staff Routes */}
+              <Route element={<RoleRoute allow={["staff"]} />}>
+                <Route path="dashboard_staff" element={<DashboardStaffScreen />} />
+                <Route path="products_view" element={<ProductViewScreen />} />
+                <Route path="delivery" element={<DeliveryScreen />} />
+                <Route path="receipts" element={<ReceiptScreen />} />
+              </Route>
+              {/* DefaultRoute theo role */}
+              <Route index element={<DefaultRoute />} />
+            </Route>
           </Route>
 
           {/* --- ĐIỀU HƯỚNG GỐC --- */}
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="*" element={<div className="p-10">404 - Trang không tồn tại</div>} />
         </Routes>
+      </WarehouseProvider>
       </NoteProvider>
       </AuthProvider>
     </Router>
