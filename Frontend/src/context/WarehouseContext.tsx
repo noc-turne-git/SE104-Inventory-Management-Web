@@ -24,9 +24,14 @@ export const WarehouseProvider = ({ children }: { children: React.ReactNode }) =
 
   // load từ localStorage (persist login)
   useEffect(() => {
-    const stored = localStorage.getItem("warehouse");
-    if (stored) {
-      setState(JSON.parse(stored));
+    try {
+      const stored = localStorage.getItem("warehouse");
+      if (stored) {
+        setState(JSON.parse(stored));
+      }
+    } catch (err) {
+      console.error("Invalid warehouse data in localStorage");
+      localStorage.removeItem("warehouse");
     }
   }, []);
 
@@ -45,14 +50,15 @@ export const WarehouseProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   return (
-    <WarehouseContext.Provider value={{ ...state, setWarehouse, clearWarehouse }}>
+    <WarehouseContext.Provider 
+      value={{ ...state, setWarehouse, clearWarehouse }}>
       {children}
     </WarehouseContext.Provider>
   );
 };
 
 // custom hook 
-export const useWarehouse = () => {
+export const useWarehouseContext = () => {
   const context = useContext(WarehouseContext);
   if (!context) {
     throw new Error("useWarehouse must be used within WarehouseProvider");
