@@ -19,16 +19,20 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
                 SupplierId = 1,
                 WarehouseId = 1,
                 Name = "Supplier 1",
-                phone = "0900000001",
-                email = "supplier1@test.com"
+                Contact = "John Smith",
+                Phone = "0900000001",
+                Email = "supplier1@test.com",
+                Address = "123 Tech Street"
             },
             new Supplier
             {
                 SupplierId = 2,
                 WarehouseId = 2,
                 Name = "Supplier 2",
-                phone = "0900000002",
-                email = "supplier2@test.com"
+                Contact = "Sarah Johnson",
+                Phone = "0900000002",
+                Email = "supplier2@test.com",
+                Address = "456 Industry Ave"
             }
         );
     }

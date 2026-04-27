@@ -7,7 +7,9 @@ public class ReceiptItem: IEntity
     public int ReceiptItemId { get; set; }
     public int NoteId { get; set; } // FK
     public int ProductId { get; set; } // FK
+    public int OrderedQuantity { get; set; }
     public int Quantity { get; set; }
+    public int DefectiveQuantity { get; set; }
 
     // navigation
     public GoodsReceipt GoodReceipt { get; set; } = null!;

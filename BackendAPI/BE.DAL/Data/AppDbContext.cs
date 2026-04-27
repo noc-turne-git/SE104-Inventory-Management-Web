@@ -21,9 +21,11 @@ public class AppDbContext : DbContext
     public DbSet<GoodsReceipt> GoodsReceipts { get; set; }
     public DbSet<DeliveryNote> deliveryNotes { get; set; }
     public DbSet<DamageNote> damageNotes { get; set; }
+    public DbSet<InventoryCheckNote> InventoryCheckNotes { get; set; }
     public DbSet<DamageItem> damageItems { get; set; }
     public DbSet<ReceiptItem> receiptItems { get; set; }
     public DbSet<DeliveryItem> deliveryItems { get; set; }
+    public DbSet<InventoryCheckItem> inventoryCheckItems { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<OTP> OTPs { get; set; }
     public DbSet<VerifyEmailToken> VerifyEmailTokens { get; set; }

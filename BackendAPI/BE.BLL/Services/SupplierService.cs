@@ -29,8 +29,10 @@ public class SupplierService : ISupplierService
         {
             WarehouseId = warehouseId,
             Name = model.Name,
-            phone = model.Phone,
-            email = model.Email
+            Contact = model.Contact,
+            Phone = model.Phone,
+            Email = model.Email,
+            Address = model.Address
         };
 
         await _suppliers.AddAsync(entity, cancellationToken);
@@ -43,8 +45,10 @@ public class SupplierService : ISupplierService
         if (supplier == null || supplier.WarehouseId != warehouseId) return false;
 
         supplier.Name = model.Name;
-        supplier.phone = model.Phone;
-        supplier.email = model.Email;
+        supplier.Contact = model.Contact;
+        supplier.Phone = model.Phone;
+        supplier.Email = model.Email;
+        supplier.Address = model.Address;
 
         return await _suppliers.UpdateAsync(supplier, cancellationToken);
     }
@@ -72,8 +76,10 @@ public class SupplierService : ISupplierService
             items = await _suppliers.GetAsync(
                 s => s.WarehouseId == warehouseId
                      && (s.Name.Contains(query)
-                         || s.phone.Contains(query)
-                         || s.email.Contains(query)),
+                         || s.Phone.Contains(query)
+                         || s.Email.Contains(query)
+                         || s.Contact.Contains(query)
+                         || s.Address.Contains(query)),
                 cancellationToken);
         }
 

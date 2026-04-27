@@ -9,13 +9,13 @@ public class Shift: IEntity
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
 
-    public int UserId { get; set; }   // FK
+    public int? UserId { get; set; }   // FK (nullable = unassigned)
 
     public string Duty { get; set; } = string.Empty;
     public string Note { get; set; } = string.Empty;
 
     public string getKey() => ShiftId.ToString();
 
-    public User User { get; set; } = null!;      // navigation
+    public User? User { get; set; }      // navigation
     public Warehouse Warehouse { get; set; } = null!; // navigation
 }

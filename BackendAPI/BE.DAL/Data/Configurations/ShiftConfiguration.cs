@@ -11,7 +11,7 @@ public class ShiftConfiguration : IEntityTypeConfiguration<Shift>
         builder.HasOne(s => s.User)
             .WithMany(u => u.Shifts)
             .HasForeignKey(s => s.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(s => s.Warehouse)
             .WithMany(w => w.Shifts)

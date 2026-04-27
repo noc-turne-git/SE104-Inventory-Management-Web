@@ -25,7 +25,12 @@ public class ProductService : IProductService
         
         var httpUser = _httpContextAccessor.HttpContext?.User;
         var products = await _products.GetAllAsync();
-        return _mapper.Map<IEnumerable<ProductDTO>>(products);
+        var dtos = _mapper.Map<List<ProductDTO>>(products);
+        foreach (var dto in dtos)
+        {
+            dto.Status = GetStatus(dto.StockQuantity);
+        }
+        return dtos;
     }
 
     public async Task<bool> AddProductAsync(ProductDTO productDTO)
@@ -41,6 +46,13 @@ public class ProductService : IProductService
             // Log the exception (ex) as needed
             return false;
         }
+    }
+
+    private static string GetStatus(int stockQuantity)
+    {
+        if (stockQuantity <= 0) return "out of stock";
+        if (stockQuantity <= 20) return "low stock";
+        return "in stock";
     }
 
     public Task<IEnumerable<Product>> GetAllByWarehouseAsync(int warehouseId, CancellationToken cancellationToken = default)
