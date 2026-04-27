@@ -45,7 +45,7 @@ axiosClient.interceptors.response.use(
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
 
-          window.location.href = '/login';
+          window.location.href = '/signin';
 
         // Trả về lỗi để chặn các logic xử lý phía sau
         return Promise.reject(error);
