@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 // --- AUTH & PUBLIC ---
 import { HomeScreen } from './screens/HomeScreen';
@@ -30,9 +30,11 @@ import ReceiptScreen from './screens/staff/ReceiptScreen';
 
 // --- CONTEXT & CSS ---
 import { NoteProvider } from './context/NoteContext';
-import { AuthProvider } from './context/AuthContext';
-import { WarehouseProvider, useWarehouse } from "./context/WarehouseContext";
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { WarehouseProvider, useWarehouseContext } from "./context/WarehouseContext";
 import './index.css';
+
+
 
 // Component Layout chứa Sidebar - Chỉ dùng cho các route bên trong hệ thống
 const AppLayout = () => {
@@ -49,7 +51,7 @@ const AppLayout = () => {
 
 // DefaultRoute theo role
 const DefaultRoute = () => { 
-  const { role } = useWarehouse(); 
+  const { role } = useWarehouseContext(); 
   if (role === "manager") return <Navigate to="dashboard_manager" replace />; 
   if (role === "staff") return <Navigate to="dashboard_staff" replace />; 
   return <Navigate to="/warehouse" replace />; 
@@ -57,21 +59,25 @@ const DefaultRoute = () => {
 
 // Protected route chặn user chưa có role truy cập và quay về trang signin
 const ProtectedRoute = () => { 
-  const { role } = useWarehouse(); 
+  const { role } = useWarehouseContext(); 
+  const { user } = useAuth();
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
   if (!role) { 
-    return <Navigate to="/signin" replace />; 
+    return <Navigate to="/warehouse" replace />; 
   } 
   return <Outlet />; 
 };
 
 //Role-based route
 const RoleRoute = ({ allow }: { allow: string[] }) => { 
-  const { role } = useWarehouse(); 
+  const { role } = useWarehouseContext(); 
   if (!role) { 
     return <Navigate to="/signin" replace />; 
   } 
-  if (!allow.includes(role)) { 
-    return <Navigate to="/app" replace />; 
+  if (!allow.includes(role || "")) { 
+    return <Navigate to="/warehouse" replace />; 
   } 
   return <Outlet />; 
 };
