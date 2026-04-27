@@ -5,6 +5,7 @@ export type statusNote = 'new' | 'in process' | 'pending' | 'approved' | 'reject
 
 interface BaseNote {
   id: string;
+  warehouseId: string; // thêm warehouseId
   noteNumber: string;
   dateCreated: string;
   status: statusNote;
