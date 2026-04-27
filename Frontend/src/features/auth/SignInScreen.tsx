@@ -25,11 +25,18 @@ const SignInScreen = () => {
 
     try {
       const response = await authApi.signIn(form);
+      
+      console.log("Đăng nhập thành công:", response.data); // Kiểm tra token trả về
       login(response.data.user); 
       localStorage.setItem('access_token', response.data.accessToken);
       localStorage.setItem('refresh_token', response.data.refreshToken);
     } catch (err: unknown) {
-      if (!isAxiosError(err)) setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+      if (!isAxiosError(err)) {
+        setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
+        console.error("Lỗi Logic Code:", err); // Dòng này sẽ chỉ đích danh file và dòng bị lỗi
+       
+      }
+      
       else {
       // --- XỬ LÝ LỖI Ở ĐÂY ---
       
@@ -40,7 +47,7 @@ const SignInScreen = () => {
           // Trường hợp Server có trả về lỗi
           const status = err.response.status;
           const message = err.response.data?.message;
-
+          console.error("Lỗi đăng nhập:", err.status);
           switch (status) {
             case 401:
               setError("Email hoặc mật khẩu không chính xác.");
@@ -52,7 +59,7 @@ const SignInScreen = () => {
               setError("Lỗi hệ thống phía Server. Vui lòng thử lại sau!");
               break;
             default:
-              setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại.");
+              setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại..");
           }
         }
       }

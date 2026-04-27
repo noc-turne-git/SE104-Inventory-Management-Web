@@ -7,10 +7,10 @@ using BackendAPI.BE.DAL.Interfaces;
 
 public class WarehouseReadService : IWarehouseReadService
 {
-    private readonly IRepository<Warehouse> _warehouses;
+    private readonly IWarehouseRepository _warehouses;
     private readonly IRepository<WarehouseStaff> _warehouseStaffs;
 
-    public WarehouseReadService(IRepository<Warehouse> warehouses, IRepository<WarehouseStaff> warehouseStaffs)
+    public WarehouseReadService(IWarehouseRepository warehouses, IRepository<WarehouseStaff> warehouseStaffs)
     {
         _warehouses = warehouses;
         _warehouseStaffs = warehouseStaffs;
@@ -22,14 +22,25 @@ public class WarehouseReadService : IWarehouseReadService
         var warehouseIds = memberships.Select(ws => ws.WarehouseId).Distinct().ToList();
         if (warehouseIds.Count == 0) return Array.Empty<WarehouseSummaryDTO>();
 
-        var warehouses = await _warehouses.GetAsync(w => warehouseIds.Contains(w.WarehouseId), cancellationToken);
+        var warehouses = (await _warehouses.GetAsync(w => warehouseIds.Contains(w.WarehouseId), cancellationToken)).ToList();
+        
+        // EF Core DbContext is not thread-safe; avoid running multiple queries concurrently on the same scope.
+        var productCounts = new Dictionary<int, int>(warehouses.Count);
+        foreach (var warehouse in warehouses)
+        {
+            var count = await _warehouses.GetProductCountAsync(warehouse.WarehouseId, cancellationToken);
+            productCounts[warehouse.WarehouseId] = count;
+        }
 
         return warehouses
             .Select(w => new WarehouseSummaryDTO
             {
                 WarehouseId = w.WarehouseId,
                 Name = w.Name,
-                Location = w.Location
+                Location = w.Location,
+                urlimage = w.urlimage,
+                lastUpdate = w.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+                productCount = productCounts.TryGetValue(w.WarehouseId, out var count) ? count.ToString() : "0"
             })
             .OrderBy(w => w.Name)
             .ToList();
@@ -40,12 +51,17 @@ public class WarehouseReadService : IWarehouseReadService
         var entity = await _warehouses.GetByIdAsync(warehouseId, cancellationToken);
         if (entity == null) return null;
 
+        var productCount = await _warehouses.GetProductCountAsync(warehouseId, cancellationToken);
+
         return new WarehouseDetailDTO
         {
             WarehouseId = entity.WarehouseId,
             Name = entity.Name,
             Location = entity.Location,
-            CreatorId = entity.CreatorId
+            CreatorId = entity.CreatorId,
+            urlimage = entity.urlimage,
+            lastUpdate = entity.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            productCount = productCount.ToString()
         };
     }
 }

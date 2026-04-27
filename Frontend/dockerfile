@@ -1,0 +1,21 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Chỉ copy package files để tối ưu cache
+COPY package*.json ./
+RUN npm install
+
+# Copy toàn bộ code
+COPY . .
+
+# Build dự án (Bỏ || true để kiểm soát lỗi)
+RUN npm run build
+
+# Cài đặt serve
+RUN npm install -g serve
+
+# Đảm bảo serve chạy đúng thư mục dist
+# -s: Single Page Application mode (chống 404 khi refresh trang)
+# -l: Listen port
+CMD ["serve", "-s", "dist", "-l", "5173"]

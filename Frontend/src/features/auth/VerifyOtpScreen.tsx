@@ -38,7 +38,7 @@ const VerifyOtpScreen = () => {
     let hasError = false;
 
     try {
-      const verifyOtpFormData = {otp: enteredOtp, email: localStorage.getItem("resetPass_email")};
+      const verifyOtpFormData = {otp: enteredOtp, email: localStorage.getItem("reset_email")};
       const response = await authApi.verifyOtp(verifyOtpFormData);
       localStorage.setItem("reset_token", response.data.resetToken);
     } catch (err: unknown) {

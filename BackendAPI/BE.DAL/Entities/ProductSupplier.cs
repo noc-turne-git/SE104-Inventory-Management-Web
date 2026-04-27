@@ -7,7 +7,7 @@ public class ProductSupplier : IEntity
     public decimal Price { get; set; }
 
     // Navigation properties
-    public Product Product { get; set; }
-    public Supplier Supplier { get; set; }
+    public Product Product { get; set; } = null!;
+    public Supplier Supplier { get; set; } = null!;
     public string getKey() => $"{ProductId}:{SupplierId}";
 }

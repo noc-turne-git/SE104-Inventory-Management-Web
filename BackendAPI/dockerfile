@@ -1,0 +1,24 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+# Copy file project và restore package
+COPY ["BackendAPI.csproj", "./"]
+# Thêm dòng này để chắc chắn có công cụ EF
+RUN dotnet restore "BackendAPI.csproj"
+
+# Copy toàn bộ code (lúc này đã xóa thư mục Migrations ở máy thật)
+COPY . .
+
+# Build dự án
+RUN dotnet build "BackendAPI.csproj" -c Release -o /app/build
+
+# Stage 2: Run
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+COPY --from=build /app/build .
+
+# Cổng này phải khớp với cổng trong docker-compose.yml (5074)
+ENV ASPNETCORE_URLS=http://+:5074
+EXPOSE 5074
+
+ENTRYPOINT ["dotnet", "BackendAPI.dll"]

@@ -6,11 +6,11 @@ public class Note: IEntity
     public int WarehouseId { get; set; } // FK to Warehouse
     public int UserId { get; set; } // FK
     public DateTime Date { get; set; }
-    public string type { get; set; }
-    public string Status { get; set; }
+    public string type { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
 
     // navigation
-    public User User { get; set; }
-    public Warehouse Warehouse { get; set; }
+    public User User { get; set; } = null!;
+    public Warehouse Warehouse { get; set; } = null!;
     public string getKey() => NoteId.ToString();
 }

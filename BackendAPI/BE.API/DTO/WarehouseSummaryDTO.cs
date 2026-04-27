@@ -5,5 +5,8 @@ public class WarehouseSummaryDTO
     public int WarehouseId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Location { get; set; } = string.Empty;
+    public string? urlimage { get; set; } = null!;
+    public string? lastUpdate { get; set; } = null!;
+    public string? productCount { get; set; } = null!; 
 }
 

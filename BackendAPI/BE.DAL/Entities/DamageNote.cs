@@ -2,10 +2,9 @@ namespace BackendAPI.BE.DAL.Entities;
 
 public class DamageNote : Note
 {
-    public DateTime Date { get; set; }
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     // navigation
-    public ICollection<DamageItem> DamageItems { get; set; }
+    public ICollection<DamageItem> DamageItems { get; set; } = new List<DamageItem>();
 
 }

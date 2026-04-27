@@ -16,10 +16,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'npm'
           cache-dependency-path: Frontend/package-lock.json
 
+      - name: Clean npm cache  # Add this step
+        run: npm cache clean --force    
       - name: Install dependencies
         working-directory: ./Frontend
         run: npm ci
@@ -37,7 +39,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0 # Điều chỉnh version phù hợp với project của bạn
+          dotnet-version: 9.0 # Điều chỉnh version phù hợp với project của bạn
 
       - name: Restore dependencies
         working-directory: ./BackendAPI

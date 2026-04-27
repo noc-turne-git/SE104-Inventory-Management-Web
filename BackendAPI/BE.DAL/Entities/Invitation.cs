@@ -9,11 +9,12 @@ public class Invitation: IEntity
     public int InviterUserId { get; set; }
     public string Role { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
 
     // Navigation properties
     public Warehouse Warehouse { get; set; } = null!;
     public User User { get; set; } = null!;
+    //public User invited{ get; set; } = null!;
     public string getKey() => InvitationId.ToString(); // Assuming InvitationId is the unique identifier for Invitation
 
 }

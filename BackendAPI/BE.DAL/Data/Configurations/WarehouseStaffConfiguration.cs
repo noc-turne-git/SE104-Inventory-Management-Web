@@ -20,9 +20,8 @@ public class WarehouseStaffConfiguration : IEntityTypeConfiguration<WarehouseSta
             .HasForeignKey(ws => ws.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // No navigation property in WarehouseStaff for Role, but RoleId is still a FK.
-        builder.HasOne<Role>()
-            .WithMany()
+        builder.HasOne(ws => ws.Role) 
+            .WithMany(r => r.WarehouseStaffs)
             .HasForeignKey(ws => ws.RoleId)
             .OnDelete(DeleteBehavior.Restrict);
 

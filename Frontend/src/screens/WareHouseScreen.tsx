@@ -18,6 +18,7 @@ const WareHouseScreen = () => {
   const {user} = useAuth();
   const {
     warehouses,
+    loading,
     invitations,
     isModalOpen,
     openModal,
@@ -26,7 +27,7 @@ const WareHouseScreen = () => {
     acceptInvitation,
     declineInvitation,
     manageWarehouse,
-  } = useWarehouse(MOCK_WAREHOUSES, MOCK_INVITATIONS);
+  } = useWarehouse();
 
   const {logout} = useAuth();
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const WareHouseScreen = () => {
   const [isSettingOpen, setIsSettingOpen] = React.useState(false);
   const [isDarkMode, setIsDarkMode] = React.useState(false); // State cho thanh trượt Day/Night
 
+  if (loading) return <div>Đang tải...</div>;
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Top Navigation Bar */}
@@ -125,7 +127,7 @@ const WareHouseScreen = () => {
       <main className="grow w-full max-w-7xl mx-auto px-8 py-12">
         <section className="mb-16">
           <h1 className="text-5xl font-headline font-extrabold text-inverse-surface tracking-tight mb-2">
-            Welcome back, Justin
+            Welcome back
           </h1>
           <p className="text-on-surface-variant text-lg max-w-2xl">
             Select a workspace to manage your logistics, or review new invitations from partners.
@@ -146,7 +148,7 @@ const WareHouseScreen = () => {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {invitations.map((inv) => (
-                <InvitationCard 
+                <InvitationCard                 
                   key={inv.id} 
                   invitation={inv} 
                   onAccept={acceptInvitation} 

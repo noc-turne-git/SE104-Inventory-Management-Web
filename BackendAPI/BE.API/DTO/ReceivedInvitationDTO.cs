@@ -2,9 +2,10 @@ namespace BackendAPI.BE.API.DTO;
 
 public class ReceivedInvitationDTO
 {
-    public int InvitationId { get; set; }
+    public int id { get; set; }
     public int WarehouseId { get; set; }
     public string WarehouseName { get; set; } = string.Empty;
+    public string ownerId{ get; set; }
     public string WarehouseLocation { get; set; } = string.Empty;
 
     public int InviterUserId { get; set; }
@@ -12,6 +13,6 @@ public class ReceivedInvitationDTO
 
     public string Role { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; }
+    public DateTime sendTime { get; set; }
 }
 

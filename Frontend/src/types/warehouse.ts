@@ -10,21 +10,28 @@ export type WarehouseStatusType = typeof WarehouseStatus[keyof typeof WarehouseS
 export interface Warehouse {
   warehouseId: string;
   name: string;
-  address: string;
-  lastUpdate: string;
+  location: string;
+  lastUpdate?: string;
   status: WarehouseStatusType;
-  productCount: number;
+  productCount?: number;
+  imageUrl?: string;
+}
+export interface FormCreateWarehouse {
+  name: string;
+  Location: string;
   imageUrl?: string;
 }
 
 export interface Invitation {
   id: string;
-  userId: string;
+  sendTime?: string;
   ownerId: string;
-  sendTime: string;
   warehouseId: string;
   warehouseName: string;
-  address: string;
-  requestedRole: "manager" | "staff";
+  Role: "manager" | "staff";
   imageUrl?: string;
+}
+
+export interface InvitationForm {
+  InvitationId:string
 }

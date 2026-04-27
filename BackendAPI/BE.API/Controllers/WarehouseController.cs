@@ -1,4 +1,6 @@
 using BackendAPI.BE.DAL.Interfaces;
+using BackendAPI.BE.DAL.Entities;
+using BackendAPI.BE.DAL.Data;
 using BackendAPI.BE.API.DTO;
 using BackendAPI.BE.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +10,7 @@ using BackendAPI.BE.BLL.Interfaces;
 using BackendAPI.BE.DAL.Constants;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.BE.API.Controllers;
 
@@ -20,7 +23,9 @@ public class WarehouseController : ControllerBase
     private readonly IWarehouseStaffService _warehouseStaffs;
     private readonly IWarehouseReadService _warehouseReads;
 
-    public WarehouseController(IWarehouseService warehouseService, IWarehouseStaffService warehouseStaffs, IWarehouseReadService warehouseReads)
+    public WarehouseController(IWarehouseService warehouseService
+    , IWarehouseStaffService warehouseStaffs
+    , IWarehouseReadService warehouseReads)
     {
         _warehouseService = warehouseService;
         _warehouseStaffs = warehouseStaffs;
@@ -30,10 +35,12 @@ public class WarehouseController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreateWarehouse(CreateWarehouseDTO model)
     {
-        var result = await _warehouseService.CreateWarehouseAsync(model);
-        if (!result)
+        
+        var userid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var result = await _warehouseService.CreateWarehouseAsync(model,userid);
+        if (result <= 0)
             return BadRequest(new { Success = false, Message = "Failed to create warehouse." });
-        return Ok(new { Success = true, Message = "Warehouse created successfully." });
+        return Ok(new { Success = true, Message = "Warehouse created successfully.", WarehouseId = result });
     }
 
     [HttpPost("invite-staff")]
@@ -41,23 +48,22 @@ public class WarehouseController : ControllerBase
     {
         var inviterUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var result = await _warehouseService.InviteStaffAsync(model, inviterUserId);
-        if (!result)
+        if (result == null)
             return BadRequest(new { Success = false, Message = "Failed to invite staff." });
-        return Ok(new { Success = true, Message = "Staff invited successfully." });
+        return Ok(new { Success = true, Message = "Staff invited successfully.", result });
     }
 
-    [HttpPost("join")]
-    public async Task<IActionResult> joinWarehouse(JoinWarehouseDTO model)
-    {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var result = await _warehouseService.JoinWarehouse(model, userId);
-        if (!result)
-            return BadRequest(new { Success = false, Message = "Failed to join warehouse." });
-        return Ok(new { Success = true, Message = "Warehouse joined successfully." });
-    }
+    // [HttpPost("join")]
+    // public async Task<IActionResult> joinWarehouse(JoinWarehouseDTO model)
+    // {
+    //     var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    //     var result = await _warehouseService.JoinWarehouse(model, userId);
+    //     if (!result)
+    //         return BadRequest(new { Success = false, Message = "Failed to join warehouse." });
+    //     return Ok(new { Success = true, Message = "Warehouse joined successfully." });
+    // }
 
     [HttpGet("/api/warehouses/mine")]
-    [Authorize(Policy = PermissionCode.WAREHOUSE_VIEW)]
     public async Task<IActionResult> GetMine(CancellationToken cancellationToken)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -66,7 +72,6 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpGet("/api/warehouses/{warehouseId:int}")]
-    [Authorize(Policy = PermissionCode.WAREHOUSE_VIEW)]
     public async Task<IActionResult> GetById(int warehouseId, CancellationToken cancellationToken)
     {
         var item = await _warehouseReads.GetByIdAsync(warehouseId, cancellationToken);
