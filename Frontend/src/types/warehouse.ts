@@ -18,7 +18,7 @@ export interface Warehouse {
 }
 export interface FormCreateWarehouse {
   name: string;
-  Location: string;
+  location: string; // fix viết nhầm l thành L
   imageUrl?: string;
 }
 

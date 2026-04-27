@@ -45,7 +45,7 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
           </div>
           <div className="flex items-center text-[#666666] gap-3 text-sm font-medium">
             <Icons.Package className="w-4 h-4 text-[#666666]" />
-            <span>{warehouse.productCount.toLocaleString()} Products</span>
+            <span>{warehouse.productCount ?? 0 .toLocaleString()} Products</span>
           </div>
         </div>
         <div className="pt-6 border-t border-[#e5e7eb] flex items-center justify-between">

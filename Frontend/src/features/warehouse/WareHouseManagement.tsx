@@ -2,7 +2,7 @@ import * as React from "react";
 import { WarehouseStatus } from "../../types/warehouse";
 import type { Warehouse } from "../../types/warehouse";
 import { Icons } from "./iconWareHouse";
-import { motion } from "motion/react";
+// import { motion } from "motion/react";
 
 interface WarehouseManagementProps {
   warehouse: Warehouse;
@@ -76,7 +76,7 @@ export const WarehouseManagement: React.FC<WarehouseManagementProps> = ({
                   <h2 className="text-4xl font-headline font-extrabold text-inverse-surface mb-2">{warehouse.name}</h2>
                   <div className="flex items-center gap-2 text-on-surface-variant">
                     <Icons.MapPin className="w-4 h-4" />
-                    <span>{warehouse.address}</span>
+                    <span>{warehouse.location}</span>
                   </div>
                 </div>
                 <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${statusColors[warehouse.status]}`}>
@@ -87,7 +87,7 @@ export const WarehouseManagement: React.FC<WarehouseManagementProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div className="p-6 bg-surface-container-low rounded-xl">
                   <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Total Products</p>
-                  <p className="text-4xl font-headline font-extrabold text-inverse-surface">{warehouse.productCount.toLocaleString()}</p>
+                  <p className="text-4xl font-headline font-extrabold text-inverse-surface">{warehouse.productCount ?? 0 .toLocaleString()}</p>
                 </div>
                 <div className="p-6 bg-surface-container-low rounded-xl">
                   <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Active Staff</p>
