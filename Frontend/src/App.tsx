@@ -86,9 +86,10 @@ const RoleRoute = ({ allow }: { allow: string[] }) => {
 function App() {
   return (
     <Router>
+      
+      <WarehouseProvider>
       <AuthProvider>
       <NoteProvider>
-      <WarehouseProvider>
         <Routes>
           {/* --- NHÓM 1: PUBLIC (Không Sidebar) --- */}
           <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
@@ -129,9 +130,10 @@ function App() {
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="*" element={<div className="p-10">404 - Trang không tồn tại</div>} />
         </Routes>
-      </WarehouseProvider>
+      
       </NoteProvider>
       </AuthProvider>
+      </WarehouseProvider>
     </Router>
   );
 }
