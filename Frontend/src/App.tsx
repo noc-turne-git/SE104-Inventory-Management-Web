@@ -90,7 +90,6 @@ function App() {
       <WarehouseProvider>
       <AuthProvider>
       <NoteProvider>
-      <WarehouseProvider>
         <Routes>
           {/* --- NHÓM 1: PUBLIC (Không Sidebar) --- */}
           <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
