@@ -7,4 +7,7 @@ public interface IWarehouseStaffService
     // Task<bool> ChangeRoleAsync(int warehouseId, int userId, string newRole);
     Task<bool> AddAsync(Invitation model, int userId, CancellationToken cancellationToken = default);
     Task<IEnumerable<WarehouseStaffSearchResultDTO>> SearchAsync(int warehouseId, string? query, int limit = 20, CancellationToken cancellationToken = default);
+    Task<IEnumerable<WarehouseStaffDetailDTO>> GetAllAsync(int warehouseId, CancellationToken cancellationToken = default);
+    Task<WarehouseStaffDetailDTO?> GetByUserIdAsync(int warehouseId, int userId, CancellationToken cancellationToken = default);
+    Task<bool> UpdateAsync(int warehouseId, int userId, WarehouseStaffUpdateDTO model, CancellationToken cancellationToken = default);
 }

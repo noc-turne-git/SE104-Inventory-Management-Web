@@ -3,6 +3,7 @@ namespace BackendAPI.BE.API.Controllers;
 using BackendAPI.BE.API.DTO;
 using BackendAPI.BE.BLL.Interfaces;
 using BackendAPI.BE.DAL.Constants;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +13,12 @@ using Microsoft.AspNetCore.Mvc;
 public class WarehouseProductsController : ControllerBase
 {
     private readonly IProductService _products;
+    private readonly IMapper _mapper;
 
-    public WarehouseProductsController(IProductService products)
+    public WarehouseProductsController(IProductService products, IMapper mapper)
     {
         _products = products;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -23,7 +26,8 @@ public class WarehouseProductsController : ControllerBase
     public async Task<IActionResult> GetAll(int warehouseId, CancellationToken cancellationToken)
     {
         var items = await _products.GetAllByWarehouseAsync(warehouseId, cancellationToken);
-        return Ok(items);
+        var dtos = items.Select(Map).ToList();
+        return Ok(dtos);
     }
 
     [HttpGet("{productId:int}")]
@@ -33,7 +37,7 @@ public class WarehouseProductsController : ControllerBase
         var product = await _products.GetByIdAsync(warehouseId, productId, cancellationToken);
         if (product == null) return NotFound();
 
-        return Ok(product);
+        return Ok(Map(product));
     }
 
     [HttpGet("search")]
@@ -45,7 +49,8 @@ public class WarehouseProductsController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var items = await _products.SearchAsync(warehouseId, q, limit, cancellationToken);
-        return Ok(items);
+        var dtos = items.Select(Map).ToList();
+        return Ok(dtos);
     }
 
     [HttpPost]
@@ -53,7 +58,7 @@ public class WarehouseProductsController : ControllerBase
     public async Task<IActionResult> Create(int warehouseId, ProductDTO model, CancellationToken cancellationToken)
     {
         var entity = await _products.CreateAsync(warehouseId, model, cancellationToken);
-        return CreatedAtAction(nameof(GetById), new { warehouseId, productId = entity.ProductId }, entity);
+        return CreatedAtAction(nameof(GetById), new { warehouseId, productId = entity.ProductId }, Map(entity));
     }
 
     [HttpDelete("{productId:int}")]
@@ -63,5 +68,19 @@ public class WarehouseProductsController : ControllerBase
         var ok = await _products.DeleteAsync(warehouseId, productId, cancellationToken);
         if (!ok) return NotFound();
         return NoContent();
+    }
+
+    private ProductDTO Map(BackendAPI.BE.DAL.Entities.Product product)
+    {
+        var dto = _mapper.Map<ProductDTO>(product);
+        dto.Status = GetStatus(dto.StockQuantity);
+        return dto;
+    }
+
+    private static string GetStatus(int stockQuantity)
+    {
+        if (stockQuantity <= 0) return "out of stock";
+        if (stockQuantity <= 20) return "low stock";
+        return "in stock";
     }
 }

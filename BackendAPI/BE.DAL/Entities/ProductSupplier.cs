@@ -4,6 +4,7 @@ public class ProductSupplier : IEntity
 {
     public int ProductId { get; set; }    // PK, FK
     public int SupplierId { get; set; }   // PK, FK
+    public string Type { get; set; } = "PRIMARY";
     public decimal Price { get; set; }
 
     // Navigation properties
