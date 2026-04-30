@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import bgImage from "../../assets/stockify.png";
 import lgImage from "../../assets/logostockify.png";
 import { useAuth } from "../../context/AuthContext";
+// import { useWarehouseContext } from "../../context/WarehouseContext";
 //import { MOCK_USERS } from "../../data/MOCK_USER";
 import authApi from "../../api/AuthAPI";
 import { isAxiosError } from "axios";
@@ -11,7 +12,9 @@ import './auth.css';
 
 const SignInScreen = () => {
   const navigate = useNavigate();
-  const {login} = useAuth();
+  const { signin } = useAuth();
+  // const { user } = useAuth();
+  // const { role } = useWarehouseContext();
 
   const [form, setForm] = useState({
     email: "",
@@ -27,7 +30,7 @@ const SignInScreen = () => {
       const response = await authApi.signIn(form);
       
       console.log("Đăng nhập thành công:", response.data); // Kiểm tra token trả về
-      login(response.data.user); 
+      signin(response.data.user); 
       localStorage.setItem('access_token', response.data.accessToken);
       localStorage.setItem('refresh_token', response.data.refreshToken);
     } catch (err: unknown) {

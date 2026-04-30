@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Warehouse, Invitation } from "../types/warehouse";
+import { useWarehouseContext } from "../context/WarehouseContext";
 import { toast } from "sonner"; // Giả định bạn dùng sonner như file mẫu
 import { useNavigate } from "react-router-dom";
 import warehouseApi from "../api/WarehouseAPI"; // Giả định bạn có API này để fetch data
@@ -7,12 +8,10 @@ import invitationApi from "../api/InvitationAPI";
 
 import { isAxiosError } from "axios";
 
-export const useWarehouse = (
-) => {
-  
+export const useWarehouse = () => {
+  const { setWarehouse } = useWarehouseContext();
+
   const [loading, setLoading] = useState(false);
-
-
 
   const [warehouses, setWarehouses] = useState  <Warehouse[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -90,6 +89,12 @@ export const useWarehouse = (
       const response = await warehouseApi.create(form);
       const getWarehouseResponse = await warehouseApi.getById(response.data.warehouseId);
       
+      setWarehouse({
+        role: "manager",
+        warehouseId: getWarehouseResponse.data.warehouseId,
+        warehouseName: getWarehouseResponse.data.name,
+      });
+
       setWarehouses((prev) => [...prev || [], getWarehouseResponse.data]); // Cập nhật state với warehouse mới
       closeModal();
       toast.success(`Warehouse "${name}" created successfully`);
@@ -107,6 +112,12 @@ export const useWarehouse = (
         const form = {InvitationId:id }
         await invitationApi.accept(form);
         const wh = await warehouseApi.getById(invitedWh.warehouseId);
+        setWarehouse({
+          role: "staff",
+          warehouseId: wh.data.warehouseId,
+          warehouseName: wh.data.name,
+        });
+
         setWarehouses((prev) => [...prev || [], wh.data]); 
         
         setInvitations((prev) => (prev || []).filter((inv) => inv.id !== id));
@@ -146,10 +157,8 @@ export const useWarehouse = (
       try{
         const form = {InvitationId:id }
         await invitationApi.reject(form);
-        const wh = await warehouseApi.getById(invitedWh.warehouseId);
-        setWarehouses((prev) => [...prev || [], wh.data]); 
         setInvitations((prev) => prev.filter((inv) => inv.id !== id));
-      toast.error("Invitation declined");
+        toast.error("Invitation declined");
       }catch (err: unknown) {
             if (!isAxiosError(err)) toast.error("Đã có lỗi xảy ra. Vui lòng thử lại.");
             else {
@@ -181,6 +190,14 @@ export const useWarehouse = (
   const manageWarehouse = (id: string) => {
    // console.log(`Navigating to warehouse: ${id}`);
     // Window.location.href = ... hoặc useHistory/useNavigate
+    const wh = warehouses.find(w => w.warehouseId === id);
+    if (wh) {
+      setWarehouse({
+        role: "manager",
+        warehouseId: wh.warehouseId,
+        warehouseName: wh.name,
+      });
+    }
     navigate('/app', {replace: false});
   };
 

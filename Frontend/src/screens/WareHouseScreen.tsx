@@ -1,5 +1,4 @@
-import { use, useState } from "react";
-import React from "react";
+import React, { useState } from "react";
 import { ProfileFeature } from '../features/profile/profile';
 import { Icons } from "../features/warehouse/iconWareHouse";
 import { 
@@ -8,14 +7,14 @@ import {
   CreateWarehousePlaceholder 
 } from "../features/warehouse/warehouse";
 import { CreateWareHouseModal } from "../features/warehouse/CreateWareHouseModal";
-import { useWarehouse } from "../hooks/useWarehouse"; // Import hook vừa tạo
-import type { Warehouse, Invitation } from "../types/warehouse";
-import { MOCK_WAREHOUSES, MOCK_INVITATIONS } from "../data/MOCK_WAREHOUSE";
-import { useNavigate } from "react-router-dom";
+import { useWarehouse } from "../hooks/useWarehouse";
+import { useWarehouseContext } from "../context/WarehouseContext";
+// import type { Warehouse, Invitation } from "../types/warehouse";
+// import { MOCK_WAREHOUSES, MOCK_INVITATIONS } from "../data/MOCK_WAREHOUSE";
 import { useAuth } from "../context/AuthContext";
 
 const WareHouseScreen = () => {
-  const {user} = useAuth();
+  const {signout} = useAuth();
   const {
     warehouses,
     loading,
@@ -29,14 +28,14 @@ const WareHouseScreen = () => {
     manageWarehouse,
   } = useWarehouse();
 
-  const {logout} = useAuth();
-  const navigate = useNavigate();
+  const { clearWarehouse } = useWarehouseContext();
+  const { role } = useWarehouseContext();
   
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingOpen, setIsSettingOpen] = React.useState(false);
   const [isDarkMode, setIsDarkMode] = React.useState(false); // State cho thanh trượt Day/Night
 
-  if (loading) return <div>Đang tải...</div>;
+  if (loading) return <div>Loading...</div>;
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Top Navigation Bar */}
@@ -68,14 +67,14 @@ const WareHouseScreen = () => {
             <button className="text-[#1E3A8A] px-1 py-4 hover:text-[#2563EB] transition-colors">
               <Icons.Bell className="w-5 h-5" />
             </button>
-          <div className="relative ">
-            <button onClick={() => setIsSettingOpen(!isSettingOpen)}
-            className="text-[#1E3A8A] px-1 py-4 hover:text-[#2563EB] transition-colors">
-              <Icons.Settings className="w-5 h-5" />
-            </button>
-            {/* KHUNG MENU DROPDOWN */}
-            {isSettingOpen && (
-              <>
+            <div className="relative ">
+              <button onClick={() => setIsSettingOpen(!isSettingOpen)}
+              className="text-[#1E3A8A] px-1 py-4 hover:text-[#2563EB] transition-colors">
+                <Icons.Settings className="w-5 h-5" />
+              </button>
+              {/* KHUNG MENU DROPDOWN */}
+              {isSettingOpen && (
+                <>
                 <div className="fixed inset-0 z-40" onClick={() => setIsSettingOpen(false)} />
                 <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 py-2 z-50 overflow-hidden font-headline">
                   {/* Item: Translate */}
@@ -103,7 +102,10 @@ const WareHouseScreen = () => {
 
                   {/* Item: Logout */}
                   <button className="w-full px-4 py-3 flex items-center gap-3 hover:bg-rose-50 transition-colors text-rose-600 text-sm font-semibold"
-                    onClick={() => logout()}>
+                    onClick={() => {
+                      signout();
+                      clearWarehouse();
+                    }}>
                     <Icons.LogOut className="w-4 h-4" />
                     <span>Logout</span>
                   </button>
@@ -113,13 +115,13 @@ const WareHouseScreen = () => {
             </div>
             <button onClick={() => setIsProfileOpen(true)}
             className="h-8 w-8 rounded-full bg-[#1E3A8A] flex items-center justify-center text-white text-xs font-bold hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-[#2563EB] active:scale-90 active:shadow-inner border border-white/10">
-              {user?.role === "manager" ? 'M' : 'S'}
+              {role === "manager" ? 'M' : 'S'}
             </button>
           </div>
           <ProfileFeature 
-        isOpen={isProfileOpen} 
-        onClose={() => setIsProfileOpen(false)} 
-      />
+          isOpen={isProfileOpen} 
+          onClose={() => setIsProfileOpen(false)} 
+          />
         </div>
       </header>
 
@@ -147,12 +149,12 @@ const WareHouseScreen = () => {
               </span>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {invitations.map((inv) => (
+              {(invitations || []).map((inv) => (
                 <InvitationCard                 
                   key={inv.id} 
                   invitation={inv} 
-                  onAccept={acceptInvitation} 
-                  onDecline={declineInvitation} 
+                  onAccept={() => acceptInvitation(inv.id)} 
+                  onDecline={() => declineInvitation(inv.id)} 
                 />
               ))}
             </div>
@@ -168,11 +170,11 @@ const WareHouseScreen = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {warehouses.map((wh) => (
+            {(warehouses || []).map((wh) => (
               <WarehouseCard 
                 key={wh.warehouseId} 
                 warehouse={wh} 
-                onManage={manageWarehouse} 
+                onManage={() => manageWarehouse(wh.warehouseId)}
               />
             ))}
             <CreateWarehousePlaceholder onClick={openModal} />
@@ -185,7 +187,7 @@ const WareHouseScreen = () => {
       <CreateWareHouseModal 
         isOpen={isModalOpen} 
         onClose={closeModal} 
-        onCreate={createWarehouse} 
+        onCreate={createWarehouse}
       />
     </div>
   );

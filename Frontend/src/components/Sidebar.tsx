@@ -4,13 +4,15 @@ import { useState } from 'react';
 import './Sidebar.css';
 import { ProfileFeature } from '../features/profile/profile';
 import { useAuth } from '../context/AuthContext';
+import { useWarehouseContext } from '../context/WarehouseContext';
 
 export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const {user, logout} = useAuth();
+  const { user, signout } = useAuth();
+  const { role, clearWarehouse, warehouseName } = useWarehouseContext();
   if (!user) return null;
 
   const menuConfig = {
@@ -30,10 +32,11 @@ export const Sidebar = () => {
     ]
   };
 
-  const menuItems = menuConfig[user?.role as keyof typeof menuConfig] || [];
+  const menuItems = menuConfig[role as keyof typeof menuConfig] || [];
 
   const handleLogout = () => {
-    logout();
+    clearWarehouse();
+    signout();
     navigate("/home", { replace: true });
   };
 
@@ -52,10 +55,11 @@ export const Sidebar = () => {
           onClick={() => setIsProfileOpen(true)}
           className="user-card w-full hover:bg-gray-100"
         >
-          <div className="avatar">{user?.role ? 'M' : 'S'}</div>
+          <div className="avatar">{role === "manager" ? 'M' : 'S'}</div>
           <div className="user-info">
             <span className="full-name">{user?.fullName}</span>
-            <span className="user-role">{user?.role}</span>
+            <span className="user-role">{role}</span>
+            <span className="text-xs text-gray-400">{warehouseName}</span>
           </div>
         </button>
       </div>
@@ -78,7 +82,7 @@ export const Sidebar = () => {
       <div className="">
         <button className="logout-button" onClick={handleLogout}>
           <LogOut size={18} />
-          <span>Logout</span>
+          <span>Signout</span>
         </button>
       </div>
 
