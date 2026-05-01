@@ -150,6 +150,46 @@ namespace BackendAPI.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.InventoryCheckItem", b =>
+                {
+                    b.Property<int>("InventoryCheckItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("InventoryCheckItemId"));
+
+                    b.Property<int>("NoteId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("StockQuantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("InventoryCheckItemId");
+
+                    b.HasIndex("NoteId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("inventoryCheckItems");
+
+                    b.HasData(
+                        new
+                        {
+                            InventoryCheckItemId = 1,
+                            NoteId = 4,
+                            ProductId = 1,
+                            Reason = "Monthly routine stock take",
+                            StockQuantity = 120
+                        });
+                });
+
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Invitation", b =>
                 {
                     b.Property<int>("InvitationId")
@@ -235,8 +275,8 @@ namespace BackendAPI.Migrations
 
                     b.Property<string>("NoteType")
                         .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("character varying(13)");
+                        .HasMaxLength(21)
+                        .HasColumnType("character varying(21)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -499,12 +539,20 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("SellPrice")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
@@ -526,8 +574,10 @@ namespace BackendAPI.Migrations
                             DamagedQuantity = 1,
                             DefectiveQuantity = 2,
                             Description = "Sample product 1",
+                            ImageUrl = "",
                             Name = "Product 1",
                             SellPrice = 100000m,
+                            Sku = "SKU-001",
                             StockQuantity = 100,
                             WarehouseId = 1
                         },
@@ -538,8 +588,10 @@ namespace BackendAPI.Migrations
                             DamagedQuantity = 0,
                             DefectiveQuantity = 1,
                             Description = "Sample product 2",
+                            ImageUrl = "",
                             Name = "Product 2",
                             SellPrice = 200000m,
+                            Sku = "SKU-002",
                             StockQuantity = 50,
                             WarehouseId = 2
                         });
@@ -556,6 +608,10 @@ namespace BackendAPI.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("ProductId", "SupplierId");
 
                     b.HasIndex("SupplierId");
@@ -567,13 +623,15 @@ namespace BackendAPI.Migrations
                         {
                             ProductId = 1,
                             SupplierId = 1,
-                            Price = 90000m
+                            Price = 90000m,
+                            Type = "PRIMARY"
                         },
                         new
                         {
                             ProductId = 2,
                             SupplierId = 2,
-                            Price = 180000m
+                            Price = 180000m,
+                            Type = "PRIMARY"
                         });
                 });
 
@@ -585,7 +643,13 @@ namespace BackendAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ReceiptItemId"));
 
+                    b.Property<int>("DefectiveQuantity")
+                        .HasColumnType("integer");
+
                     b.Property<int>("NoteId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrderedQuantity")
                         .HasColumnType("integer");
 
                     b.Property<int>("ProductId")
@@ -606,14 +670,18 @@ namespace BackendAPI.Migrations
                         new
                         {
                             ReceiptItemId = 1,
+                            DefectiveQuantity = 2,
                             NoteId = 1,
+                            OrderedQuantity = 60,
                             ProductId = 1,
                             Quantity = 60
                         },
                         new
                         {
                             ReceiptItemId = 2,
+                            DefectiveQuantity = 0,
                             NoteId = 1,
+                            OrderedQuantity = 40,
                             ProductId = 1,
                             Quantity = 40
                         });
@@ -981,7 +1049,7 @@ namespace BackendAPI.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.Property<int>("WarehouseId")
@@ -1026,20 +1094,28 @@ namespace BackendAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SupplierId"));
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Contact")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("WarehouseId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("phone")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("SupplierId");
 
@@ -1051,18 +1127,22 @@ namespace BackendAPI.Migrations
                         new
                         {
                             SupplierId = 1,
+                            Address = "123 Tech Street",
+                            Contact = "John Smith",
+                            Email = "supplier1@test.com",
                             Name = "Supplier 1",
-                            WarehouseId = 1,
-                            email = "supplier1@test.com",
-                            phone = "0900000001"
+                            Phone = "0900000001",
+                            WarehouseId = 1
                         },
                         new
                         {
                             SupplierId = 2,
+                            Address = "456 Industry Ave",
+                            Contact = "Sarah Johnson",
+                            Email = "supplier2@test.com",
                             Name = "Supplier 2",
-                            WarehouseId = 2,
-                            email = "supplier2@test.com",
-                            phone = "0900000002"
+                            Phone = "0900000002",
+                            WarehouseId = 2
                         });
                 });
 
@@ -1285,8 +1365,18 @@ namespace BackendAPI.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("AccountStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("HireDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("numeric");
 
                     b.HasKey("WarehouseId", "UserId");
 
@@ -1301,13 +1391,19 @@ namespace BackendAPI.Migrations
                         {
                             WarehouseId = 1,
                             UserId = 1,
-                            RoleId = 1
+                            AccountStatus = "Active",
+                            HireDate = new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            RoleId = 1,
+                            Salary = 65000000m
                         },
                         new
                         {
                             WarehouseId = 1,
                             UserId = 2,
-                            RoleId = 3
+                            AccountStatus = "Active",
+                            HireDate = new DateTime(2023, 3, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            RoleId = 3,
+                            Salary = 45000000m
                         });
                 });
 
@@ -1394,6 +1490,24 @@ namespace BackendAPI.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.InventoryCheckNote", b =>
+                {
+                    b.HasBaseType("BackendAPI.BE.DAL.Entities.Note");
+
+                    b.HasDiscriminator().HasValue("InventoryCheckNote");
+
+                    b.HasData(
+                        new
+                        {
+                            NoteId = 4,
+                            Date = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "PENDING",
+                            UserId = 1,
+                            WarehouseId = 1,
+                            type = "InventoryCheckNote"
+                        });
+                });
+
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.DamageItem", b =>
                 {
                     b.HasOne("BackendAPI.BE.DAL.Entities.DamageNote", "DamageNote")
@@ -1449,6 +1563,25 @@ namespace BackendAPI.Migrations
                     b.Navigation("User");
 
                     b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.InventoryCheckItem", b =>
+                {
+                    b.HasOne("BackendAPI.BE.DAL.Entities.InventoryCheckNote", "InventoryCheckNote")
+                        .WithMany("InventoryCheckItems")
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BackendAPI.BE.DAL.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("InventoryCheckNote");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.Invitation", b =>
@@ -1586,8 +1719,7 @@ namespace BackendAPI.Migrations
                     b.HasOne("BackendAPI.BE.DAL.Entities.User", "User")
                         .WithMany("Shifts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("BackendAPI.BE.DAL.Entities.Warehouse", "Warehouse")
                         .WithMany("Shifts")
@@ -1746,6 +1878,11 @@ namespace BackendAPI.Migrations
             modelBuilder.Entity("BackendAPI.BE.DAL.Entities.GoodsReceipt", b =>
                 {
                     b.Navigation("ReceiptItems");
+                });
+
+            modelBuilder.Entity("BackendAPI.BE.DAL.Entities.InventoryCheckNote", b =>
+                {
+                    b.Navigation("InventoryCheckItems");
                 });
 #pragma warning restore 612, 618
         }

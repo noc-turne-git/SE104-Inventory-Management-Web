@@ -13,9 +13,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const { clearWarehouse } = useWarehouseContext();
 
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(()=> {
-    try {
+  const { clearWarehouse } = useWarehouseContext();
+  const [user, setUser] = useState<User | null>(()=> {    
+    try {      
       const savedUser = localStorage.getItem('user');
       return savedUser ? JSON.parse(savedUser) : null;
     } catch {

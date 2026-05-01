@@ -18,6 +18,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             {
                 ProductId = 1,
                 WarehouseId = 1,
+                Sku = "SKU-001",
+                ImageUrl = "",
                 Name = "Product 1",
                 Category = "Category A",
                 Description = "Sample product 1",
@@ -30,6 +32,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             {
                 ProductId = 2,
                 WarehouseId = 2,
+                Sku = "SKU-002",
+                ImageUrl = "",
                 Name = "Product 2",
                 Category = "Category B",
                 Description = "Sample product 2",

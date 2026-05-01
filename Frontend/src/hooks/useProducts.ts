@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { type Product, type ProductFormData } from '../types/product';
 import { toast } from 'sonner';
 
@@ -36,6 +36,14 @@ export const useProducts = (initialData: Product[]) => {
     toast.success('Product added successfully');
   };
 
+  const appendProduct = useCallback((product: Product) => {
+    setProducts((prev) => [...prev, product]);
+  }, []);
+
+  const replaceProducts = useCallback((next: Product[]) => {
+    setProducts(next);
+  }, []);
+
   const updateProduct = (id: string, data: ProductFormData) => {
     //const stock = parseInt(data.stock);
     setProducts((prev) =>
@@ -54,5 +62,5 @@ export const useProducts = (initialData: Product[]) => {
   };
 
 
-  return { products, addProduct, updateProduct, deleteProduct, filteredProducts };
+  return { products, addProduct, appendProduct, replaceProducts, updateProduct, deleteProduct, filteredProducts };
 };

@@ -12,7 +12,8 @@ public class NoteConfiguration : IEntityTypeConfiguration<Note>
         builder.HasDiscriminator<string>("NoteType")
             .HasValue<GoodsReceipt>("GoodsReceipt")
             .HasValue<DeliveryNote>("DeliveryNote")
-            .HasValue<DamageNote>("DamageNote");
+            .HasValue<DamageNote>("DamageNote")
+            .HasValue<InventoryCheckNote>("InventoryCheckNote");
 
         builder.HasOne(n => n.User)
             .WithMany(u => u.Notes)

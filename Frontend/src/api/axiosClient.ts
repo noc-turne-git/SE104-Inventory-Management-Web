@@ -27,6 +27,10 @@ axiosClient.interceptors.response.use(
     {
       return Promise.reject(error);
     }
+    if(originalRequest.url.includes('/auth/refresh-token'))
+    {
+      return Promise.reject(error);
+    }
     if (error.response?.status === 401  && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
@@ -41,7 +45,7 @@ axiosClient.interceptors.response.use(
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
 
-          window.location.href = '/login';
+          window.location.href = '/signin';
 
         // Trả về lỗi để chặn các logic xử lý phía sau
         return Promise.reject(error);
