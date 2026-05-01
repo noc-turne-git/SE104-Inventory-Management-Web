@@ -1,9 +1,12 @@
 namespace BackendAPI.BE.API.DTO;
 
+using System.Text.Json.Serialization;
+
 public class ProductDTO
 {
     public int ProductId { get; set; }     
 
+    [JsonPropertyName("sku")]
     public string Sku { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

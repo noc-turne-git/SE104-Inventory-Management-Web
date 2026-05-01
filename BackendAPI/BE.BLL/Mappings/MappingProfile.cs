@@ -10,7 +10,8 @@ public class MappingProfile : Profile
         CreateMap<TestItemDTO, TestItem>();
         CreateMap<SignupDTO, User>();
         CreateMap<User, SignupDTO>();
-        CreateMap<Product, ProductDTO>();
+        CreateMap<Product, ProductDTO>()
+            .ForMember(d => d.Sku, opt => opt.NullSubstitute(string.Empty));
         CreateMap<ProductDTO, Product>();
         CreateMap<UserDTO, User>();
         CreateMap<User, UserDTO>();
