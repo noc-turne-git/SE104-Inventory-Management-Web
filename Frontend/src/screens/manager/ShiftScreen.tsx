@@ -15,11 +15,11 @@ const ShiftScreen = () => {
 
     const emptyShifts = shifts.filter(s => s.assignedTo === null);
     
-    const handleSubmit = (formData : ShiftFormData) => {
+    const handleSubmit = async (formData : ShiftFormData) => {
         if(editingItem) {
-            updateShift(editingItem.id, formData)
+            await updateShift(editingItem.id, formData)
         } else {
-            addShift(formData)
+            await addShift(formData)
         }
        handleCloseAddModal();
     }
