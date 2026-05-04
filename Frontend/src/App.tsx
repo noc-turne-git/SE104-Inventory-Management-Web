@@ -34,11 +34,6 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { WarehouseProvider, useWarehouseContext } from "./context/WarehouseContext";
 import './index.css';
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> fb4f9b62cb41cdfe729c661601cdb0419ba4922f
 // Component Layout chứa Sidebar - Chỉ dùng cho các route bên trong hệ thống
 const AppLayout = () => {
   return (
@@ -52,42 +47,6 @@ const AppLayout = () => {
   );
 };
 
-<<<<<<< HEAD
-
-=======
-// DefaultRoute theo role
-const DefaultRoute = () => { 
-  const { role } = useWarehouseContext(); 
-  if (role === "manager") return <Navigate to="dashboard_manager" replace />; 
-  if (role === "staff") return <Navigate to="dashboard_staff" replace />; 
-  return <Navigate to="/warehouse" replace />; 
-};
-
-// Protected route chặn user chưa có role truy cập và quay về trang signin
-const ProtectedRoute = () => { 
-  const { role } = useWarehouseContext(); 
-  const { user } = useAuth();
-  if (!user) {
-    return <Navigate to="/signin" replace />;
-  }
-  if (!role) { 
-    return <Navigate to="/warehouse" replace />; 
-  } 
-  return <Outlet />; 
-};
-
-//Role-based route
-const RoleRoute = ({ allow }: { allow: string[] }) => { 
-  const { role } = useWarehouseContext(); 
-  if (!role) { 
-    return <Navigate to="/signin" replace />; 
-  } 
-  if (!allow.includes(role || "")) { 
-    return <Navigate to="/warehouse" replace />; 
-  } 
-  return <Outlet />; 
-};
->>>>>>> fb4f9b62cb41cdfe729c661601cdb0419ba4922f
 
 // --- MAIN APP ---
 function App() {
@@ -126,7 +85,6 @@ function App() {
   
   return (
     <Router>
-<<<<<<< HEAD
       <WarehouseProvider>
         <AuthProvider>
           <NoteProvider>
@@ -138,20 +96,6 @@ function App() {
               <Route path="/forgotpassword" element={<ForgotPasswordScreen />} />
               <Route path="/verifyotp" element={<VerifyOtpScreen />} />
               <Route path="/resetpassword" element={<ResetPasswordScreen />} />
-=======
-      
-      <WarehouseProvider>
-      <AuthProvider>
-      <NoteProvider>
-        <Routes>
-          {/* --- NHÓM 1: PUBLIC (Không Sidebar) --- */}
-          <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
-          <Route path="/signin" element={<SignInScreen />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/forgotpassword" element={<ForgotPasswordScreen />} />
-          <Route path="/verifyotp" element={<VerifyOtpScreen />} />
-          <Route path="/resetpassword" element={<ResetPasswordScreen />} />
->>>>>>> fb4f9b62cb41cdfe729c661601cdb0419ba4922f
 
               {/* --- NHÓM 2: SELECTION (Không Sidebar) --- */}
               <Route path="/warehouse" element={<WareHouseScreen />} />
@@ -180,22 +124,12 @@ function App() {
                 </Route>
               </Route>
 
-<<<<<<< HEAD
               {/* --- ĐIỀU HƯỚNG GỐC --- */}
               <Route path="/" element={<Navigate to="/home" replace />} />
               <Route path="*" element={<div className="p-10">404 - Trang không tồn tại</div>} />
             </Routes>
           </NoteProvider>
         </AuthProvider>
-=======
-          {/* --- ĐIỀU HƯỚNG GỐC --- */}
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="*" element={<div className="p-10">404 - Trang không tồn tại</div>} />
-        </Routes>
-      
-      </NoteProvider>
-      </AuthProvider>
->>>>>>> fb4f9b62cb41cdfe729c661601cdb0419ba4922f
       </WarehouseProvider>
     </Router>
   );
