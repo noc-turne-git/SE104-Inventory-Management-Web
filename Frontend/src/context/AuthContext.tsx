@@ -11,8 +11,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const { clearWarehouse } = useWarehouseContext();
-
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { clearWarehouse } = useWarehouseContext();

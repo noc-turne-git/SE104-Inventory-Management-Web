@@ -4,7 +4,7 @@ type Role = "user" | "manager" | "staff" | null;
 
 interface WarehouseState {
   role: Role;
-  warehouseId: string | null;
+  warehouseId: number | null;
   warehouseName: string | null;
 }
 
@@ -22,12 +22,20 @@ export const WarehouseProvider = ({ children }: { children: React.ReactNode }) =
     warehouseName: null,
   });
 
-  // load từ localStorage (persist login)
+  // normalize data từ localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem("warehouse");
+
       if (stored) {
-        setState(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+
+        const normalized: WarehouseState = {
+          role: parsed.role ?? null,
+          warehouseName: parsed.warehouseName ?? null,
+          warehouseId: parsed.warehouseId ? Number(parsed.warehouseId) : null,
+        };
+        setState(normalized);
       }
     } catch (err) {
       console.error("Invalid warehouse data in localStorage");
@@ -35,9 +43,13 @@ export const WarehouseProvider = ({ children }: { children: React.ReactNode }) =
     }
   }, []);
 
+  // Đảm bảo luôn lưu number
   const setWarehouse = (data: WarehouseState) => {
-    setState(data);
-    localStorage.setItem("warehouse", JSON.stringify(data));
+    const normalized: WarehouseState = {
+      ...data, warehouseId: data.warehouseId ? Number(data.warehouseId) : null,
+    }
+    setState(normalized);
+    localStorage.setItem("warehouse", JSON.stringify(normalized));
   };
 
   const clearWarehouse = () => {
