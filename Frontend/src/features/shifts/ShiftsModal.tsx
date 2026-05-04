@@ -9,7 +9,7 @@ import '../../components/common/modal.css';
 interface Props {
   isOpen : boolean;
   onClose : () => void;
-  onSubmit: (formData: ShiftFormData) => void;
+  onSubmit: (formData: ShiftFormData) => Promise<void> | void;
   initialData: Shift | null;
 }
 
@@ -74,9 +74,9 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
       //resetForm();
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      onSubmit(formData);
+      await onSubmit(formData);
     }
 
     const handleShiftTypeSelect = (type: string) => {
