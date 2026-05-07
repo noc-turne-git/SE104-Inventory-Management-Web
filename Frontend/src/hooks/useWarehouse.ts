@@ -82,7 +82,7 @@ export const useWarehouse = () => {
     // };
     const form = {
       name,
-      Location : address,
+      location : address,
       urlimage: urlimage || ''
     };
     try {
@@ -187,7 +187,7 @@ export const useWarehouse = () => {
   };
 
   // Điều hướng/Quản lý (Logic này thường là dùng router.push)
-  const manageWarehouse = (id: string) => {
+  const manageWarehouse = (id: number) => {
    // console.log(`Navigating to warehouse: ${id}`);
     // Window.location.href = ... hoặc useHistory/useNavigate
     const wh = warehouses.find(w => w.warehouseId === id);

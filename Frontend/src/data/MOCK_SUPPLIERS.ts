@@ -2,7 +2,7 @@ import { type Supplier } from "../types/supplier";
 
 export const MOCK_SUPPLIERS: Supplier[] = [
   {
-    id: "1",
+    id: 1,
     name: "ABC Electronics Corp",
     contact: "John Smith",
     email: "john@abc-electronics.com",
@@ -10,7 +10,7 @@ export const MOCK_SUPPLIERS: Supplier[] = [
     address: "123 Tech Street, Silicon Valley, CA",
   },
   {
-    id: "2",
+    id: 2,
     name: "Global Parts Ltd",
     contact: "Sarah Johnson",
     email: "sarah@globalparts.com",
@@ -18,7 +18,7 @@ export const MOCK_SUPPLIERS: Supplier[] = [
     address: "456 Industry Ave, New York, NY",
   },
   {
-    id: '3',
+    id: 3,
     name: 'Office Supplies Co',
     contact: 'Mike Brown',
     email: 'mike@officesupplies.com',

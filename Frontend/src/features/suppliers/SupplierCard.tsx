@@ -3,7 +3,7 @@ import { type Supplier } from "../../types/supplier";
 
 interface Props {
   supplier: Supplier;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   onEdit: (supplier: Supplier) => void;
 }
 

@@ -1,22 +1,14 @@
 import Modal from '../../components/common/Modal';
 import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
-import { type Supplier } from '../../types/supplier';
+import { type Supplier, type SupplierInput } from '../../types/supplier';
 import { useState, useEffect } from 'react';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: SupplierInput) => void;
+  onSubmit: (data: SupplierInput) => void | Promise<void>;
   initialData: Supplier | null;
 }
-
-type SupplierInput = {
-  name: string;
-  contact: string;
-  email: string;
-  phone: string;
-  address: string;
-};
 
 const DEFAULT_FORM: SupplierInput = {
   name: '',
@@ -123,7 +115,6 @@ const SupplierModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
             label={initialData ? 'Update' : 'Create'}
           />
         </div>
-
       </form>
     </Modal>
   );

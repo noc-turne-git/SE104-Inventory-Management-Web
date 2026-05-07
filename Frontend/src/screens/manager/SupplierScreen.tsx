@@ -1,33 +1,57 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SupplierCard from "../../features/suppliers/SupplierCard";
 import SupplierModal from "../../features/suppliers/SupplierModal";
 import SearchBar from "../../components/common/searchBar";
 import OpenModalButton from "../../components/common/button/ModalButton";
 import { useSuppliers } from "../../hooks/useSuppliers";
-import { MOCK_SUPPLIERS } from "../../data/MOCK_SUPPLIERS";
-import { type Supplier } from "../../types/supplier";
+import { useWarehouseContext } from "../../context/WarehouseContext";
+import { type Supplier, type SupplierInput } from "../../types/supplier";
 
 const SupplierScreen = () => {
-  const { suppliers, addSupplier, updateSupplier, deleteSupplier } =
-    useSuppliers(MOCK_SUPPLIERS);
+  const { warehouseId } = useWarehouseContext();
+  const { suppliers, loading, addSupplier, updateSupplier, deleteSupplier, searchSuppliers, refetch, } = useSuppliers(warehouseId);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedValue, setDebouncedValue] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Supplier | null>(null);
+  const hasActiveSearchRef = useRef(false);
 
-  const filteredSuppliers = suppliers.filter(
-    (s) =>
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.contact.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedValue(searchTerm);
+    }, 300);
 
-  const handleSubmit = (data: Omit<Supplier, "id">) => {
-    if (editingItem) {
-      updateSupplier(editingItem.id, data);
-    } else {
-      addSupplier(data);
+    return () => window.clearTimeout(timer);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (!warehouseId) {
+      hasActiveSearchRef.current = false;
+      return;
     }
-    handleCloseModal();
+
+    const value = debouncedValue.trim();
+    if (value) {
+      hasActiveSearchRef.current = true;
+      void searchSuppliers(value);
+      return;
+    }
+
+    if (hasActiveSearchRef.current) {
+      hasActiveSearchRef.current = false;
+      void refetch();
+    }
+  }, [debouncedValue, warehouseId, refetch, searchSuppliers]);
+
+  const handleSubmit = async (data: SupplierInput) => {
+    const ok = editingItem
+      ? await updateSupplier(editingItem.id, data)
+      : await addSupplier(data);
+
+    if (ok) {
+      handleCloseModal();
+    }
   };
 
   const handleOpenAddModal = () => {
@@ -40,10 +64,12 @@ const SupplierScreen = () => {
     setShowModal(false);
   };
 
+  if (!warehouseId) {
+    return <div className="p-8 text-gray-600">Please select a warehouse</div>;
+  }
+
   return (
     <div className="p-8">
-
-      {/* HEADER */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-4xl font-bold text-gray-900">
@@ -57,19 +83,25 @@ const SupplierScreen = () => {
         <OpenModalButton label="Add Supplier" onClick={handleOpenAddModal} />
       </div>
 
-      {/* SEARCH */}
       <SearchBar
         label="Search supplier..."
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      {/* LIST */}
+      {loading && (
+        <div className="text-gray-500 mb-4">Loading suppliers...</div>
+      )}
+
+      {!loading && suppliers.length === 0 && (
+        <div className="text-gray-500 mt-6">No suppliers found.</div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {filteredSuppliers.map((s) => (
+        {suppliers.map((supplier) => (
           <SupplierCard
-            key={s.id}
-            supplier={s}
-            onDelete={deleteSupplier}
+            key={supplier.id}
+            supplier={supplier}
+            onDelete={(id) => void deleteSupplier(id)}
             onEdit={(sup) => {
               setEditingItem(sup);
               setShowModal(true);
@@ -78,14 +110,12 @@ const SupplierScreen = () => {
         ))}
       </div>
 
-      {/* MODAL */}
       <SupplierModal
         isOpen={showModal}
         onClose={handleCloseModal}
         initialData={editingItem}
         onSubmit={handleSubmit}
       />
-
     </div>
   );
 };

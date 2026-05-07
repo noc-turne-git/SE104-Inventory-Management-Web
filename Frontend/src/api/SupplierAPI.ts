@@ -1,51 +1,52 @@
+import { type AxiosRequestConfig } from 'axios';
 import axiosClient from './axiosClient';
-import { type Supplier } from '../types/supplier';
+import { type SupplierApiResponse, type SupplierInput } from '../types/supplier';
 
-type SupplierUpsertPayload = Omit<Supplier, 'id'>;
+const toSupplierPayload = (data: SupplierInput) => ({
+  name: data.name,
+  contact: data.contact,
+  email: data.email,
+  phone: data.phone,
+  address: data.address,
+});
 
 const supplierApi = {
-  getAll(warehouseId: string | number) {
+  getAll(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/suppliers`;
-    return axiosClient.get(url);
+    return axiosClient.get<SupplierApiResponse[]>(url);
   },
 
-  getById(warehouseId: string | number, supplierId: string | number) {
+  getById(warehouseId: number, supplierId: number) {
     const url = `/warehouses/${warehouseId}/suppliers/${supplierId}`;
-    return axiosClient.get(url);
+    return axiosClient.get<SupplierApiResponse>(url);
   },
 
-  search(warehouseId: string | number, q?: string, limit: number = 20) {
+  search(warehouseId: number, q?: string, limit = 20, config?: AxiosRequestConfig) {
     const url = `/warehouses/${warehouseId}/suppliers/search`;
-    return axiosClient.get(url, { params: { q, limit } });
+    return axiosClient.get<SupplierApiResponse[]>(url, {
+      ...config,
+      params: {
+        ...(config?.params ?? {}),
+        ...(q ? { q } : {}),
+        limit,
+      },
+    });
   },
 
-  create(warehouseId: string | number, data: SupplierUpsertPayload) {
+  create(warehouseId: number, data: SupplierInput) {
     const url = `/warehouses/${warehouseId}/suppliers`;
-    return axiosClient.post(url, {
-      name: data.name,
-      contact: data.contact,
-      email: data.email,
-      phone: data.phone,
-      address: data.address,
-    });
+    return axiosClient.post<SupplierApiResponse>(url, toSupplierPayload(data));
   },
 
-  update(warehouseId: string | number, supplierId: string | number, data: SupplierUpsertPayload) {
+  update(warehouseId: number, supplierId: number, data: SupplierInput) {
     const url = `/warehouses/${warehouseId}/suppliers/${supplierId}`;
-    return axiosClient.put(url, {
-      name: data.name,
-      contact: data.contact,
-      email: data.email,
-      phone: data.phone,
-      address: data.address,
-    });
+    return axiosClient.put<void>(url, toSupplierPayload(data));
   },
 
-  delete(warehouseId: string | number, supplierId: string | number) {
+  delete(warehouseId: number, supplierId: number) {
     const url = `/warehouses/${warehouseId}/suppliers/${supplierId}`;
-    return axiosClient.delete(url);
+    return axiosClient.delete<void>(url);
   },
 };
 
 export default supplierApi;
-
