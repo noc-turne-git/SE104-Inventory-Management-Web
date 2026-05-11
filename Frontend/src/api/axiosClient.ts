@@ -40,12 +40,14 @@ axiosClient.interceptors.response.use(
         } as refreshFormData;
         const response = await authApi.refresh(form);
         localStorage.setItem('access_token', response.data.accessToken);
+        localStorage.setItem('refresh_token', response.data.refreshToken);
         originalRequest.headers['Authorization'] = 'Bearer ' + response.data.accessToken;
       } catch (error) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-
-          window.location.href = '/signin';
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('warehouse');
+        window.location.href = '/signin';
 
         // Trả về lỗi để chặn các logic xử lý phía sau
         return Promise.reject(error);

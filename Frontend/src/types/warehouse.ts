@@ -15,6 +15,7 @@ export interface Warehouse {
   status: WarehouseStatusType;
   productCount?: number;
   imageUrl?: string;
+  role: "manager" | "staff";
 }
 export interface FormCreateWarehouse {
   name: string;

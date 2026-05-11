@@ -13,6 +13,20 @@ const mapApiSupplierToSupplier = (data: SupplierApiResponse): Supplier => ({
   address: data.address ?? "",
 });
 
+const keepSupplierOrder = (items: Supplier[], knownOrder: number[]) => {
+  const orderMap = new Map(knownOrder.map((id, index) => [id, index]));
+
+  return [...items].sort((a, b) => {
+    const aOrder = orderMap.get(a.id);
+    const bOrder = orderMap.get(b.id);
+
+    if (aOrder !== undefined && bOrder !== undefined) return aOrder - bOrder;
+    if (aOrder !== undefined) return -1;
+    if (bOrder !== undefined) return 1;
+    return a.id - b.id;
+  });
+};
+
 const getSupplierErrorMessage = (err: unknown, fallback: string) => {
   if (!isAxiosError(err)) return fallback;
   if (!err.response) {
@@ -29,6 +43,7 @@ export const useSuppliers = (warehouseId?: number | null) => {
   const cacheRef = useRef<Record<string, Supplier[]>>({});
   const abortRef = useRef<AbortController | null>(null);
   const requestSeqRef = useRef(0);
+  const fullOrderRef = useRef<number[]>([]);
 
   const clearCache = useCallback(() => {
     cacheRef.current = {};
@@ -56,8 +71,10 @@ export const useSuppliers = (warehouseId?: number | null) => {
       const next = (Array.isArray(res.data) ? res.data : []).map(mapApiSupplierToSupplier);
 
       if (requestId === requestSeqRef.current) {
-        setSuppliers(next);
-        cacheRef.current[""] = next;
+        const ordered = keepSupplierOrder(next, fullOrderRef.current);
+        fullOrderRef.current = ordered.map((supplier) => supplier.id);
+        setSuppliers(ordered);
+        cacheRef.current[""] = ordered;
       }
 
       return true;
@@ -75,6 +92,7 @@ export const useSuppliers = (warehouseId?: number | null) => {
 
   useEffect(() => {
     clearCache();
+    fullOrderRef.current = [];
     void fetchSuppliers();
 
     return () => {
@@ -111,7 +129,10 @@ export const useSuppliers = (warehouseId?: number | null) => {
         const res = await supplierApi.search(warehouseId, query, 20, {
           signal: controller.signal,
         });
-        const next = (Array.isArray(res.data) ? res.data : []).map(mapApiSupplierToSupplier);
+        const next = keepSupplierOrder(
+          (Array.isArray(res.data) ? res.data : []).map(mapApiSupplierToSupplier),
+          fullOrderRef.current,
+        );
         cacheRef.current[query] = next;
 
         if (requestId === requestSeqRef.current) {
@@ -152,6 +173,7 @@ export const useSuppliers = (warehouseId?: number | null) => {
         const created = mapApiSupplierToSupplier(res.data);
 
         clearCache();
+        fullOrderRef.current = [...fullOrderRef.current, created.id];
         setSuppliers((prev) => [...prev, created]);
         toast.success("Supplier added successfully");
         return true;
@@ -196,6 +218,7 @@ export const useSuppliers = (warehouseId?: number | null) => {
         await supplierApi.delete(warehouseId, id);
 
         clearCache();
+        fullOrderRef.current = fullOrderRef.current.filter((supplierId) => supplierId !== id);
         setSuppliers((prev) => prev.filter((supplier) => supplier.id !== id));
         toast.success("Supplier deleted successfully");
         return true;

@@ -23,6 +23,11 @@ public class WarehouseReadService : IWarehouseReadService
         if (warehouseIds.Count == 0) return Array.Empty<WarehouseSummaryDTO>();
 
         var warehouses = (await _warehouses.GetAsync(w => warehouseIds.Contains(w.WarehouseId), cancellationToken)).ToList();
+        var roleByWarehouseId = memberships
+            .GroupBy(ws => ws.WarehouseId)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Any(ws => ws.RoleId == 3) ? "staff" : "manager");
         
         // EF Core DbContext is not thread-safe; avoid running multiple queries concurrently on the same scope.
         var productCounts = new Dictionary<int, int>(warehouses.Count);
@@ -36,6 +41,7 @@ public class WarehouseReadService : IWarehouseReadService
             .Select(w => new WarehouseSummaryDTO
             {
                 WarehouseId = w.WarehouseId,
+                Role = roleByWarehouseId.TryGetValue(w.WarehouseId, out var role) ? role : "staff",
                 Name = w.Name,
                 Location = w.Location,
                 urlimage = w.urlimage,

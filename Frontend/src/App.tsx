@@ -47,7 +47,6 @@ const AppLayout = () => {
   );
 };
 
-
 // --- MAIN APP ---
 function App() {
   // DefaultRoute theo role
@@ -58,8 +57,15 @@ function App() {
     return <Navigate to="/warehouse" replace />; 
   };
 
-  // Protected route chặn user chưa có role truy cập và quay về trang signin
-  const ProtectedRoute = () => { 
+  const RequireAuth = () => {
+    const { user } = useAuth();
+    if (!user) {
+      return <Navigate to="/signin" replace />;
+    }
+    return <Outlet />;
+  };
+
+  const RequireRole = () => { 
     const { role } = useWarehouseContext(); 
     const { user } = useAuth();
     if (!user) {
@@ -71,14 +77,26 @@ function App() {
     return <Outlet />; 
   };
 
+  const AuthenticatedRoute = () => {
+    const { user } = useAuth();
+    const { role } = useWarehouseContext();
+
+    if (user) {
+      if (role) return <Navigate to="/app" replace />;
+      return <Navigate to="/warehouse" replace />;
+    }
+
+    return <Outlet />;
+  };
+
   //Role-based route
   const RoleRoute = ({ allow }: { allow: string[] }) => { 
     const { role } = useWarehouseContext(); 
     if (!role) { 
-      return <Navigate to="/signin" replace />; 
-    } 
-    if (!allow.includes(role || "")) { 
       return <Navigate to="/warehouse" replace />; 
+    } 
+    if (!allow.includes(role)) { 
+      return <Navigate to="/app" replace />; 
     } 
     return <Outlet />; 
   };
@@ -91,17 +109,22 @@ function App() {
             <Routes>
               {/* --- NHÓM 1: PUBLIC (Không Sidebar) --- */}
               <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
-              <Route path="/signin" element={<SignInScreen />} />
-              <Route path="/signup" element={<SignUp />} />
+
+              <Route element={<AuthenticatedRoute />}> 
+                <Route path="/signin" element={<SignInScreen />} />
+                <Route path="/signup" element={<SignUp />} />
+              </Route>
               <Route path="/forgotpassword" element={<ForgotPasswordScreen />} />
               <Route path="/verifyotp" element={<VerifyOtpScreen />} />
               <Route path="/resetpassword" element={<ResetPasswordScreen />} />
 
               {/* --- NHÓM 2: SELECTION (Không Sidebar) --- */}
-              <Route path="/warehouse" element={<WareHouseScreen />} />
+              <Route element={<RequireAuth />}>
+                <Route path="/warehouse" element={<WareHouseScreen />} />
+              </Route>
 
               {/* --- NHÓM 3: INTERNAL APP (CÓ SIDEBAR) --- */}
-              <Route path="/app" element={<ProtectedRoute />}>
+              <Route path="/app" element={<RequireRole />}>
                 <Route element={<AppLayout />}>
                   {/* Manager Routes */}
                   <Route element={<RoleRoute allow={["manager"]} />}>

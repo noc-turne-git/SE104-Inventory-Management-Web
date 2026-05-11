@@ -193,7 +193,7 @@ export const useWarehouse = () => {
     const wh = warehouses.find(w => w.warehouseId === id);
     if (wh) {
       setWarehouse({
-        role: "manager",
+        role: wh.role,
         warehouseId: wh.warehouseId,
         warehouseName: wh.name,
       });
