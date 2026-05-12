@@ -47,7 +47,7 @@ axiosClient.interceptors.response.use(
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user');
         localStorage.removeItem('warehouse');
-        window.location.href = '/signin';
+        // window.location.href = '/signin';
 
         // Trả về lỗi để chặn các logic xử lý phía sau
         return Promise.reject(error);

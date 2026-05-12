@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 type Role = "user" | "manager" | "staff" | null;
 
@@ -11,6 +11,7 @@ interface WarehouseState {
 interface WarehouseContextType extends WarehouseState {
   setWarehouse: (data: WarehouseState) => void;
   clearWarehouse: () => void;
+  loading: boolean;
 }
 
 const WarehouseContext = createContext<WarehouseContextType | undefined>(undefined);
@@ -45,7 +46,16 @@ const getInitialWarehouseState = (): WarehouseState => {
 
 export const WarehouseProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<WarehouseState>(getInitialWarehouseState);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const stored = localStorage.getItem("warehouse");
+    if (stored) {
+      setState(JSON.parse(stored));
+    }
+    setLoading(false);
+  }, []);
+  
   // Đảm bảo luôn lưu number
   const setWarehouse = (data: WarehouseState) => {
     const normalized: WarehouseState = {
@@ -62,7 +72,7 @@ export const WarehouseProvider = ({ children }: { children: React.ReactNode }) =
 
   return (
     <WarehouseContext.Provider 
-      value={{ ...state, setWarehouse, clearWarehouse }}>
+      value={{ ...state, setWarehouse, clearWarehouse, loading }}>
       {children}
     </WarehouseContext.Provider>
   );
