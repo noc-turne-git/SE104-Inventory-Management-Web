@@ -21,23 +21,24 @@ export function useDeliveries() {
     });
   };
 
-  const addDelivery = (data: DeliveryFormData) => {
+  const addDelivery = async (data: DeliveryFormData) => {
     const newDelivery: Delivery = {
       ...data,
       id: Date.now().toString(),
       operator: user?.userName || "",
       type: 'DELIVERY',
       noteNumber: `DLV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,
+      warehouseId: '',
     };
-    addNote(newDelivery); // Gọi hàm của Context
+    return addNote(newDelivery);
   };
 
-  const updateDelivery = (id: string, data: Partial<DeliveryFormData>) => {
-    updateNote(id, data); // Gọi hàm của Context
+  const updateDelivery = async (id: string, data: Partial<DeliveryFormData>) => {
+    return updateNote(id, data);
   };
 
-  const updateDeliveryStatus = (id: string, newStatus: Delivery['status']) => {
-    updateStatus(id, newStatus); // Gọi hàm của Context
+  const updateDeliveryStatus = async (id: string, newStatus: Delivery['status']) => {
+    return updateStatus(id, newStatus);
   };
 
   return {

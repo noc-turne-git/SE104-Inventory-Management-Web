@@ -11,20 +11,21 @@ import InventoryCheckModal from '../../features/products/InventoryCheckModal';
 
 
 import { useProducts } from '../../hooks/useProducts';
+import { useInventoryChecks } from '../../hooks/useInventoryChecks';
 
 const ProductViewScreen = () => {
   const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
+  const { addInventoryCheck } = useInventoryChecks();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Product | null>(null);
 
-  const sendToManager = () => {
-
-  }
-
-  const handleSubmit = (formData : InventoryCheckFormData) => {
-    sendToManager();
-    handleCloseModal();
+  const handleSubmit = async (formData : InventoryCheckFormData) => {
+    const ok = await addInventoryCheck(formData);
+    if (ok) {
+      toast.success('Inventory check has been sent to manager');
+      handleCloseModal();
+    }
   }
 
   const handleOpenAddModal = () => {

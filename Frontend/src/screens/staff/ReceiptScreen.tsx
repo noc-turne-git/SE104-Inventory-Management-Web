@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import OpenModalButton from '../../components/common/button/ModalButton';
 import SearchBar, {FilterBar} from '../../components/common/searchBar';
-import { MOCK_RECEIPTS } from '../../data/MOCK_RECEIPTS';
 import { type Receipt, type ReceiptFormData } from '../../types/note'; 
 import ReceiptModal from '../../features/receipts/ReceiptModal';
 import { useReceipts } from '../../hooks/useReceipts';
@@ -16,13 +15,16 @@ const ReceiptScreen = () => {
 
   const statusOptions = ['all', 'new' , 'in process' , 'pending' ,'approved' , 'rejected'];
 
-  const handleSubmit = (formData: ReceiptFormData) => {
+  const handleSubmit = async (formData: ReceiptFormData) => {
+    let ok = false;
     if (editingItem) {
-      updateReceipt(editingItem.id, formData);
+      ok = await updateReceipt(editingItem.id, formData);
     } else {
-      addReceipt(formData);
+      ok = await addReceipt(formData);
     }
-    handleCloseModal();
+    if (ok) {
+      handleCloseModal();
+    }
   };
 
   const handleOpenAddModal = () => {
