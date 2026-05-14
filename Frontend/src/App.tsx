@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Toaster } from 'sonner';
 
 // --- AUTH & PUBLIC ---
 import { HomeScreen } from './screens/HomeScreen';
@@ -134,6 +135,7 @@ function App() {
       <WarehouseProvider>
         <AuthProvider>
           <NoteProvider>
+            <Toaster richColors position="top-center" />
             <Routes>
               {/*--- PUBLIC ROUTES (Không cần authentication) ---*/}
               <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />

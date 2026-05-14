@@ -5,8 +5,10 @@ import bgImage from "../../assets/stockify.png";
 import lgImage from "../../assets/logostockify.png";
 import authApi from "../../api/AuthAPI";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
+import "./auth.css";
 
-const SignupScreen = () => {
+const SignUpScreen = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -21,80 +23,67 @@ const SignupScreen = () => {
 
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
   const [passwordError, setPasswordError] = useState("");
   const [confirmError, setConfirmError] = useState("");
-  
-  const [error, setError] = useState("");
 
-  const handleChange = (key: string, value: string) => {
-    setForm(prev => ({ ...prev, [key]: value }));
+  const handleChange = (key: keyof typeof form, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSignUp = () => {
-    navigate("/signin");
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setConfirmError("");
     setPasswordError("");
+
     let hasError = false;
 
     if (form.password.length < 6) {
       setPasswordError("Password must be at least 6 characters");
       hasError = true;
-    } else {
-      setPasswordError("");
     }
 
     if (form.password !== form.confirmPassword) {
       setConfirmError("Passwords do not match");
       hasError = true;
-    } else {
-      setConfirmError("");
     }
 
-    if (!hasError) {
-      try {
-        await authApi.signUp(form);
-      } catch (err: unknown) {
-        
-        hasError = true;
-        if (!isAxiosError(err)) setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
-        else {
-          if (!err.response) {
-          // Trường hợp không có response (mất mạng, server không phản hồi)
-          setError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!");
-          } else {
-            // Trường hợp Server có trả về lỗi
-            const status = err.response.status;
-            const message = err.response.data?.message;
+    if (hasError) return;
 
-            switch (status) {
-              case 403:
-                setError("Tài khoản của bạn đã bị khóa hoặc không có quyền truy cập.");
-                break;
-              case 500:
-                setError("Lỗi hệ thống phía Server. Vui lòng thử lại sau!");
-                break;
-              default:
-                setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại.");
-            }
-          }
-        }
+    try {
+      await authApi.signUp(form);
+      toast.success("Account created successfully.");
+      navigate("/signin");
+    } catch (err: unknown) {
+      if (!isAxiosError(err)) {
+        toast.error("Something went wrong. Please try again.");
+        return;
+      }
+
+      if (!err.response) {
+        toast.error("Unable to connect to the server. Please check your network connection.");
+        return;
+      }
+
+      const status = err.response.status;
+
+      switch (status) {
+        case 409:
+          toast.error("This email is already registered.");
+          break;
+        case 403:
+          toast.error("Your account is locked or you do not have access.");
+          break;
+        case 500:
+          toast.error("Server error. Please try again later.");
+          break;
+        default:
+          toast.error("Something went wrong. Please try again.");
       }
     }
-    if(!hasError) {
-      handleSignUp();
-    }
-
-    
   };
 
   return (
     <div className="flex min-h-screen">
-
       {/* LEFT IMAGE */}
       <div className="hidden lg:flex w-1/2 sticky top-0 h-screen items-center text-white">
         <img
@@ -106,7 +95,6 @@ const SignupScreen = () => {
         <div className="relative z-10 px-16 text-left">
           {/* LOGO + TEXT */}
           <div className="flex items-center gap-4 mb-4">
-            
             {/* LOGO BOX */}
             <div className="bg-white p-3 rounded-xl shadow-md">
               <img
@@ -128,26 +116,19 @@ const SignupScreen = () => {
       </div>
 
       {/* RIGHT FORM */}
-      <div className="flex w-full lg:w-1/2 lg:ml-auto items-center justify-center bg-gray-50 min-h-screen px-6">
-
-        <form className="w-full max-w-md mt-10" onSubmit={handleSubmit}>
-
+      <div className="flex w-full lg:w-1/2 lg:ml-auto items-center justify-center bg-gray-50 min-h-screen px-6 py-10">
+        <form className="w-full max-w-md" onSubmit={handleSignUp}>
           {/* TITLE */}
-          <div className="mb-6">
+          <div className="mb-4">
             <h2 className="text-3xl font-bold">Create Account</h2>
-            <p className="text-gray-500 mt-1 text-md">Join Stockify system</p>
-          </div>
-
-          <div className="items-start">
-            <span className="text-red-500 text-sm">
-              {error}
-            </span>
+            <p className="text-gray-500 text-md mt-1">Join Stockify system</p>
           </div>
 
           {/* FULL NAME */}
           <div className="my-4">
             <label className="auth-label">Full Name*</label>
             <input
+              required
               className="auth-input h-12"
               placeholder="John Doe"
               value={form.fullName}
@@ -159,6 +140,8 @@ const SignupScreen = () => {
           <div className="my-4">
             <label className="auth-label">Email*</label>
             <input
+              type="email"
+              required
               className="auth-input h-12"
               placeholder="john@example.com"
               value={form.email}
@@ -172,6 +155,7 @@ const SignupScreen = () => {
               <label className="auth-label">Date of Birth*</label>
               <input
                 type="date"
+                required
                 className="auth-input h-12"
                 value={form.dob}
                 onChange={(e) => handleChange("dob", e.target.value)}
@@ -181,6 +165,8 @@ const SignupScreen = () => {
             <div>
               <label className="auth-label">Phone*</label>
               <input
+                type="tel"
+                required
                 className="auth-input h-12"
                 placeholder="0123456789"
                 value={form.phone}
@@ -207,19 +193,22 @@ const SignupScreen = () => {
             <div className="relative">
               <input
                 type={showPass ? "text" : "password"}
-                className={`auth-input h-12 pr-10 ${
+                required
+                className={`auth-input auth-input-with-toggle h-12 ${
                   passwordError ? "border-red-500" : ""
                 }`}
                 value={form.password}
                 onChange={(e) => handleChange("password", e.target.value)}
               />
 
-              <div
+              <button
+                type="button"
+                aria-label={showPass ? "Hide password" : "Show password"}
                 onClick={() => setShowPass(!showPass)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
               >
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-              </div>
+              </button>
             </div>
 
             {passwordError && (
@@ -236,7 +225,8 @@ const SignupScreen = () => {
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
-                className={`auth-input h-12 pr-10 ${
+                required
+                className={`auth-input auth-input-with-toggle h-12 ${
                   confirmError ? "border-red-500" : ""
                 }`}
                 value={form.confirmPassword}
@@ -245,12 +235,14 @@ const SignupScreen = () => {
                 }
               />
 
-              <div
+              <button
+                type="button"
+                aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}
                 onClick={() => setShowConfirm(!showConfirm)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
               >
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-              </div>
+              </button>
             </div>
 
             {confirmError && (
@@ -269,7 +261,7 @@ const SignupScreen = () => {
           </button>
 
           {/* LOGIN */}
-          <p className="text-center text-sm text-gray-500 mt-1 mb-10">
+          <p className="text-center text-sm text-gray-500 mt-2">
             Already have an account?{" "}
             <span
               onClick={() => navigate("/signin")}
@@ -278,11 +270,10 @@ const SignupScreen = () => {
               Sign in
             </span>
           </p>
-
         </form>
       </div>
     </div>
   );
 };
 
-export default SignupScreen;
+export default SignUpScreen;
