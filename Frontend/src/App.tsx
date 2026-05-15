@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Toaster } from 'sonner';
 
 // --- AUTH & PUBLIC ---
 import { HomeScreen } from './screens/HomeScreen';
@@ -47,19 +48,52 @@ const AppLayout = () => {
   );
 };
 
-
 // --- MAIN APP ---
+// Quản lý toàn bộ routing và route guards của ứng dụng
 function App() {
-  // DefaultRoute theo role
+
+  // DefaultRoute
+  // Redirect user về dashboard tương ứng theo role khi vào /app
   const DefaultRoute = () => { 
-    const { role } = useWarehouseContext(); 
+    const { role } = useWarehouseContext();
     if (role === "manager") return <Navigate to="dashboard_manager" replace />; 
     if (role === "staff") return <Navigate to="dashboard_staff" replace />; 
     return <Navigate to="/warehouse" replace />; 
   };
+  
+  // GuestOnlyRoute
+  // Guard: chỉ cho phép user chưa login
+  // Nếu đã login: Có role → /app, chưa có role → /warehouse
+  const GuestOnlyRoute = () => {
+    const { user, loading: authLoading } = useAuth();
+    const { role, loading: whLoading } = useWarehouseContext();
+    // Có thêm loading check để tránh redirect sai khi reload
+    if (authLoading || whLoading) {
+      return null; // hoặc spinner
+    }
+    if (user) {
+      return role
+        ? <Navigate to="/app" replace />
+        : <Navigate to="/warehouse" replace />;
+    }
+    return <Outlet />;
+  };
 
-  // Protected route chặn user chưa có role truy cập và quay về trang signin
-  const ProtectedRoute = () => { 
+  // RequireAuthRoute
+  // Guard: chỉ cho phép user đã login
+  // Nếu chưa login → redirect /signin
+  const RequireAuthRoute = () => {
+    const { user } = useAuth();
+    if (!user) {
+      return <Navigate to="/signin" replace />;
+    }
+    return <Outlet />;
+  };
+
+  // RequireRoleRoute
+  // Guard: yêu cầu user đã login + có warehouse role
+  // Nếu chưa login → /signin và chưa có role → /warehouse
+  const RequireRoleRoute = () => { 
     const { role } = useWarehouseContext(); 
     const { user } = useAuth();
     if (!user) {
@@ -67,41 +101,67 @@ function App() {
     }
     if (!role) { 
       return <Navigate to="/warehouse" replace />; 
+    }
+    return <Outlet />; 
+  };
+
+  // RoleRoute
+  // Guard: phân quyền theo role (RBAC)
+  // Nếu chưa có role → /warehouse, role không hợp lệ → /app (default dashboard)
+  const RoleRoute = ({ allow }: { allow: string[] }) => { 
+    const { role } = useWarehouseContext(); 
+    if (!role) { 
+      return <Navigate to="/warehouse" replace />; 
+    } 
+    if (!allow.includes(role)) { 
+      return <Navigate to="/app" replace />; 
     } 
     return <Outlet />; 
   };
 
-  //Role-based route
-  const RoleRoute = ({ allow }: { allow: string[] }) => { 
-    const { role } = useWarehouseContext(); 
-    if (!role) { 
-      return <Navigate to="/signin" replace />; 
-    } 
-    if (!allow.includes(role || "")) { 
-      return <Navigate to="/warehouse" replace />; 
-    } 
-    return <Outlet />; 
+  // ResetFlowRoute
+  // Kiểm tra key trong localStorage (reset_email, reset_token)
+  // Nếu thiếu hoặc không hợp lệ → redirect /forgotpassword
+  const ResetFlowRoute = ({ requiredKey, redirectTo }: { requiredKey: string; redirectTo: string }) => {
+    const value = localStorage.getItem(requiredKey);
+    if (!value || value === "undefined" || value === "null") {
+      return <Navigate to={redirectTo} replace />;
+    }
+    return <Outlet />;
   };
-  
+
   return (
     <Router>
       <WarehouseProvider>
         <AuthProvider>
           <NoteProvider>
+            <Toaster richColors position="top-center" />
             <Routes>
-              {/* --- NHÓM 1: PUBLIC (Không Sidebar) --- */}
+              {/*--- PUBLIC ROUTES (Không cần authentication) ---*/}
               <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
-              <Route path="/signin" element={<SignInScreen />} />
-              <Route path="/signup" element={<SignUp />} />
+
+              {/* --- AUTH ROUTES (Ngăn user đã login truy cập /signin, /signup) --- */}
+              <Route element={<GuestOnlyRoute />}> 
+                <Route path="/signin" element={<SignInScreen />} />
+                <Route path="/signup" element={<SignUp />} />
+              </Route>
+              
+              {/* --- RESET PASSWORD FLOW --- */}
               <Route path="/forgotpassword" element={<ForgotPasswordScreen />} />
-              <Route path="/verifyotp" element={<VerifyOtpScreen />} />
-              <Route path="/resetpassword" element={<ResetPasswordScreen />} />
+              <Route element={<ResetFlowRoute requiredKey="reset_email" redirectTo="/forgotpassword" />}>
+                <Route path="/verifyotp" element={<VerifyOtpScreen />} />
+              </Route>
+              <Route element={<ResetFlowRoute requiredKey="reset_token" redirectTo="/forgotpassword" />}>
+                <Route path="/resetpassword" element={<ResetPasswordScreen />} />
+              </Route>
 
-              {/* --- NHÓM 2: SELECTION (Không Sidebar) --- */}
-              <Route path="/warehouse" element={<WareHouseScreen />} />
+              {/* --- WORKSPACE SELECTION (yêu cầu login) --- */}
+              <Route element={<RequireAuthRoute />}>
+                <Route path="/warehouse" element={<WareHouseScreen />} />
+              </Route>
 
-              {/* --- NHÓM 3: INTERNAL APP (CÓ SIDEBAR) --- */}
-              <Route path="/app" element={<ProtectedRoute />}>
+              {/* --- MAIN APP (yêu cầu login + role) --- */}
+              <Route path="/app" element={<RequireRoleRoute />}>
                 <Route element={<AppLayout />}>
                   {/* Manager Routes */}
                   <Route element={<RoleRoute allow={["manager"]} />}>

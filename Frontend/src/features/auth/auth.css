@@ -1,3 +1,8 @@
+/* fix lỗi bị nhảy form */
+html {
+  scrollbar-gutter: stable;
+}
+
 /* Kiểu dáng cho Input */
 .auth-input {
   width: 100%;
@@ -21,6 +26,10 @@
 }
 
 /* Hiệu ứng khi Focus */
+.auth-input-with-toggle {
+  padding-right: 2.5rem;
+}
+
 .auth-input:focus {
   background-color: #ffffff; /* Giữ trắng khi click vào */
   border-color: #3b82f6;     /* Màu xanh chủ đạo (blue-500) */

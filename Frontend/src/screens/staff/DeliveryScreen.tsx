@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import OpenModalButton from '../../components/common/button/ModalButton';
 import SearchBar, { FilterBar } from '../../components/common/searchBar';
-import { MOCK_DELIVERY } from '../../data/MOCK_DELIVERY';
 import { type Delivery, type DeliveryFormData } from '../../types/note'; 
 import DeliveryModal from '../../features/delivery/DeliveryModal';
 import { useDeliveries } from '../../hooks/useDeliveries';
@@ -23,13 +22,16 @@ const DeliveryScreen = () => {
 
   const statusOptions = ['all', 'new', 'in process', 'pending', 'approved', 'rejected'];
 
-  const handleSubmit = (formData: DeliveryFormData) => {
+  const handleSubmit = async (formData: DeliveryFormData) => {
+    let ok = false;
     if (editingItem) {
-      updateDelivery(editingItem.id, formData);
+      ok = await updateDelivery(editingItem.id, formData);
     } else {
-      addDelivery(formData);
+      ok = await addDelivery(formData);
     }
-    handleCloseModal();
+    if (ok) {
+      handleCloseModal();
+    }
   };
 
   const handleOpenAddModal = () => {

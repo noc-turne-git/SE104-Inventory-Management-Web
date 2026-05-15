@@ -11,38 +11,51 @@ interface WarehouseState {
 interface WarehouseContextType extends WarehouseState {
   setWarehouse: (data: WarehouseState) => void;
   clearWarehouse: () => void;
+  loading: boolean;
 }
 
 const WarehouseContext = createContext<WarehouseContextType | undefined>(undefined);
 
-export const WarehouseProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, setState] = useState<WarehouseState>({
-    role: null,
-    warehouseId: null,
-    warehouseName: null,
-  });
+const emptyWarehouseState: WarehouseState = {
+  role: null,
+  warehouseId: null,
+  warehouseName: null,
+};
 
-  // normalize data từ localStorage
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("warehouse");
+const getInitialWarehouseState = (): WarehouseState => {
+  try {
+    const stored = localStorage.getItem("warehouse");
 
-      if (stored) {
-        const parsed = JSON.parse(stored);
-
-        const normalized: WarehouseState = {
-          role: parsed.role ?? null,
-          warehouseName: parsed.warehouseName ?? null,
-          warehouseId: parsed.warehouseId ? Number(parsed.warehouseId) : null,
-        };
-        setState(normalized);
-      }
-    } catch (err) {
-      console.error("Invalid warehouse data in localStorage");
-      localStorage.removeItem("warehouse");
+    if (!stored) {
+      return emptyWarehouseState;
     }
-  }, []);
 
+    const parsed = JSON.parse(stored);
+
+    return {
+      role: parsed.role ?? null,
+      warehouseName: parsed.warehouseName ?? null,
+      warehouseId: parsed.warehouseId ? Number(parsed.warehouseId) : null,
+    };
+  } catch {
+    console.error("Invalid warehouse data in localStorage");
+    localStorage.removeItem("warehouse");
+    return emptyWarehouseState;
+  }
+};
+
+export const WarehouseProvider = ({ children }: { children: React.ReactNode }) => {
+  const [state, setState] = useState<WarehouseState>(getInitialWarehouseState);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("warehouse");
+    if (stored) {
+      setState(JSON.parse(stored));
+    }
+    setLoading(false);
+  }, []);
+  
   // Đảm bảo luôn lưu number
   const setWarehouse = (data: WarehouseState) => {
     const normalized: WarehouseState = {
@@ -53,17 +66,13 @@ export const WarehouseProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   const clearWarehouse = () => {
-    setState({
-      role: null,
-      warehouseId: null,
-      warehouseName: null,
-    });
+    setState(emptyWarehouseState);
     localStorage.removeItem("warehouse");
   };
 
   return (
     <WarehouseContext.Provider 
-      value={{ ...state, setWarehouse, clearWarehouse }}>
+      value={{ ...state, setWarehouse, clearWarehouse, loading }}>
       {children}
     </WarehouseContext.Provider>
   );

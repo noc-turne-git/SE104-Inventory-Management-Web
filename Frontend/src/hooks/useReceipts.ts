@@ -20,7 +20,7 @@ export function useReceipts() {
     });
   };
 
-  const addReceipt = (data: ReceiptFormData) => {
+  const addReceipt = async (data: ReceiptFormData) => {
     const newReceipt: Receipt = {
       ...data,
       id: Date.now().toString(),
@@ -28,17 +28,18 @@ export function useReceipts() {
       operator: user?.userName || "",
       // Format: REC-YYYYMMDD-Random
       noteNumber: `REC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,
+      warehouseId: '',
     };
 
-    addNote(newReceipt);
+    return addNote(newReceipt);
   };
 
-  const updateReceipt = (id: string, data: Partial<ReceiptFormData>) => {
-    updateNote(id, data);
+  const updateReceipt = async (id: string, data: Partial<ReceiptFormData>) => {
+    return updateNote(id, data);
   };
 
-  const updateReceiptStatus = (id: string, newStatus: Receipt['status']) => {
-    updateStatus(id, newStatus);
+  const updateReceiptStatus = async (id: string, newStatus: Receipt['status']) => {
+    return updateStatus(id, newStatus);
   }
 
   return {

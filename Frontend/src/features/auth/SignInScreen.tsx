@@ -4,79 +4,64 @@ import { useNavigate } from "react-router-dom";
 import bgImage from "../../assets/stockify.png";
 import lgImage from "../../assets/logostockify.png";
 import { useAuth } from "../../context/AuthContext";
-// import { useWarehouseContext } from "../../context/WarehouseContext";
-//import { MOCK_USERS } from "../../data/MOCK_USER";
 import authApi from "../../api/AuthAPI";
 import { isAxiosError } from "axios";
-import './auth.css';
+import { toast } from "sonner";
+import "./auth.css";
 
 const SignInScreen = () => {
   const navigate = useNavigate();
   const { signin } = useAuth();
-  // const { user } = useAuth();
-  // const { role } = useWarehouseContext();
 
   const [form, setForm] = useState({
     email: "",
     password: ""
   });
-  const [error, setError] = useState("");
+  const [showPass, setShowPass] = useState(false);
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setError(''); // Xóa lỗi cũ trước khi thử lại
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     try {
       const response = await authApi.signIn(form);
-      
-      console.log("Đăng nhập thành công:", response.data); // Kiểm tra token trả về
-      signin(response.data.user); 
-      localStorage.setItem('access_token', response.data.accessToken);
-      localStorage.setItem('refresh_token', response.data.refreshToken);
+
+      signin(response.data.user);
+      localStorage.setItem("access_token", response.data.accessToken);
+      localStorage.setItem("refresh_token", response.data.refreshToken);
     } catch (err: unknown) {
       if (!isAxiosError(err)) {
-        setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
-        console.error("Lỗi Logic Code:", err); // Dòng này sẽ chỉ đích danh file và dòng bị lỗi
-       
+        toast.error("Something went wrong. Please try again.");
+        console.error("Sign-in logic error:", err);
+        return;
       }
-      
-      else {
-      // --- XỬ LÝ LỖI Ở ĐÂY ---
-      
-        if (!err.response) {
-          // Trường hợp không có response (mất mạng, server không phản hồi)
-          setError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!");
-        } else {
-          // Trường hợp Server có trả về lỗi
-          const status = err.response.status;
-          const message = err.response.data?.message;
-          console.error("Lỗi đăng nhập:", err.status);
-          switch (status) {
-            case 401:
-              setError("Email hoặc mật khẩu không chính xác.");
-              break;
-            case 403:
-              setError("Tài khoản của bạn đã bị khóa hoặc không có quyền truy cập.");
-              break;
-            case 500:
-              setError("Lỗi hệ thống phía Server. Vui lòng thử lại sau!");
-              break;
-            default:
-              setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại..");
-          }
-        }
+
+      if (!err.response) {
+        toast.error("Unable to connect to the server. Please check your network connection.");
+        return;
+      }
+
+      const status = err.response.status;
+
+      switch (status) {
+        case 401:
+          toast.error("Email or password is incorrect.");
+          break;
+        case 403:
+          toast.error("Your account is locked or you do not have access.");
+          break;
+        case 500:
+          toast.error("Server error. Please try again later.");
+          break;
+        default:
+          toast.error("Something went wrong. Please try again.");
       }
     }
   };
 
-  const [showPass, setShowPass] = useState(false);
-
   return (
     <div className="flex min-h-screen">
-
-      {/* LEFT */}
+      {/* LEFT IMAGE */}
       <div className="hidden lg:flex w-1/2 sticky top-0 h-screen items-center text-white">
-        {/* BACKGROUND */}
         <img
           src={bgImage}
           alt="bg"
@@ -86,7 +71,6 @@ const SignInScreen = () => {
         <div className="relative z-10 px-16 text-left">
           {/* LOGO + TEXT */}
           <div className="flex items-center gap-4 mb-4">
-            
             {/* LOGO BOX */}
             <div className="bg-white p-3 rounded-xl shadow-md">
               <img
@@ -107,79 +91,73 @@ const SignInScreen = () => {
         </div>
       </div>
 
-      {/* RIGHT */}
-      <div className="flex w-full lg:w-1/2 items-center justify-center bg-gray-50 min-h-screen px-6">
-
-        <form className="w-full max-w-md">
-
+      {/* RIGHT FORM */}
+      <div className="flex w-full lg:w-1/2 lg:ml-auto items-center justify-center bg-gray-50 min-h-screen px-6 py-10">
+        <form className="w-full max-w-md" onSubmit={handleSignIn}>
           {/* TITLE */}
-          <div className="mb-6">
+          <div className="mb-4">
             <h2 className="text-3xl font-bold">Sign In</h2>
             <p className="text-gray-500 text-md mt-1">Welcome back to Stockify</p>
           </div>
 
-          <div className="items-start">
-            <span className="text-red-500 text-sm">
-              {error}
-            </span>
-          </div>
-
           {/* EMAIL */}
-          <div className="">
-            <label className="auth-label">
-              Email
-            </label>
+          <div className="my-4">
+            <label className="auth-label">Email*</label>
             <input
               type="email"
+              required
               placeholder="john@example.com"
-              className="auth-input w-full h-12"
+              className="auth-input h-12"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
           </div>
 
           {/* PASSWORD */}
-          <div className="mt-4 mb-1">
-            <label className="authl-label">Password</label>
+          <div className="mt-4">
+            <label className="auth-label">Password*</label>
 
-            <div className="relative ">
+            <div className="relative">
               <input
                 type={showPass ? "text" : "password"}
-                placeholder=""
-                className="auth-input h-12 pr-10 bg-white"
+                required
+                className="auth-input auth-input-with-toggle h-12"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
 
-              <div
+              <button
+                type="button"
+                aria-label={showPass ? "Hide password" : "Show password"}
                 onClick={() => setShowPass(!showPass)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
               >
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
-              </div>
+              </button>
             </div>
           </div>
 
           {/* FORGOT */}
-          <div className="text-right mb-6">
-            <span 
+          <div className="text-right mt-2">
+            <span
               onClick={() => navigate("/forgotpassword")}
-              className="text-md font-semibold text-blue-500 cursor-pointer hover:underline"
+              className="text-sm font-semibold text-blue-500 cursor-pointer hover:underline"
             >
               Forgot password?
             </span>
           </div>
 
           {/* BUTTON */}
-          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-xl hover:bg-blue-700 transition"
-            onClick={(e) => handleSignIn(e)}
+          <button
+            type="submit"
+            className="w-full mt-5 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition"
           >
-            Sign In
+            Sign in
           </button>
 
           {/* SIGNUP */}
-          <p className="text-center text-sm text-gray-500 mt-1">
-            Don’t have an account?{" "}
+          <p className="text-center text-sm text-gray-500 mt-2">
+            Don&apos;t have an account?{" "}
             <span
               onClick={() => navigate("/signup")}
               className="text-md text-blue-500 font-semibold cursor-pointer hover:underline"
@@ -187,7 +165,6 @@ const SignInScreen = () => {
               Sign up
             </span>
           </p>
-
         </form>
       </div>
     </div>

@@ -12,8 +12,9 @@ import { useWarehouseContext } from "../context/WarehouseContext";
 // import type { Warehouse, Invitation } from "../types/warehouse";
 // import { MOCK_WAREHOUSES, MOCK_INVITATIONS } from "../data/MOCK_WAREHOUSE";
 import { useAuth } from "../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
-const WareHouseScreen = () => {
+const WareHouseContent = () => {
   const {signout} = useAuth();
   const {
     warehouses,
@@ -191,6 +192,16 @@ const WareHouseScreen = () => {
       />
     </div>
   );
+};
+
+const WareHouseScreen = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  return <WareHouseContent />;
 };
 
 export default WareHouseScreen;
