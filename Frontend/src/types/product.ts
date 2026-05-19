@@ -18,6 +18,8 @@ export type ProductFormData = Omit<Product, 'id' | 'status' | 'sellPrice' | 'sto
 };
 
 export interface ProductSupplier {
+  productId?: number;
+  supplierId?: number;
   supplier: string;
   product: string;
   type: "PRIMARY" | "SECONDARY";

@@ -1,64 +1,120 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
+import productSupplierApi, { type ProductSupplierApiResponse } from '../api/ProductSupplierAPI';
 import { type ProductSupplier } from '../types/product';
 
-export const useProductSuppliers = (initialData: ProductSupplier[]) => {
-  const [productSuppliers, setProductSuppliers] = useState<ProductSupplier[]>(initialData);
+const normalizeType = (type?: string | null): ProductSupplier['type'] => (
+  type === 'SECONDARY' ? 'SECONDARY' : 'PRIMARY'
+);
 
-  const getSuppliersByProduct = (product: string) => {
-    return productSuppliers.filter((sp) => sp.product === product);
-  };
+const mapApiProductSupplier = (data: ProductSupplierApiResponse): ProductSupplier => ({
+  productId: Number(data.productId ?? 0),
+  supplierId: Number(data.supplierId ?? 0),
+  product: data.product ?? '',
+  supplier: data.supplier ?? '',
+  type: normalizeType(data.type),
+  price: Number(data.price ?? 0),
+});
 
-  const addSupplierToProduct = (newSupplier: ProductSupplier) => {
-    setProductSuppliers((prev) => {
-      // Kiểm tra xem supplier này đã tồn tại cho sản phẩm này chưa
-      const isExisted = prev.some(
-        (s) => s.supplier === newSupplier.supplier && s.product === newSupplier.product
-      );
+const getProductSupplierErrorMessage = (err: unknown, fallback: string) => {
+  if (!isAxiosError(err)) return fallback;
+  if (!err.response) return 'Cannot connect to server. Please check your network.';
+  return err.response.data?.message || fallback;
+};
 
-      if (isExisted) {
-        toast.error("Supplier này đã tồn tại trong danh sách!");
-        return prev;
+export const useProductSuppliers = (warehouseId?: number | null, productId?: string | number | null) => {
+  const [productSuppliers, setProductSuppliers] = useState<ProductSupplier[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchProductSuppliers = useCallback(async () => {
+    if (!warehouseId || !productId) {
+      setProductSuppliers([]);
+      return false;
+    }
+
+    setLoading(true);
+    try {
+      const res = await productSupplierApi.getByProductId(warehouseId, productId);
+      setProductSuppliers((res.data || []).map(mapApiProductSupplier));
+      return true;
+    } catch (err: unknown) {
+      toast.error(getProductSupplierErrorMessage(err, 'Failed to fetch product suppliers'));
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [productId, warehouseId]);
+
+  useEffect(() => {
+    void fetchProductSuppliers();
+  }, [fetchProductSuppliers]);
+
+  const upsertProductSupplier = useCallback(
+    async (supplierId: number, type: ProductSupplier['type'], price: number) => {
+      if (!warehouseId || !productId) {
+        toast.error('Please select a warehouse and product first');
+        return false;
       }
 
-      return [...prev, newSupplier];
-    });
-    toast.success(`Đã thêm ${newSupplier.supplier}`);
-  };
+      const numericProductId = Number(productId);
+      if (!Number.isInteger(numericProductId) || !Number.isInteger(supplierId)) {
+        toast.error('Invalid product or supplier');
+        return false;
+      }
 
-  const updateProductSupplier = (oldSupplier: string, product: string, newData: Partial<ProductSupplier>) => {
-    setProductSuppliers((prev) =>
-      prev.map((sp) =>
-        sp.supplier === oldSupplier && sp.product === product
-          ? { ...sp, ...newData }
-          : sp
-      )
-    );
-  };
+      try {
+        const res = await productSupplierApi.upsert(warehouseId, {
+          productId: numericProductId,
+          supplierId,
+          type,
+          price,
+        });
+        const next = mapApiProductSupplier(res.data);
 
-  const toggleSupplierType = (supplier: string, product: string) => {
-    setProductSuppliers((prev) =>
-      prev.map((sp) =>
-        sp.supplier === supplier && sp.product === product
-          ? { ...sp, type: sp.type === "PRIMARY" ? "SECONDARY" : "PRIMARY" }
-          : sp
-      )
-    );
-  };
+        setProductSuppliers((prev) => {
+          const exists = prev.some((item) => item.productId === next.productId && item.supplierId === next.supplierId);
+          if (!exists) return [...prev, next];
+          return prev.map((item) => (
+            item.productId === next.productId && item.supplierId === next.supplierId ? next : item
+          ));
+        });
 
-  const removeSupplierFromProduct = (supplier: string, product: string) => {
-    setProductSuppliers((prev) =>
-      prev.filter((sp) => !(sp.supplier === supplier && sp.product === product))
-    );
-    toast.error(`Removed ${supplier} from product {product}`);
-  };
+        toast.success('Product supplier saved');
+        return true;
+      } catch (err: unknown) {
+        toast.error(getProductSupplierErrorMessage(err, 'Failed to save product supplier'));
+        return false;
+      }
+    },
+    [productId, warehouseId],
+  );
+
+  const removeSupplierFromProduct = useCallback(
+    async (supplierId: number) => {
+      if (!warehouseId || !productId) {
+        toast.error('Please select a warehouse and product first');
+        return false;
+      }
+
+      try {
+        await productSupplierApi.delete(warehouseId, productId, supplierId);
+        setProductSuppliers((prev) => prev.filter((item) => item.supplierId !== supplierId));
+        toast.success('Supplier removed from product');
+        return true;
+      } catch (err: unknown) {
+        toast.error(getProductSupplierErrorMessage(err, 'Failed to remove supplier'));
+        return false;
+      }
+    },
+    [productId, warehouseId],
+  );
 
   return {
     productSuppliers,
-    getSuppliersByProduct,
-    addSupplierToProduct,
-    updateProductSupplier,
-    toggleSupplierType,
+    loading,
+    refetch: fetchProductSuppliers,
+    upsertProductSupplier,
     removeSupplierFromProduct,
   };
 };

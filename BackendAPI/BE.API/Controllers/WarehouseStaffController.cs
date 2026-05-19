@@ -35,11 +35,29 @@ public class WarehouseStaffController : ControllerBase
         return Ok(item);
     }
 
+    [HttpPost]
+    [Authorize(Policy = PermissionCode.STAFF_MANAGE)]
+    public async Task<IActionResult> Create(int warehouseId, WarehouseStaffCreateDTO model, CancellationToken cancellationToken)
+    {
+        var item = await _staffs.CreateAsync(warehouseId, model, cancellationToken);
+        if (item == null) return BadRequest(new { Message = "Could not add staff. Make sure the user exists and is not already in this warehouse." });
+        return CreatedAtAction(nameof(GetByUserId), new { warehouseId, userId = item.Id }, item);
+    }
+
     [HttpPut("{userId:int}")]
     [Authorize(Policy = PermissionCode.STAFF_MANAGE)]
     public async Task<IActionResult> Update(int warehouseId, int userId, WarehouseStaffUpdateDTO model, CancellationToken cancellationToken)
     {
         var ok = await _staffs.UpdateAsync(warehouseId, userId, model, cancellationToken);
+        if (!ok) return NotFound();
+        return NoContent();
+    }
+
+    [HttpDelete("{userId:int}")]
+    [Authorize(Policy = PermissionCode.STAFF_MANAGE)]
+    public async Task<IActionResult> Delete(int warehouseId, int userId, CancellationToken cancellationToken)
+    {
+        var ok = await _staffs.DeleteAsync(warehouseId, userId, cancellationToken);
         if (!ok) return NotFound();
         return NoContent();
     }

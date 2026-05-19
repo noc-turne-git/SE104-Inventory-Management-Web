@@ -1,77 +1,171 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { isAxiosError } from "axios";
+import staffApi from "../api/StaffAPI";
+import infractionApi from "../api/InfractionAPI";
 import { type Staff, type Infractions } from "../types/staff";
 import { toast } from "sonner";
 
-export const useStaff = (initialData: Staff[]) => {
-  const [staffs, setStaffs] = useState<Staff[]>(initialData);
+type StaffInput = Omit<Staff, "id" | "infractions">;
 
-  // clean function
-  const cleanInfractions = (infractions: Infractions[]) => {
-    const now = new Date();
+const normalizeStaff = (staff: Staff): Staff => ({
+  ...staff,
+  role: staff.role === "Manager" ? "Manager" : "Staff",
+  accountStatus: staff.accountStatus === "Inactive" ? "Inactive" : "Active",
+  salary: Number(staff.salary ?? 0),
+  hireDate: staff.hireDate || "",
+  infractions: Array.isArray(staff.infractions) ? staff.infractions : [],
+});
 
-    return infractions.filter(i => {
-      const diff =
-        (now.getTime() - new Date(i.datetime).getTime()) /
-        (1000 * 60 * 60 * 24);
+const getStaffErrorMessage = (err: unknown, fallback: string) => {
+  if (!isAxiosError(err)) return fallback;
+  if (!err.response) return "Cannot connect to server. Please check your network.";
+  return err.response.data?.message || fallback;
+};
 
-      return diff <= 30;
-    });
-  };
+const toApiDate = (datetime?: string) => {
+  const date = datetime ? new Date(datetime) : new Date();
+  return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+};
 
-  // add staff
-  const addStaff = (data: Omit<Staff, "id" | "infractions">) => {
-    const newStaff: Staff = {
-      ...data,
-      id: Date.now().toString(),
-      infractions: []
-    };
+export const useStaff = (warehouseId?: number | null) => {
+  const [staffs, setStaffs] = useState<Staff[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    setStaffs(prev => [...prev, newStaff]);
-    toast.success("Staff added");
-  };
+  const fetchStaffs = useCallback(async () => {
+    if (!warehouseId) {
+      setStaffs([]);
+      return false;
+    }
 
-  // update staff
-  const updateStaff = (id: string, data: Omit<Staff, "id" | "infractions">) => {
-    setStaffs(prev =>
-      prev.map(s => (s.id === id ? { ...s, ...data } : s))
-    );
-    toast.success("Staff updated");
-  };
+    setLoading(true);
+    try {
+      const res = await staffApi.getAll(warehouseId);
+      setStaffs((res.data || []).map(normalizeStaff));
+      return true;
+    } catch (err: unknown) {
+      toast.error(getStaffErrorMessage(err, "Failed to fetch staff"));
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [warehouseId]);
 
-  // delete staff
-  const deleteStaff = (id: string) => {
-    setStaffs(prev => prev.filter(s => s.id !== id));
-    toast.success("Staff deleted");
-  };
+  useEffect(() => {
+    void fetchStaffs();
+  }, [fetchStaffs]);
 
-  // add infraction 
-  const addInfraction = (staffId: string, data: Omit<Infractions, "id">) => {
-    const newInfraction: Infractions = {
-      ...data,
-      id: Date.now().toString()
-    };
+  const addStaff = useCallback(
+    async (data: StaffInput) => {
+      if (!warehouseId) {
+        toast.error("No warehouse selected");
+        return false;
+      }
 
-    setStaffs(prev =>
-      prev.map(s => {
-        if (s.id !== staffId) return s;
+      try {
+        const res = await staffApi.create(warehouseId, {
+          email: data.email,
+          role: data.role,
+          accountStatus: data.accountStatus,
+          salary: data.salary,
+          hireDate: data.hireDate,
+        });
 
-        const updated = [...s.infractions, newInfraction];
+        setStaffs((prev) => [...prev, normalizeStaff(res.data)]);
+        toast.success("Staff added successfully");
+        return true;
+      } catch (err: unknown) {
+        toast.error(getStaffErrorMessage(err, "Create failed"));
+        return false;
+      }
+    },
+    [warehouseId],
+  );
 
-        return {
-          ...s,
-          infractions: cleanInfractions(updated) // clean ngay tại đây
-        };
-      })
-    );
+  const updateStaff = useCallback(
+    async (id: string, data: StaffInput) => {
+      if (!warehouseId) {
+        toast.error("No warehouse selected");
+        return false;
+      }
 
-    toast.success("Infraction added");
-  };
+      try {
+        await staffApi.update(warehouseId, id, {
+          role: data.role,
+          accountStatus: data.accountStatus,
+          salary: data.salary,
+          hireDate: data.hireDate,
+        });
+
+        await fetchStaffs();
+        toast.success("Staff updated successfully");
+        return true;
+      } catch (err: unknown) {
+        toast.error(getStaffErrorMessage(err, "Update failed"));
+        return false;
+      }
+    },
+    [fetchStaffs, warehouseId],
+  );
+
+  const deleteStaff = useCallback(
+    async (id: string) => {
+      if (!warehouseId) {
+        toast.error("No warehouse selected");
+        return false;
+      }
+
+      try {
+        await staffApi.delete(warehouseId, id);
+        setStaffs((prev) => prev.filter((staff) => staff.id !== id));
+        toast.success("Staff deleted successfully");
+        return true;
+      } catch (err: unknown) {
+        toast.error(getStaffErrorMessage(err, "Delete failed"));
+        return false;
+      }
+    },
+    [warehouseId],
+  );
+
+  const addInfraction = useCallback(
+    async (staffId: string, data: Omit<Infractions, "id">) => {
+      if (!warehouseId) {
+        toast.error("No warehouse selected");
+        return false;
+      }
+
+      const userId = Number(staffId);
+      if (!Number.isInteger(userId)) {
+        toast.error("Invalid staff id");
+        return false;
+      }
+
+      try {
+        await infractionApi.create(warehouseId, {
+          userId,
+          date: toApiDate(data.datetime),
+          description: data.reason,
+          penalty: data.penalty,
+        });
+
+        await fetchStaffs();
+        toast.success("Infraction added");
+        return true;
+      } catch (err: unknown) {
+        toast.error(getStaffErrorMessage(err, "Failed to add infraction"));
+        return false;
+      }
+    },
+    [fetchStaffs, warehouseId],
+  );
 
   return {
     staffs,
+    loading,
+    refetch: fetchStaffs,
     addStaff,
     updateStaff,
     deleteStaff,
-    addInfraction
+    addInfraction,
   };
 };

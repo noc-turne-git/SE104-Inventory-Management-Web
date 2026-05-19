@@ -71,9 +71,7 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
         isOpen={isOpenListSupplierModal} 
         onClose={() => setIsOpenListSupplierModal(false)}
         product={product}
-      >
-
-        </ListSupplierModal>
+      />
     </tr>
   );
 }

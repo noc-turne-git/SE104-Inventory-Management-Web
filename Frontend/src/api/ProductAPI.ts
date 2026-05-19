@@ -33,6 +33,28 @@ const productApi = {
       status: data.status ?? 'undefined'
     });
   },
+
+  update(warehouseId: string | number, id: string | number, data: Product) {
+    const url = `/warehouses/${warehouseId}/products/${id}`;
+    return axiosClient.put(url, {
+      productId: Number(id),
+      sku: data.sku,
+      imageUrl: data.image ?? '',
+      name: data.name,
+      category: data.category,
+      description: data.description,
+      sellPrice: data.sellPrice,
+      stockQuantity: data.stockQuantity ?? 0,
+      defectiveQuantity: data.defectiveQuantity ?? 0,
+      damagedQuantity: data.damagedQuantity ?? 0,
+      status: data.status ?? 'undefined'
+    });
+  },
+
+  delete(warehouseId: string | number, id: string | number) {
+    const url = `/warehouses/${warehouseId}/products/${id}`;
+    return axiosClient.delete(url);
+  },
 };
 
 export default productApi;
