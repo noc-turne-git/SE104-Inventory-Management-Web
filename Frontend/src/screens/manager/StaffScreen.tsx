@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useStaff } from "../../hooks/useStaffs";
-import { MOCK_STAFF } from "../../data/MOCK_STAFF";
 import StaffRow from "../../features/staff/StaffRow";
 import StaffModal from "../../features/staff/StaffModal";
 import InfractionModal from "../../features/staff/InfractionModal";
 import SearchBar from "../../components/common/searchBar";
 import OpenModalButton from "../../components/common/button/ModalButton";
 import { type Staff } from "../../types/staff";
+import { useWarehouseContext } from "../../context/WarehouseContext";
 
 const StaffScreen = () => {
-  const { staffs, addStaff, updateStaff, deleteStaff, addInfraction } =
-    useStaff(MOCK_STAFF);
+  const { warehouseId } = useWarehouseContext();
+  const { staffs, loading, addStaff, updateStaff, deleteStaff, addInfraction } =
+    useStaff(warehouseId);
 
   const [search, setSearch] = useState("");
   const [selectedStaffId, setSelectedStaffId] = useState<string | null>(null);
@@ -29,13 +30,14 @@ const StaffScreen = () => {
   );
 
   //  add/update staff
-  const handleSubmit = (data: Omit<Staff, "id" | "infractions">) => {
-    if (editingItem) {
-      updateStaff(editingItem.id, data);
-    } else {
-      addStaff(data);
+  const handleSubmit = async (data: Omit<Staff, "id" | "infractions">) => {
+    const ok = editingItem
+      ? await updateStaff(editingItem.id, data)
+      : await addStaff(data);
+
+    if (ok) {
+      handleCloseModal();
     }
-    handleCloseModal();
   };
 
   const handleOpenAddModal = () => {
@@ -47,6 +49,10 @@ const StaffScreen = () => {
     setEditingItem(null);
     setShowModal(false);
   };
+
+  if (!warehouseId) {
+    return <div className="p-8 text-gray-600">Please select a warehouse</div>;
+  }
 
   return (
     <div className="p-8">
@@ -71,7 +77,16 @@ const StaffScreen = () => {
         onChange={(e) => setSearch(e.target.value)}
       />
 
+      {loading && (
+        <div className="text-gray-500 mt-6">Loading staff...</div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="text-gray-500 mt-6">No staff found.</div>
+      )}
+
       {/* TABLE */}
+      {filtered.length > 0 && (
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -105,7 +120,7 @@ const StaffScreen = () => {
                 <StaffRow
                   key={s.id}
                   staff={s}
-                  onDelete={deleteStaff}
+                  onDelete={(id) => void deleteStaff(id)}
                   onEdit={(staff) => {
                     setEditingItem(staff);
                     setShowModal(true);
@@ -117,6 +132,7 @@ const StaffScreen = () => {
           </table>
         </div>
       </div>
+      )}
 
       {/* STAFF MODAL */}
       <StaffModal

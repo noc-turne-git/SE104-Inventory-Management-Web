@@ -24,7 +24,7 @@ const staffApi = {
     return axiosClient.put(url, {
       accountStatus: data.accountStatus,
       salary: data.salary,
-      hireDate: data.hireDate ? new Date(data.hireDate) : undefined,
+      hireDate: data.hireDate || undefined,
       roleId: data.roleId,
     });
   },
