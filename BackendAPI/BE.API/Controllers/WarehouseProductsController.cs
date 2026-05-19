@@ -61,6 +61,15 @@ public class WarehouseProductsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { warehouseId, productId = entity.ProductId }, Map(entity));
     }
 
+    [HttpPut("{productId:int}")]
+    [Authorize(Policy = PermissionCode.PRODUCT_ADD)]
+    public async Task<IActionResult> Update(int warehouseId, int productId, ProductDTO model, CancellationToken cancellationToken)
+    {
+        var entity = await _products.UpdateAsync(warehouseId, productId, model, cancellationToken);
+        if (entity == null) return NotFound();
+        return Ok(Map(entity));
+    }
+
     [HttpDelete("{productId:int}")]
     [Authorize(Policy = PermissionCode.PRODUCT_DELETE)]
     public async Task<IActionResult> Delete(int warehouseId, int productId, CancellationToken cancellationToken)

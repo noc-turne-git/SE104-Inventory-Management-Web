@@ -30,7 +30,7 @@ const mapApiProductToProduct = (data: any): Product => {
 
 const ProductScreen = () => {
   const { warehouseId } = useWarehouseContext();
-  const { appendProduct, replaceProducts, updateProduct, deleteProduct, filteredProducts } = useProducts([]);
+  const { appendProduct, replaceProducts, replaceProduct, deleteProduct, filteredProducts } = useProducts([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Product | null>(null);
@@ -58,11 +58,6 @@ const ProductScreen = () => {
   }, [warehouseId, replaceProducts]);
 
   const handleSubmit = async (formData: ProductFormData) => {
-    if (editingItem) {
-      updateProduct(editingItem.id, formData);
-      return true;
-    }
-
     if (!warehouseId) {
       toast.error('Vui lòng chọn kho trước khi thêm sản phẩm.');
       return false;
@@ -70,18 +65,25 @@ const ProductScreen = () => {
 
     try {
       const payload: Product = {
-        id: '0',
+        id: editingItem?.id ?? '0',
         image: formData.image,
         name: formData.name,
         sku: formData.sku,
         category: formData.category,
         description: formData.description,
         sellPrice: parseFloat(formData.sellPrice),
-        stockQuantity: 0,
-        defectiveQuantity: 0,
-        damagedQuantity: 0,
-        status: 'undefined',
+        stockQuantity: editingItem?.stockQuantity ?? 0,
+        defectiveQuantity: editingItem?.defectiveQuantity ?? 0,
+        damagedQuantity: editingItem?.damagedQuantity ?? 0,
+        status: editingItem?.status ?? 'undefined',
       };
+
+      if (editingItem) {
+        const res = await productApi.update(warehouseId, editingItem.id, payload);
+        replaceProduct(mapApiProductToProduct(res.data));
+        toast.success('Product updated successfully');
+        return true;
+      }
 
       const createRes = await productApi.create(warehouseId, payload);
       const createdId = createRes.data?.productId;
@@ -108,6 +110,22 @@ const ProductScreen = () => {
       const message = err.response.data?.message;
       toast.error(message || 'Failed to create product');
       return false;
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!warehouseId) {
+      toast.error('Vui lÃ²ng chá»n kho trÆ°á»›c khi xÃ³a sáº£n pháº©m.');
+      return;
+    }
+
+    try {
+      await productApi.delete(warehouseId, id);
+      deleteProduct(id);
+    } catch (err: unknown) {
+      if (!isAxiosError(err)) toast.error('Failed to delete product');
+      else if (!err.response) toast.error('KhÃ´ng thá»ƒ káº¿t ná»‘i Ä‘áº¿n mÃ¡y chá»§. Vui lÃ²ng kiá»ƒm tra láº¡i máº¡ng!');
+      else toast.error(err.response.data?.message || 'Failed to delete product');
     }
   };
 
@@ -161,7 +179,7 @@ const ProductScreen = () => {
                 <ProductRow
                   key={p.id}
                   product={p}
-                  onDelete={deleteProduct}
+                  onDelete={(id) => void handleDelete(id)}
                   onOpenEditModal={(prod) => {
                     setEditingItem(prod);
                     setShowAddModal(true);

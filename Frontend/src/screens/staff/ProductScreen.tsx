@@ -31,7 +31,6 @@ const ProductViewScreen = () => {
   const { products, replaceProducts, filteredProducts } = useProducts([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingItem, setEditingItem] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -94,12 +93,10 @@ const ProductViewScreen = () => {
   }
 
   const handleOpenAddModal = () => {
-    setEditingItem(null);
     setShowAddModal(true)
   }
 
   const handleCloseModal = () => {
-    setEditingItem(null); 
     setShowAddModal(false);
   }
 
@@ -132,22 +129,18 @@ const ProductViewScreen = () => {
                     <th className="table-header">Defective</th>
                     <th className="table-header">Damage</th>
                     <th className="table-header">Status</th>
-                    <th className="table-header">Actions</th>
                   </tr>
               </thead>
               <tbody>
                 {loading && (
                   <tr>
-                    <td className="px-6 py-6 text-gray-500" colSpan={9}>
+                    <td className="px-6 py-6 text-gray-500" colSpan={8}>
                       Loading products...
                     </td>
                   </tr>
                 )}
                 {filteredProducts(searchTerm).map(p => ( 
-                  <ProductViewRow key={p.id} product={p} 
-                    onDelete={() => toast.error('Staff cannot delete products')}
-                    onOpenEditModal={(prod) => {setEditingItem(prod); setShowAddModal(true);}} >
-                  </ProductViewRow>
+                  <ProductViewRow key={p.id} product={p} />
                 ))}
               </tbody>
               </table>
