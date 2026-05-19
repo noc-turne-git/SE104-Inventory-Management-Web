@@ -11,6 +11,7 @@ import productApi from '../../api/ProductAPI';
 import warehouseNotesApi from '../../api/WarehouseNotesAPI';
 import { useWarehouseContext } from '../../context/WarehouseContext';
 import { useProducts } from '../../hooks/useProducts';
+import { useInventoryChecks } from '../../hooks/useInventoryChecks';
 
 const mapApiProductToProduct = (data: any): Product => ({
   id: String(data?.productId ?? data?.id ?? ''),
@@ -29,6 +30,8 @@ const mapApiProductToProduct = (data: any): Product => ({
 const ProductViewScreen = () => {
   const { warehouseId } = useWarehouseContext();
   const { products, replaceProducts, filteredProducts } = useProducts([]);
+  // (main) const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
+  // (main) const { addInventoryCheck } = useInventoryChecks();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(false);
