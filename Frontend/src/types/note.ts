@@ -23,7 +23,7 @@ export interface Delivery extends BaseNote {
 // 2. Inventory Check
 export interface InventoryCheck extends BaseNote {
   type: 'INVENTORY_CHECK';
-  items: { product: string; stockQuantity: number; reason: string }[];
+  items: { product: string; productId?: number; stockQuantity: number; reason: string }[];
 }
 
 // 3. Receipt

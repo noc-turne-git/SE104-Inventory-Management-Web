@@ -7,11 +7,6 @@ import { toast } from "sonner";
 
 type StaffInput = Omit<Staff, "id" | "infractions">;
 
-const roleIdByName: Record<Staff["role"], number> = {
-  Manager: 2,
-  Staff: 3,
-};
-
 const normalizeStaff = (staff: Staff): Staff => ({
   ...staff,
   role: staff.role === "Manager" ? "Manager" : "Staff",
@@ -59,10 +54,32 @@ export const useStaff = (warehouseId?: number | null) => {
     void fetchStaffs();
   }, [fetchStaffs]);
 
-  const addStaff = useCallback(async (_data: StaffInput) => {
-    toast.error("Create staff API is not available yet. Please invite staff from Warehouse Management.");
-    return false;
-  }, []);
+  const addStaff = useCallback(
+    async (data: StaffInput) => {
+      if (!warehouseId) {
+        toast.error("No warehouse selected");
+        return false;
+      }
+
+      try {
+        const res = await staffApi.create(warehouseId, {
+          email: data.email,
+          role: data.role,
+          accountStatus: data.accountStatus,
+          salary: data.salary,
+          hireDate: data.hireDate,
+        });
+
+        setStaffs((prev) => [...prev, normalizeStaff(res.data)]);
+        toast.success("Staff added successfully");
+        return true;
+      } catch (err: unknown) {
+        toast.error(getStaffErrorMessage(err, "Create failed"));
+        return false;
+      }
+    },
+    [warehouseId],
+  );
 
   const updateStaff = useCallback(
     async (id: string, data: StaffInput) => {
@@ -73,10 +90,10 @@ export const useStaff = (warehouseId?: number | null) => {
 
       try {
         await staffApi.update(warehouseId, id, {
+          role: data.role,
           accountStatus: data.accountStatus,
           salary: data.salary,
           hireDate: data.hireDate,
-          roleId: roleIdByName[data.role],
         });
 
         await fetchStaffs();
@@ -90,10 +107,25 @@ export const useStaff = (warehouseId?: number | null) => {
     [fetchStaffs, warehouseId],
   );
 
-  const deleteStaff = useCallback(async (_id: string) => {
-    toast.error("Delete staff API is not available yet.");
-    return false;
-  }, []);
+  const deleteStaff = useCallback(
+    async (id: string) => {
+      if (!warehouseId) {
+        toast.error("No warehouse selected");
+        return false;
+      }
+
+      try {
+        await staffApi.delete(warehouseId, id);
+        setStaffs((prev) => prev.filter((staff) => staff.id !== id));
+        toast.success("Staff deleted successfully");
+        return true;
+      } catch (err: unknown) {
+        toast.error(getStaffErrorMessage(err, "Delete failed"));
+        return false;
+      }
+    },
+    [warehouseId],
+  );
 
   const addInfraction = useCallback(
     async (staffId: string, data: Omit<Infractions, "id">) => {
