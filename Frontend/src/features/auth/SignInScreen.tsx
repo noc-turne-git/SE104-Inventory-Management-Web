@@ -6,8 +6,9 @@ import lgImage from "../../assets/logostockify.png";
 import { useAuth } from "../../context/AuthContext";
 import authApi from "../../api/AuthAPI";
 import { isAxiosError } from "axios";
-import { toast } from "sonner";
 import "./auth.css";
+
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const SignInScreen = () => {
   const navigate = useNavigate();
@@ -18,9 +19,32 @@ const SignInScreen = () => {
     password: ""
   });
   const [showPass, setShowPass] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [formError, setFormError] = useState("");
 
   const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setEmailError("");
+    setPasswordError("");
+    setFormError("");
+
+    let hasError = false;
+
+    if (!form.email.trim()) {
+      setEmailError("Email is required.");
+      hasError = true;
+    } else if (!isValidEmail(form.email)) {
+      setEmailError("Please enter a valid email address.");
+      hasError = true;
+    }
+
+    if (!form.password) {
+      setPasswordError("Password is required.");
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     try {
       const response = await authApi.signIn(form);
@@ -30,13 +54,13 @@ const SignInScreen = () => {
       localStorage.setItem("refresh_token", response.data.refreshToken);
     } catch (err: unknown) {
       if (!isAxiosError(err)) {
-        toast.error("Something went wrong. Please try again.");
+        setFormError("Something went wrong. Please try again.");
         console.error("Sign-in logic error:", err);
         return;
       }
 
       if (!err.response) {
-        toast.error("Unable to connect to the server. Please check your network connection.");
+        setFormError("Unable to connect to the server. Please check your network connection.");
         return;
       }
 
@@ -44,16 +68,16 @@ const SignInScreen = () => {
 
       switch (status) {
         case 401:
-          toast.error("Email or password is incorrect.");
+          setFormError("Email or password is incorrect.");
           break;
         case 403:
-          toast.error("Your account is locked or you do not have access.");
+          setFormError("Your account is locked or you do not have access.");
           break;
         case 500:
-          toast.error("Server error. Please try again later.");
+          setFormError("Server error. Please try again later.");
           break;
         default:
-          toast.error("Something went wrong. Please try again.");
+          setFormError("Something went wrong. Please try again.");
       }
     }
   };
@@ -93,7 +117,7 @@ const SignInScreen = () => {
 
       {/* RIGHT FORM */}
       <div className="flex w-full lg:w-1/2 lg:ml-auto items-center justify-center bg-gray-50 min-h-screen px-6 py-10">
-        <form className="w-full max-w-md" onSubmit={handleSignIn}>
+        <form className="w-full max-w-md" onSubmit={handleSignIn} noValidate>
           {/* TITLE */}
           <div className="auth-header auth-header-left">
             <h2 className="auth-title">Sign in</h2>
@@ -105,12 +129,21 @@ const SignInScreen = () => {
             <label className="auth-label">Email</label>
             <input
               type="email"
-              required
               placeholder="john@example.com"
-              className="auth-input h-12"
+              className={`auth-input h-12 ${emailError || formError ? "auth-input-error" : ""}`}
               value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              onChange={(e) => {
+                setEmailError("");
+                setFormError("");
+                setForm({ ...form, email: e.target.value });
+              }}
             />
+
+            {emailError && (
+              <p className="auth-error">
+                {emailError}
+              </p>
+            )}
           </div>
 
           {/* PASSWORD */}
@@ -120,10 +153,15 @@ const SignInScreen = () => {
             <div className="relative">
               <input
                 type={showPass ? "text" : "password"}
-                required
-                className="auth-input auth-input-with-toggle h-12"
+                className={`auth-input auth-input-with-toggle h-12 ${
+                  passwordError || formError ? "auth-input-error" : ""
+                }`}
                 value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                onChange={(e) => {
+                  setPasswordError("");
+                  setFormError("");
+                  setForm({ ...form, password: e.target.value });
+                }}
               />
 
               <button
@@ -135,6 +173,12 @@ const SignInScreen = () => {
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+
+            {(passwordError || formError) && (
+              <p className="auth-error">
+                {passwordError || formError}
+              </p>
+            )}
           </div>
 
           {/* FORGOT */}
