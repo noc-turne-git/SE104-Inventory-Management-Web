@@ -171,6 +171,7 @@ app.MapControllers();
 
 if (hangfireEnabled)
 {
-    app.UseHangfireDashboard();
+    if (app.Environment.IsDevelopment())
+        app.UseHangfireDashboard();
 }
 app.Run();
