@@ -102,12 +102,6 @@ const VerifyOtpScreen = () => {
             </p>
           </div>
 
-          <div className="auth-error">
-            <span>
-              {error}
-            </span>
-          </div>
-
           {/* OTP INPUT */}
           <div className="auth-otp-group">
             {otp.map((digit, index) => (
@@ -125,6 +119,12 @@ const VerifyOtpScreen = () => {
               />
             ))}
           </div>
+
+          {error && (
+            <p className="auth-error auth-error-center">
+              {error}
+            </p>
+          )}
 
           {/* BUTTON */}
           <button

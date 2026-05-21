@@ -65,12 +65,6 @@ const ForgotPasswordScreen = () => {
             </p>
           </div>
 
-          <div className="auth-error">
-            <span>
-              {error}
-            </span>
-          </div>
-
           {/* INPUT */}
           <div className="auth-field-spacious">
             <label className="auth-label">
@@ -88,6 +82,12 @@ const ForgotPasswordScreen = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
+            {error && (
+              <p className="auth-error">
+                {error}
+              </p>
+            )}
           </div>
 
           {/* BUTTON */}

@@ -96,12 +96,6 @@ const ResetPasswordScreen = () => {
             </p>
           </div>
 
-          <div className="auth-error">
-            <span>
-              {error}
-            </span>
-          </div>
-
           {/* PASSWORD */}
           <div className="auth-field-spacious">
             <label className="auth-label">New Password</label>
@@ -126,6 +120,7 @@ const ResetPasswordScreen = () => {
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+
           </div>
 
           {/* CONFIRM */}
@@ -152,6 +147,12 @@ const ResetPasswordScreen = () => {
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+
+            {error && (
+              <p className="auth-error">
+                {error}
+              </p>
+            )}
           </div>
 
           {/* BUTTON */}
