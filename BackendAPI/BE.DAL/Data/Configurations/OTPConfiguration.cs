@@ -11,6 +11,9 @@ public class OTPConfiguration : IEntityTypeConfiguration<OTP>
         builder.Property(o => o.Code).IsRequired();
         builder.Property(o => o.Email).IsRequired();
         builder.HasIndex(o => new { o.Email, o.Code });
+        builder.HasIndex(o => o.Email)
+            .IsUnique()
+            .HasFilter("[IsUsed] = 0");
 
         builder.HasData(
             new OTP

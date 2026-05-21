@@ -130,9 +130,11 @@ public class AuthService: IAuthService
     }
 
     public async Task<bool> verifyOtpAsync(string otp, string email) {
-        var otpEntity = await _OTPRepository.GetByEmailAsync(email);
-        if(otpEntity == null || otpEntity.Expiration < DateTime.UtcNow || otpEntity.IsUsed) return false;
-        if(otpEntity.Code != otp) return false;
+        if (string.IsNullOrWhiteSpace(otp) || string.IsNullOrWhiteSpace(email)) return false;
+
+        var otpEntity = await _OTPRepository.GetValidByEmailAndCodeAsync(email, otp);
+        if(otpEntity == null) return false;
+
         await _OTPRepository.MarkAsUsedAsync(otpEntity.Id);
 
         return true;
