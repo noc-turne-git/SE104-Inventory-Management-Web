@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import bgImage from "../../assets/stockify.png";
@@ -19,7 +19,7 @@ const SignInScreen = () => {
   });
   const [showPass, setShowPass] = useState(false);
 
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -81,11 +81,11 @@ const SignInScreen = () => {
             </div>
 
             {/* TEXT */}
-            <h1 className="text-7xl font-bold mb-4">Stockify</h1>
+            <h1 className="auth-brand-title">Stockify</h1>
           </div>
 
           {/* SUBTEXT */}
-          <p className="text-lg text-gray-200 max-w-md">
+          <p className="text-lg text-gray-50 max-w-md">
             Elevate your warehouse operations. Manage inventory, staff and logistics efficiently.
           </p>
         </div>
@@ -95,14 +95,14 @@ const SignInScreen = () => {
       <div className="flex w-full lg:w-1/2 lg:ml-auto items-center justify-center bg-gray-50 min-h-screen px-6 py-10">
         <form className="w-full max-w-md" onSubmit={handleSignIn}>
           {/* TITLE */}
-          <div className="mb-4">
-            <h2 className="text-3xl font-bold">Sign In</h2>
-            <p className="text-gray-500 text-md mt-1">Welcome back to Stockify</p>
+          <div className="auth-header auth-header-left">
+            <h2 className="auth-title">Sign in</h2>
+            <p className="auth-subtitle">Welcome back to Stockify</p>
           </div>
 
           {/* EMAIL */}
-          <div className="my-4">
-            <label className="auth-label">Email*</label>
+          <div className="auth-field">
+            <label className="auth-label">Email</label>
             <input
               type="email"
               required
@@ -114,8 +114,8 @@ const SignInScreen = () => {
           </div>
 
           {/* PASSWORD */}
-          <div className="mt-4">
-            <label className="auth-label">Password*</label>
+          <div className="auth-field">
+            <label className="auth-label">Password</label>
 
             <div className="relative">
               <input
@@ -130,7 +130,7 @@ const SignInScreen = () => {
                 type="button"
                 aria-label={showPass ? "Hide password" : "Show password"}
                 onClick={() => setShowPass(!showPass)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                className="auth-password-toggle"
               >
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -141,7 +141,7 @@ const SignInScreen = () => {
           <div className="text-right mt-2">
             <span
               onClick={() => navigate("/forgotpassword")}
-              className="text-sm font-semibold text-blue-500 cursor-pointer hover:underline"
+              className="auth-link"
             >
               Forgot password?
             </span>
@@ -150,17 +150,17 @@ const SignInScreen = () => {
           {/* BUTTON */}
           <button
             type="submit"
-            className="w-full mt-5 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition"
+            className="auth-button-primary"
           >
             Sign in
           </button>
 
           {/* SIGNUP */}
-          <p className="text-center text-sm text-gray-500 mt-2">
+          <p className="auth-footer-text">
             Don&apos;t have an account?{" "}
             <span
               onClick={() => navigate("/signup")}
-              className="text-md text-blue-500 font-semibold cursor-pointer hover:underline"
+              className="auth-link"
             >
               Sign up
             </span>
