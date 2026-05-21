@@ -1,10 +1,12 @@
-import { Mail, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import lgImage from "../../assets/logostockify.png";
 import "./auth.css";
 import authApi from "../../api/AuthAPI";
 import { isAxiosError } from "axios";
+
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
@@ -15,10 +17,22 @@ const ForgotPasswordScreen = () => {
     e.preventDefault();
     setError("");
 
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      setError("Email is required.");
+      return;
+    }
+
+    if (!isValidEmail(trimmedEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     try {
-      await authApi.forgotPassword({ email });
-      localStorage.setItem("reset_email", email);
-      navigate("/verifyotp", { state: { email } });
+      await authApi.forgotPassword({ email: trimmedEmail });
+      localStorage.setItem("reset_email", trimmedEmail);
+      navigate("/verifyotp", { state: { email: trimmedEmail } });
     } catch (err: unknown) {
       if (!isAxiosError(err)) {
         setError("Something went wrong. Please try again.");
@@ -54,7 +68,7 @@ const ForgotPasswordScreen = () => {
         </div>
 
         {/* CARD */}
-        <form className="auth-card-container" onSubmit={handleSubmit}>
+        <form className="auth-card-container" onSubmit={handleSubmit} noValidate>
           {/* TITLE */}
           <div className="auth-header">
             <h2 className="auth-title">
@@ -66,22 +80,19 @@ const ForgotPasswordScreen = () => {
           </div>
 
           {/* INPUT */}
-          <div className="auth-field-spacious">
-            <label className="auth-label">
-              Email Address
-            </label>
+          <div className="auth-field">
+            <label className="auth-label">Email</label>
 
-            <div className="auth-input-wrapper">
-              <Mail className="auth-input-icon" size={20} />
-
-              <input
-                type="email"
-                placeholder="name@company.com"
-                className="auth-input-control"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+            <input
+              type="email"
+              placeholder="name@company.com"
+              className={`auth-input h-12 ${error ? "auth-input-error" : ""}`}
+              value={email}
+              onChange={(e) => {
+                setError("");
+                setEmail(e.target.value);
+              }}
+            />
 
             {error && (
               <p className="auth-error">
