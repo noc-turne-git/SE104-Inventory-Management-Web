@@ -17,9 +17,11 @@ export const useShifts = () => {
     }
 
     try {
+      setShifts([]);
       const res = await shiftApi.getAll(warehouseId);
       setShifts(res.data || []);
     } catch (err: unknown) {
+      setShifts([]);
       if (!isAxiosError(err)) toast.error('Failed to fetch shifts');
       else toast.error(err.response?.data?.message || 'Failed to fetch shifts');
     }

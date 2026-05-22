@@ -35,10 +35,12 @@ export const useProductSuppliers = (warehouseId?: number | null, productId?: str
 
     setLoading(true);
     try {
+      setProductSuppliers([]);
       const res = await productSupplierApi.getByProductId(warehouseId, productId);
       setProductSuppliers((res.data || []).map(mapApiProductSupplier));
       return true;
     } catch (err: unknown) {
+      setProductSuppliers([]);
       toast.error(getProductSupplierErrorMessage(err, 'Failed to fetch product suppliers'));
       return false;
     } finally {

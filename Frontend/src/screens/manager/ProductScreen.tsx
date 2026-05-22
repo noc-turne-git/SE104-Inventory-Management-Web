@@ -38,14 +38,19 @@ const ProductScreen = () => {
 
   useEffect(() => {
     const loadProducts = async () => {
-      if (!warehouseId) return;
+      if (!warehouseId) {
+        replaceProducts([]);
+        return;
+      }
 
       setLoading(true);
       try {
+        replaceProducts([]);
         const res = await productApi.getAll(warehouseId);
         const items = Array.isArray(res.data) ? res.data : [];
         replaceProducts(items.map(mapApiProductToProduct));
       } catch (err: unknown) {
+        replaceProducts([]);
         if (!isAxiosError(err)) toast.error('Failed to fetch products');
         else if (!err.response) toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!');
         else toast.error(err.response.data?.message || 'Failed to fetch products');
