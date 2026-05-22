@@ -339,7 +339,7 @@ html {
 
 /* Trạng thái focus của ô OTP */
 .auth-otp-input:focus {
-  border-color: #2563eb;
+  border-color: #3b82f6;
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
 }
 

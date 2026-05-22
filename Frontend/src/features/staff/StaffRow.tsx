@@ -10,12 +10,12 @@ interface Props {
 
 const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
   return (
-    <tr className='hover: bg-gray-100'>
+    <tr className="hover:bg-gray-100 transition-colors">
 
       {/* EMPLOYEE */}
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-15 h-15 bg-blue-500 rounded-full flex items-center justify-center text-white">
+          <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-xl font-semibold text-white shadow-sm ring-2 ring-blue-100">
             {staff.name.charAt(0)}
           </div>
           <div>

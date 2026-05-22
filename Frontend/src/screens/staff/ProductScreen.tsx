@@ -103,6 +103,8 @@ const ProductViewScreen = () => {
     setShowAddModal(false);
   }
 
+  const filtered = filteredProducts(searchTerm);
+
   if (!warehouseId) {
     return <div className="p-8 text-gray-600">Please select a warehouse</div>;
   }
@@ -118,37 +120,48 @@ const ProductViewScreen = () => {
       </div>
     
       <SearchBar label="Search Product's Name ...."  onChange={(e) => setSearchTerm(e.target.value)}></SearchBar>
+
+      {loading && (
+        <div className="text-gray-500 mt-6">Loading products...</div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="text-gray-500 mt-6">No products found.</div>
+      )}
           
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      {filtered.length > 0 && (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6">
         <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
-                    <th className="table-header">Product</th>
-                    <th className="table-header">SKU</th>
-                    <th className="table-header">Description</th>
-                    <th className="table-header">Sell Price</th>
-                    <th className="table-header">Stock</th>
-                    <th className="table-header">Defective</th>
-                    <th className="table-header">Damage</th>
-                    <th className="table-header">Status</th>
+                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                      Product </th>
+                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                      SKU </th>
+                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                      Description </th>
+                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                      Sell Price </th>
+                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                      Stock </th>
+                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                      Defective </th>
+                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                      Damage </th>
+                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                      Status </th>
                   </tr>
               </thead>
               <tbody>
-                {loading && (
-                  <tr>
-                    <td className="px-6 py-6 text-gray-500" colSpan={8}>
-                      Loading products...
-                    </td>
-                  </tr>
-                )}
-                {filteredProducts(searchTerm).map(p => ( 
+                {filtered.map(p => ( 
                   <ProductViewRow key={p.id} product={p} />
                 ))}
               </tbody>
               </table>
             </div>
           </div>
+          )}
           
           <InventoryCheckModal
             isOpen={showAddModal} 
