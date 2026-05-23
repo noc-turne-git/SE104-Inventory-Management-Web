@@ -323,6 +323,8 @@ public class WarehouseNotesController : ControllerBase
 
     private static string MapStatus(string status)
     {
+        if (string.Equals(status, "IN_PROCESS", StringComparison.OrdinalIgnoreCase)) return "in process";
+        if (string.Equals(status, "IN PROCESS", StringComparison.OrdinalIgnoreCase)) return "in process";
         if (string.Equals(status, "PENDING", StringComparison.OrdinalIgnoreCase)) return "pending";
         if (string.Equals(status, "IN_PROCESS", StringComparison.OrdinalIgnoreCase)) return "in process";
         if (string.Equals(status, "APPROVED", StringComparison.OrdinalIgnoreCase)) return "approved";

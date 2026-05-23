@@ -2,13 +2,17 @@ import { Plus, Trash2 } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
 import { type Receipt, type ReceiptFormData } from '../../types/note';
+import { type Product } from '../../types/product';
+import { type Supplier } from '../../types/supplier';
 import { useState, useEffect } from 'react';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ReceiptFormData) => void;
+  onSubmit: (data: ReceiptFormData) => Promise<boolean | void> | boolean | void;
   initialData: Receipt | null;
+  products: Product[];
+  suppliers: Supplier[];
 }
 
 const DEFAULT_FORM: ReceiptFormData = {
@@ -19,7 +23,7 @@ const DEFAULT_FORM: ReceiptFormData = {
   //operator: '',
 };
 
-const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
+const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData, products, suppliers }: Props) => {
   const [formData, setFormData] = useState<ReceiptFormData>(DEFAULT_FORM);
 
   useEffect(() => {
@@ -30,15 +34,37 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
     }
   }, [initialData, isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
-    onClose();
+    const ok = await onSubmit(formData);
+    if (ok !== false) {
+      onClose();
+    }
   };
 
   const handleItemChange = (index: number, field: string, value: string | number) => {
     const newItems = [...formData.items];
     newItems[index] = { ...newItems[index], [field]: value };
+    setFormData({ ...formData, items: newItems });
+  };
+
+  const handleSupplierChange = (supplierId: string) => {
+    const selected = suppliers.find((supplier) => String(supplier.id) === supplierId);
+    setFormData({
+      ...formData,
+      supplierId: selected?.id,
+      supplier: selected?.name ?? '',
+    });
+  };
+
+  const handleProductChange = (index: number, productId: string) => {
+    const selected = products.find((product) => String(product.id) === productId);
+    const newItems = [...formData.items];
+    newItems[index] = {
+      ...newItems[index],
+      productId: selected ? Number(selected.id) : undefined,
+      product: selected?.name ?? '',
+    };
     setFormData({ ...formData, items: newItems });
   };
 
@@ -65,27 +91,22 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
         
         {/* Hàng thông tin chung */}
         <div className='bg-gray-50 p-4 rounded-xl border border-gray-100'>
-          <div className='mb-4'>
+          <div className="mb-4">
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Supplier *</label>
-            <input
+            <select
               className='modal-input w-full'
-              placeholder='Supplier name'
-              value={formData.supplier}
-              onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
+              value={formData.supplierId ?? suppliers.find((supplier) => supplier.name.toLowerCase() === formData.supplier?.toLowerCase().trim())?.id ?? ''}
+              onChange={(e) => handleSupplierChange(e.target.value)}
               required
-            />
+            >
+              <option value="">Select supplier</option>
+              {suppliers.map((supplier) => (
+                <option key={supplier.id} value={supplier.id}>
+                  {supplier.name}
+                </option>
+              ))}
+            </select>
           </div>
-
-          {/* <div>
-            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>operator *</label>
-            <input
-              className='modal-input w-full'
-              placeholder='Name'
-              value={formData.operator}
-              onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
-              required
-            />
-          </div> */}
 
           <div className='grid grid-cols-2 gap-4'>
             <div>
@@ -98,7 +119,6 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
                 required
               />
             </div>
-            
             <div>
               <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Status *</label>
               <select
@@ -145,13 +165,19 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
                 className="grid grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl shadow-blue-100 shadow-sm transition-all group"
               >
                 <div className="col-span-5">
-                  <input
+                  <select
                     className="modal-input !border-none w-full focus:bg-white"
-                    placeholder="Search or enter product..."
-                    value={item.product}
-                    onChange={(e) => handleItemChange(index, 'product', e.target.value)}
+                    value={item.productId ?? products.find((product) => product.name.toLowerCase() === item.product?.toLowerCase().trim())?.id ?? ''}
+                    onChange={(e) => handleProductChange(index, e.target.value)}
                     required
-                  />
+                  >
+                    <option value="">Select product</option>
+                    {products.map((product) => (
+                      <option key={product.id} value={product.id}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="col-span-2">
                   <input

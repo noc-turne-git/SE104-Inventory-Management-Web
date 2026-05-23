@@ -14,11 +14,11 @@ const NoteAuthorizationScreen: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleAction = (id: string, status: statusNote) => {
-    if (status === 'rejected' && !rejectionRemarks[id]) {
+    if (status === 'rejected' && !rejectionRemarks[id]?.trim()) {
       alert("Please provide a reason for rejection.");
       return;
     }
-    updateStatus(id, status, rejectionRemarks[id]);
+    updateStatus(id, status, rejectionRemarks[id]?.trim());
   };
 
     const getStatusColor = (status: string): string => {

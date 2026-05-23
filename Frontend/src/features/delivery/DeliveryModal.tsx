@@ -2,14 +2,16 @@ import { Plus, Trash2 } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
 import { type Delivery, type DeliveryFormData } from '../../types/note';
+import { type Product } from '../../types/product';
 import { useState, useEffect } from 'react';
 
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: DeliveryFormData) => void;
+  onSubmit: (data: DeliveryFormData) => Promise<boolean | void> | boolean | void;
   initialData: Delivery | null;
+  products: Product[];
 }
 
 const DEFAULT_FORM: DeliveryFormData = {
@@ -20,7 +22,7 @@ const DEFAULT_FORM: DeliveryFormData = {
   //operator: '',
 };
 
-const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
+const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData, products }: Props) => {
   const [formData, setFormData] = useState<DeliveryFormData>(DEFAULT_FORM);
 
   useEffect(() => {
@@ -31,15 +33,28 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
     }
   }, [initialData, isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
-    onClose();
+    const ok = await onSubmit(formData);
+    if (ok !== false) {
+      onClose();
+    }
   };
 
   const handleItemChange = (index: number, field: string, value: string | number) => {
     const newItems = [...formData.items];
     newItems[index] = { ...newItems[index], [field]: value };
+    setFormData({ ...formData, items: newItems });
+  };
+
+  const handleProductChange = (index: number, productId: string) => {
+    const selected = products.find((product) => String(product.id) === productId);
+    const newItems = [...formData.items];
+    newItems[index] = {
+      ...newItems[index],
+      productId: selected ? Number(selected.id) : undefined,
+      product: selected?.name ?? '',
+    };
     setFormData({ ...formData, items: newItems });
   };
 
@@ -142,13 +157,19 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
                 className="grid grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl shadow-blue-100 shadow-sm transition-all group border border-transparent hover:border-blue-100"
               >
                 <div className="col-span-8">
-                  <input
+                  <select
                     className="modal-input !border-none w-full focus:bg-white"
-                    placeholder="E.g. Slim-fit T-Shirt..."
-                    value={item.product}
-                    onChange={(e) => handleItemChange(index, 'product', e.target.value)}
+                    value={item.productId ?? products.find((product) => product.name.toLowerCase() === item.product?.toLowerCase().trim())?.id ?? ''}
+                    onChange={(e) => handleProductChange(index, e.target.value)}
                     required
-                  />
+                  >
+                    <option value="">Select product</option>
+                    {products.map((product) => (
+                      <option key={product.id} value={product.id}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="col-span-3">
                   <input

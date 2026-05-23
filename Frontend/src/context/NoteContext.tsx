@@ -37,7 +37,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const lowered = status.trim().toLowerCase();
     if (lowered === 'approved') return 'approved';
     if (lowered === 'rejected') return 'rejected';
-    if (lowered === 'in process') return 'in process';
+    if (lowered === 'in process' || lowered === 'in_process') return 'in process';
     return 'pending';
   };
 
@@ -164,7 +164,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const productMap = await getProductNameToId();
         const items = newNote.items.map((item) => {
-          const id = productMap.get(item.product.trim().toLowerCase());
+          const id = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!id) throw new Error(`Product not found: ${item.product}`);
           return { productId: id, quantity: item.quantity };
         });
@@ -185,13 +185,13 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (newNote.type === 'RECEIPT') {
       try {
         const [productMap, supplierMap] = await Promise.all([getProductNameToId(), getSupplierNameToId()]);
-        const supplierId = supplierMap.get(newNote.supplier.trim().toLowerCase());
+        const supplierId = newNote.supplierId ?? supplierMap.get(newNote.supplier.trim().toLowerCase());
         if (!supplierId) {
           toast.error(`Supplier not found: ${newNote.supplier}`);
           return false;
         }
         const items = newNote.items.map((item) => {
-          const id = productMap.get(item.product.trim().toLowerCase());
+          const id = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!id) throw new Error(`Product not found: ${item.product}`);
           return {
             productId: id,
@@ -259,7 +259,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const next = { ...current, ...data } as Delivery;
         const productMap = await getProductNameToId();
         const items = next.items.map((item) => {
-          const pid = productMap.get(item.product.trim().toLowerCase());
+          const pid = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!pid) throw new Error(`Product not found: ${item.product}`);
           return { productId: pid, quantity: item.quantity };
         });
@@ -281,13 +281,13 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const next = { ...current, ...data } as Receipt;
         const [productMap, supplierMap] = await Promise.all([getProductNameToId(), getSupplierNameToId()]);
-        const supplierId = supplierMap.get(next.supplier.trim().toLowerCase());
+        const supplierId = next.supplierId ?? supplierMap.get(next.supplier.trim().toLowerCase());
         if (!supplierId) {
           toast.error(`Supplier not found: ${next.supplier}`);
           return false;
         }
         const items = next.items.map((item) => {
-          const pid = productMap.get(item.product.trim().toLowerCase());
+          const pid = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!pid) throw new Error(`Product not found: ${item.product}`);
           return {
             productId: pid,

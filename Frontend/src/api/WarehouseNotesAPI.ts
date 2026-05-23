@@ -3,21 +3,23 @@ import { type Delivery, type Receipt, type InventoryCheck, type statusNote } fro
 
 export interface DeliveryUpsertPayload {
   destination: string;
-  status: statusNote;
+  status?: statusNote;
   items: { productId: number; quantity: number }[];
 }
 
 export interface ReceiptUpsertPayload {
   supplierId: number;
-  status: statusNote;
+  status?: statusNote;
   qualityCheckStatus?: string;
   items: { productId: number; ordered: number; received: number; defective: number }[];
 }
 
 export interface InventoryCheckUpsertPayload {
-  status: statusNote;
+  status?: statusNote;
   items: { productId: number; stockQuantity: number; reason: string }[];
 }
+
+const toApiStatus = (status?: statusNote) => (status === 'in process' ? 'IN_PROCESS' : 'PENDING');
 
 const warehouseNotesApi = {
   // Delivery notes
@@ -33,7 +35,7 @@ const warehouseNotesApi = {
     const url = `/warehouses/${warehouseId}/notes/delivery-notes`;
     return axiosClient.post<Delivery>(url, {
       destination: data.destination,
-      deliveryStatus: data.status,
+      status: toApiStatus(data.status),
       items: data.items,
     });
   },
@@ -41,7 +43,7 @@ const warehouseNotesApi = {
     const url = `/warehouses/${warehouseId}/notes/delivery-notes/${noteId}`;
     return axiosClient.put(url, {
       destination: data.destination,
-      deliveryStatus: data.status,
+      status: toApiStatus(data.status),
       items: data.items,
     });
   },
@@ -59,7 +61,7 @@ const warehouseNotesApi = {
     const url = `/warehouses/${warehouseId}/notes/goods-receipts`;
     return axiosClient.post<Receipt>(url, {
       supplierId: data.supplierId,
-      status: data.status,
+      status: toApiStatus(data.status),
       qualityCheckStatus: data.qualityCheckStatus ?? 'PENDING',
       items: data.items,
     });
@@ -68,7 +70,7 @@ const warehouseNotesApi = {
     const url = `/warehouses/${warehouseId}/notes/goods-receipts/${noteId}`;
     return axiosClient.put(url, {
       supplierId: data.supplierId,
-      status: data.status,
+      status: toApiStatus(data.status),
       qualityCheckStatus: data.qualityCheckStatus ?? 'PENDING',
       items: data.items,
     });
@@ -86,14 +88,14 @@ const warehouseNotesApi = {
   createInventoryCheck(warehouseId: string | number, data: InventoryCheckUpsertPayload) {
     const url = `/warehouses/${warehouseId}/notes/inventory-checks`;
     return axiosClient.post<InventoryCheck>(url, {
-      status: data.status,
+      status: toApiStatus(data.status),
       items: data.items,
     });
   },
   updateInventoryCheck(warehouseId: string | number, noteId: string | number, data: InventoryCheckUpsertPayload) {
     const url = `/warehouses/${warehouseId}/notes/inventory-checks/${noteId}`;
     return axiosClient.put(url, {
-      status: data.status,
+      status: toApiStatus(data.status),
       items: data.items,
     });
   },

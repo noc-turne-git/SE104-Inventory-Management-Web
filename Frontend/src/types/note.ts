@@ -17,7 +17,7 @@ interface BaseNote {
 export interface Delivery extends BaseNote {
   type: 'DELIVERY';
   destination: string;
-  items: { product: string; quantity: number }[];
+  items: { product: string; productId?: number; quantity: number }[];
 }
 
 // 2. Inventory Check
@@ -30,7 +30,8 @@ export interface InventoryCheck extends BaseNote {
 export interface Receipt extends BaseNote {
   type: 'RECEIPT';
   supplier: string;
-  items: { product: string; ordered: number; received: number; defective: number }[];
+  supplierId?: number;
+  items: { product: string; productId?: number; ordered: number; received: number; defective: number }[];
 }
 
 // --- Union Type: Đây là chìa khóa để dùng chung trong Component ---
