@@ -23,8 +23,6 @@ const getStatusColor = (status: string): string => {
       return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
     case 'rejected':
       return 'bg-red-100 text-red-700 border border-red-200';
-    case 'new':
-      return 'bg-purple-100 text-purple-700 border border-purple-200';
     default:
       return 'bg-gray-100 text-gray-700 border border-gray-200';
   }
@@ -78,6 +76,13 @@ export const DeliveryNote = ({ delivery, onOpenEditModal, onDelete }: Props) => 
         <p className="text-sm font-bold text-gray-400 uppercase mb-1">Destination:</p>
         <p className="font-medium text-gray-900">{delivery.destination}</p>
       </div>
+
+      {delivery.status === 'rejected' && delivery.reason && (
+        <div className="mb-4 rounded-lg border border-red-100 bg-red-50 p-3">
+          <p className="text-sm font-bold text-red-600 uppercase mb-1">Rejected Reason:</p>
+          <p className="text-md text-red-700">{delivery.reason}</p>
+        </div>
+      )}
 
       <div className="mb-4">
         <p className="text-sm font-bold text-gray-400 uppercase mb-3">Package Items:</p>

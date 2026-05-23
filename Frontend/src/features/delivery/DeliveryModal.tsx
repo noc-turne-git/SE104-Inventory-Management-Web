@@ -16,7 +16,7 @@ const DEFAULT_FORM: DeliveryFormData = {
   dateCreated: new Date().toISOString().split('T')[0],
   destination: '',
   items: [{ product: '', quantity: 1 }],
-  status: 'new',
+  status: 'pending',
   //operator: '',
 };
 
@@ -102,13 +102,11 @@ const DeliveryModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
             <select
               //type="date"
               className='modal-input w-full'
-               onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
             >
-              <option value="new">New</option>
               <option value="in process">In Process</option>
               <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
             </select>
           </div>
           </div>

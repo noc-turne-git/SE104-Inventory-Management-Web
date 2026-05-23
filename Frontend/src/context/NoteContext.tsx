@@ -38,7 +38,6 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (lowered === 'approved') return 'approved';
     if (lowered === 'rejected') return 'rejected';
     if (lowered === 'in process') return 'in process';
-    if (lowered === 'new') return 'new';
     return 'pending';
   };
 
@@ -171,6 +170,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         await warehouseNotesApi.createDelivery(warehouseId, {
           destination: newNote.destination,
+          status: newNote.status,
           items,
         });
         await fetchApiNotes();
@@ -202,6 +202,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         await warehouseNotesApi.createReceipt(warehouseId, {
           supplierId,
+          status: newNote.status,
           items,
         });
         await fetchApiNotes();
@@ -225,7 +226,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             reason: item.reason ?? '',
           };
         });
-        await warehouseNotesApi.createInventoryCheck(warehouseId, { items });
+        await warehouseNotesApi.createInventoryCheck(warehouseId, { status: newNote.status, items });
         await fetchApiNotes();
         toast.success('Successfully created INVENTORY_CHECK note.');
         return true;
@@ -264,6 +265,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         await warehouseNotesApi.updateDelivery(warehouseId, id, {
           destination: next.destination,
+          status: next.status,
           items,
         });
         await fetchApiNotes();
@@ -296,6 +298,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         await warehouseNotesApi.updateReceipt(warehouseId, id, {
           supplierId,
+          status: next.status,
           items,
         });
         await fetchApiNotes();
@@ -320,7 +323,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             reason: item.reason ?? '',
           };
         });
-        await warehouseNotesApi.updateInventoryCheck(warehouseId, id, { items });
+        await warehouseNotesApi.updateInventoryCheck(warehouseId, id, { status: next.status, items });
         await fetchApiNotes();
         toast.info('Note has been updated successfully.');
         return true;
@@ -359,7 +362,6 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         rejected: { msg: 'Note has been rejected.', icon: '❌' },
         pending: { msg: 'Note is pending approval.', icon: '⏳' },
         'in process': { msg: 'Note is being processed.', icon: '⚙️' },
-        new: { msg: 'New note created.', icon: '🆕' },
       };
       toast(`${statusMap[status].icon} ${statusMap[status].msg}`);
       return true;
@@ -370,11 +372,29 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const deleteNote = async (id: string) => {
+    if (!warehouseId) {
+      toast.error('No warehouse selected.');
+      return false;
+    }
+
     const note = allNotes.find((n) => n.id === id);
     if (!note) return false;
 
     if (note.type === 'DELIVERY' || note.type === 'RECEIPT') {
-      return updateStatus(id, 'rejected', 'Cancelled by user');
+      if (note.status === 'approved') {
+        toast.error('Approved notes cannot be cancelled.');
+        return false;
+      }
+
+      try {
+        await warehouseNotesApi.deleteNote(warehouseId, id);
+        await fetchApiNotes();
+        toast.success('Note has been cancelled and deleted.');
+        return true;
+      } catch (err: unknown) {
+        toast.error(getErrorMessage(err, 'Failed to cancel note'));
+        return false;
+      }
     }
 
     setAllNotes((prev) => prev.filter((n) => n.id !== id));

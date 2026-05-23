@@ -16,7 +16,7 @@ interface Props {
 const DEFAULT_FORM: InventoryCheckFormData = {
   warehouseId: '',
   dateCreated: new Date().toISOString().split('T')[0],
-  status: 'new',
+  status: 'pending',
   items: [
     {
       product: '',
@@ -102,11 +102,8 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit, products}: Props) => {
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
               >
-                <option value="new">New</option>
                 <option value="in process">In Process</option>
                 <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
               </select>
             </div>
           </div>

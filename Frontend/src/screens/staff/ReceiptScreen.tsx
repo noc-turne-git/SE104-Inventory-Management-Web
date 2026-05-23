@@ -13,7 +13,7 @@ const ReceiptScreen = () => {
   const [editingItem, setEditingItem] = useState<Receipt | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  const statusOptions = ['all', 'new' , 'in process' , 'pending' ,'approved' , 'rejected'];
+  const statusOptions = ['all', 'in process' , 'pending' ,'approved' , 'rejected'];
 
   const handleSubmit = async (formData: ReceiptFormData) => {
     let ok = false;

@@ -20,7 +20,7 @@ const DeliveryScreen = () => {
   const [editingItem, setEditingItem] = useState<Delivery | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  const statusOptions = ['all', 'new', 'in process', 'pending', 'approved', 'rejected'];
+  const statusOptions = ['all', 'in process', 'pending', 'approved', 'rejected'];
 
   const handleSubmit = async (formData: DeliveryFormData) => {
     let ok = false;

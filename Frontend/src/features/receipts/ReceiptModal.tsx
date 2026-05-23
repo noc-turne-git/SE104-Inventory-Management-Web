@@ -15,7 +15,7 @@ const DEFAULT_FORM: ReceiptFormData = {
   dateCreated: new Date().toISOString().split('T')[0],
   supplier: '',
   items: [{ product: '', ordered: 0, received: 0, defective: 0 }],
-  status: 'new',
+  status: 'pending',
   //operator: '',
 };
 
@@ -63,9 +63,9 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
     >
       <form onSubmit={handleSubmit} className="space-y-8">
         
-        {/* Hàng thông tin chung: Chia 2 cột */}
-        <div className='grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100'>
-          <div>
+        {/* Hàng thông tin chung */}
+        <div className='bg-gray-50 p-4 rounded-xl border border-gray-100'>
+          <div className='mb-4'>
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Supplier *</label>
             <input
               className='modal-input w-full'
@@ -75,6 +75,7 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
               required
             />
           </div>
+
           {/* <div>
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>operator *</label>
             <input
@@ -85,29 +86,30 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
               required
             />
           </div> */}
-          <div>
-            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>
-            <input
-              type="date"
-              className='modal-input w-full'
-              value={formData.dateCreated}
-              onChange={(e) => setFormData({ ...formData, dateCreated: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Status *</label>
-            <select
-              className='modal-input w-full'
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-            >
-              <option value="new">New</option>
-              <option value="in process">In Process</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
+
+          <div className='grid grid-cols-2 gap-4'>
+            <div>
+              <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>
+              <input
+                type="date"
+                className='modal-input w-full'
+                value={formData.dateCreated}
+                onChange={(e) => setFormData({ ...formData, dateCreated: e.target.value })}
+                required
+              />
+            </div>
+            
+            <div>
+              <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Status *</label>
+              <select
+                className='modal-input w-full'
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+              >
+                <option value="in process">In Process</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
           </div>
         </div>
 

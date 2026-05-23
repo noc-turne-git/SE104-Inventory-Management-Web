@@ -1,7 +1,7 @@
 // --- Base Interface cho các thuộc tính dùng chung ---
 
 //dùng interface thì ko đc
-export type statusNote = 'new' | 'in process' | 'pending' | 'approved' | 'rejected';
+export type statusNote = 'in process' | 'pending' | 'approved' | 'rejected';
 
 interface BaseNote {
   id: string;

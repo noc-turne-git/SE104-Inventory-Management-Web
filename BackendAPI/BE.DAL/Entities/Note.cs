@@ -8,6 +8,7 @@ public class Note: IEntity
     public DateTime Date { get; set; }
     public string type { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public string? Reason { get; set; }
 
     // navigation
     public User User { get; set; } = null!;

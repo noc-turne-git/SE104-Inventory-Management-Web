@@ -26,8 +26,6 @@ const getStatusColor = (status: string): string => {
             return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
     case 'rejected':
             return 'bg-red-100 text-red-700 border border-red-200';
-    case 'new':
-            return 'bg-purple-100 text-purple-700 border border-purple-200';
     default:
             return 'bg-gray-100 text-gray-700 border border-gray-200';
   }
@@ -87,6 +85,13 @@ export const ReceiptNote = ({receipt, onOpenEditModal, onDelete} : Props) => {
         <p className="text-md text-gray-600 mb-2">Supplier:</p>
         <p className="font-medium text-lg text-gray-900">{receipt.supplier}</p>
       </div>
+
+      {receipt.status === 'rejected' && receipt.reason && (
+        <div className="mb-4 rounded-lg border border-red-100 bg-red-50 p-3">
+          <p className="text-sm font-bold text-red-600 uppercase mb-1">Rejected Reason:</p>
+          <p className="text-md text-red-700">{receipt.reason}</p>
+        </div>
+      )}
 
       <div className="mb-4">
         <p className="text-md text-gray-600 mb-3">Items Quality Check:</p>

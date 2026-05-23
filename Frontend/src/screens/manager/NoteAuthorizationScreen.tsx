@@ -31,8 +31,6 @@ const NoteAuthorizationScreen: React.FC = () => {
         return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
       case 'rejected':
         return 'bg-red-100 text-red-700 border border-red-200';
-      case 'new':
-        return 'bg-purple-100 text-purple-700 border border-purple-200';
       default:
         return 'bg-gray-100 text-gray-700 border border-gray-200';
     }
@@ -58,7 +56,7 @@ const NoteAuthorizationScreen: React.FC = () => {
           <div className='justify-between'>
             <div className="flex flex-wrap gap-4 items-center justify-between">
               <div className="flex bg-white p-1 rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
-                {['ALL', 'PENDING', 'APPROVED', 'REJECTED', 'IN PROCESS', 'NEW'].map((tab) => (
+                {['ALL', 'PENDING', 'APPROVED', 'REJECTED', 'IN PROCESS'].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab as any)}
@@ -167,20 +165,27 @@ const NoteAuthorizationScreen: React.FC = () => {
                 </table>
 
                 {/* Phần ghi chú từ chối */}
+                {/* {n.status === 'rejected' && n.reason && (
+                  <div className="mt-6 p-4 bg-red-50 rounded-xl border border-red-100">
+                    <p className="text-md font-bold text-red-600 uppercase mb-2">Rejected Reason</p>
+                    <p className="text-md text-red-700">{n.reason}</p>
+                  </div>
+                )} */}
+
                 <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
                   <p className="text-md font-bold text-slate-500 uppercase mb-2">Rejection Remarks</p>
                   <textarea 
-                    className="w-full p-3 bg-white border border-gray-200 rounded-lg text-md focus:ring-2 focus:ring-red-400 outline-none"
+                    className="w-full text-red-600 p-3 bg-white border border-gray-200 rounded-lg text-md focus:ring-2 focus:ring-red-400 outline-none"
                     placeholder="Reason for rejection..."
                     rows={2}
-                    value={rejectionRemarks[n.id] || ""}
+                    value={rejectionRemarks[n.id] ?? n.reason ?? ""}
                     onChange={(e) => setRejectionRemarks({...rejectionRemarks, [n.id]: e.target.value})}
                   />
                 </div>
 
                 {/* Nút hành động */}
                 <div className="mt-6 flex justify-end gap-3">
-                  { n.status !== 'rejected' && n.status !== 'in process' && n.status !== 'new' &&
+                  { n.status !== 'rejected' && n.status !== 'in process' &&
                     <button 
                       onClick={() => handleAction(n.id, 'rejected')}
                       className="flex items-center gap-2 px-5 py-2 text-red-600 font-bold text-lg hover:bg-red-50 rounded-lg transition-all"
@@ -188,7 +193,7 @@ const NoteAuthorizationScreen: React.FC = () => {
                       <XCircle size={16} /> Reject
                     </button>
                   } 
-                  { n.status !== 'approved' && n.status !== 'in process' && n.status !== 'new' &&
+                  { n.status !== 'approved' && n.status !== 'in process' &&
                     <button 
                       onClick={() => handleAction(n.id, 'approved')}
                       className="flex items-center gap-2 px-6 py-2 bg-slate-900 text-white font-bold text-lg rounded-lg hover:bg-blue-600 transition-all shadow-md"
