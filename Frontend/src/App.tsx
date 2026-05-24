@@ -56,7 +56,7 @@ function App() {
   // Redirect user về dashboard tương ứng theo role khi vào /app
   const DefaultRoute = () => { 
     const { role } = useWarehouseContext();
-    if (role === "manager") return <Navigate to="dashboard_manager" replace />; 
+    if (role === "owner" || role === "manager") return <Navigate to="dashboard_manager" replace />; 
     if (role === "staff") return <Navigate to="dashboard_staff" replace />; 
     return <Navigate to="/warehouse" replace />; 
   };
@@ -164,7 +164,7 @@ function App() {
               <Route path="/app" element={<RequireRoleRoute />}>
                 <Route element={<AppLayout />}>
                   {/* Manager Routes */}
-                  <Route element={<RoleRoute allow={["manager"]} />}>
+                  <Route element={<RoleRoute allow={["owner", "manager"]} />}>
                     <Route path="dashboard_manager" element={<DashboardManagerScreen />} />
                     <Route path="products" element={<ProductScreen />} />
                     <Route path="staffs" element={<StaffScreen />} />

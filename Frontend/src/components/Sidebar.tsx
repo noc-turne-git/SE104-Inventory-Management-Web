@@ -16,6 +16,14 @@ export const Sidebar = () => {
   if (!user) return null;
 
   const menuConfig = {
+    owner: [
+      { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/app/dashboard_manager' },
+      { name: 'Products', icon: <Package size={20} />, path: '/app/products' },
+      { name: 'Suppliers', icon: <BookUser size={20} />, path: '/app/suppliers' },
+      { name: 'Notes', icon: <NotebookPen size={20} />, path: '/app/notes' },
+      { name: 'Staff', icon: <Users size={20} />, path: '/app/staffs' },
+      { name: 'Shifts', icon: <Calendar size={20} />, path: '/app/shifts' },
+    ],
     manager: [
       { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/app/dashboard_manager' },
       { name: 'Products', icon: <Package size={20} />, path: '/app/products' },
@@ -55,7 +63,7 @@ export const Sidebar = () => {
           onClick={() => setIsProfileOpen(true)}
           className="user-card w-full hover:bg-gray-100"
         >
-          <div className="avatar">{role === "manager" ? 'M' : 'S'}</div>
+          <div className="avatar">{role === "owner" ? 'O' : role === "manager" ? 'M' : 'S'}</div>
           <div className="user-info">
             <span className="full-name">{user?.fullName}</span>
             <span className="user-role">{role}</span>

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-type Role = "user" | "manager" | "staff" | null;
+type Role = "user" | "owner" | "manager" | "staff" | null;
 
 interface WarehouseState {
   role: Role;

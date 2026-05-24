@@ -14,10 +14,16 @@ const resolveImageUrl = (url?: string) => {
   return `http://localhost:5074${url}`;
 };
 
+const normalizeWarehouseRole = (role?: string): Warehouse["role"] => {
+  const normalized = role?.toLowerCase();
+  if (normalized === "owner" || normalized === "manager" || normalized === "staff") return normalized;
+  return undefined;
+};
+
 const mapApiWarehouse = (data: any): Warehouse => ({
   ...data,
   warehouseId: String(data?.warehouseId ?? ""),
-  role: data?.role ?? "staff",
+  role: normalizeWarehouseRole(data?.role),
   name: data?.name ?? "",
   location: data?.location ?? data?.address ?? "",
   address: data?.address ?? data?.location ?? "",
@@ -35,6 +41,7 @@ export const useWarehouse = () => {
   const [warehouses, setWarehouses] = useState  <Warehouse[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingWarehouse, setEditingWarehouse] = useState<Warehouse | null>(null);
 
   const navigate = useNavigate();
 
@@ -84,8 +91,19 @@ export const useWarehouse = () => {
 
 
   // Mở/Đóng Modal
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = () => {
+    setEditingWarehouse(null);
+    setIsModalOpen(true);
+  };
+  const openEditModal = (warehouse: Warehouse) => {
+    if (warehouse.role !== "owner") return;
+    setEditingWarehouse(warehouse);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingWarehouse(null);
+  };
 
   // Tạo Warehouse mới
   const createWarehouse = async (name: string, address: string, imageFile?: File | null) => {
@@ -109,11 +127,11 @@ export const useWarehouse = () => {
     try {
       const response = await warehouseApi.create(form);
       const getWarehouseResponse = await warehouseApi.getById(response.data.warehouseId);
-      const createdWarehouse = mapApiWarehouse(getWarehouseResponse.data);
+      const createdWarehouse = { ...mapApiWarehouse(getWarehouseResponse.data), role: "owner" as const };
       
       setWarehouse({
-        role: "manager",
-        warehouseId: createdWarehouse.warehouseId,
+        role: createdWarehouse.role ?? "owner",
+        warehouseId: Number(createdWarehouse.warehouseId),
         warehouseName: createdWarehouse.name,
       });
 
@@ -136,8 +154,8 @@ export const useWarehouse = () => {
         const wh = await warehouseApi.getById(invitedWh.warehouseId);
         const mappedWarehouse = mapApiWarehouse(wh.data);
         setWarehouse({
-          role: "staff",
-          warehouseId: mappedWarehouse.warehouseId,
+          role: mappedWarehouse.role ?? "staff",
+          warehouseId: Number(mappedWarehouse.warehouseId),
           warehouseName: mappedWarehouse.name,
         });
 
@@ -210,26 +228,46 @@ export const useWarehouse = () => {
   };
 
   // Điều hướng/Quản lý (Logic này thường là dùng router.push)
-  const updateWarehouseImage = async (id: string | number, imageFile: File) => {
+  const updateWarehouse = async (id: string | number, name: string, address: string, imageFile?: File | null) => {
     const current = warehouses.find((w) => String(w.warehouseId) === String(id));
-    if (!current) return;
+    if (!current || current.role !== "owner") {
+      toast.error("Only warehouse owner can edit this warehouse");
+      return;
+    }
 
     try {
       const response = await warehouseApi.update(id, {
-        name: current.name,
-        location: current.location ?? current.address ?? "",
+        name,
+        location: address,
         urlimage: current.urlimage ?? current.imageUrl ?? "",
-        imageFile,
+        imageFile: imageFile ?? null,
       });
       const updatedWarehouse = mapApiWarehouse(response.data);
       setWarehouses((prev) =>
         prev.map((warehouse) =>
-          String(warehouse.warehouseId) === String(id) ? { ...warehouse, ...updatedWarehouse } : warehouse
+          String(warehouse.warehouseId) === String(id) ? { ...warehouse, ...updatedWarehouse, role: warehouse.role } : warehouse
         )
       );
-      toast.success("Warehouse image updated successfully");
+      closeModal();
+      toast.success("Warehouse updated successfully");
     } catch {
-      toast.error("Failed to update warehouse image");
+      toast.error("Failed to update warehouse");
+    }
+  };
+
+  const deleteWarehouse = async (id: string | number) => {
+    const current = warehouses.find((w) => String(w.warehouseId) === String(id));
+    if (!current || current.role !== "owner") {
+      toast.error("Only warehouse owner can delete this warehouse");
+      return;
+    }
+
+    try {
+      await warehouseApi.delete(id);
+      setWarehouses((prev) => prev.filter((warehouse) => String(warehouse.warehouseId) !== String(id)));
+      toast.success(`Warehouse "${current.name}" deleted successfully`);
+    } catch {
+      toast.error("Failed to delete warehouse");
     }
   };
 
@@ -239,8 +277,8 @@ export const useWarehouse = () => {
     const wh = warehouses.find(w => String(w.warehouseId) === String(id));
     if (wh) {
       setWarehouse({
-        role: wh.role,
-        warehouseId: wh.warehouseId,
+        role: wh.role ?? null,
+        warehouseId: Number(wh.warehouseId),
         warehouseName: wh.name,
       });
     }
@@ -252,12 +290,15 @@ export const useWarehouse = () => {
     loading,
     invitations,
     isModalOpen,
+    editingWarehouse,
     openModal,
+    openEditModal,
     closeModal,
     createWarehouse,
+    updateWarehouse,
+    deleteWarehouse,
     acceptInvitation,
     declineInvitation,
-    updateWarehouseImage,
     manageWarehouse,
   };
 };

@@ -33,6 +33,11 @@ const warehouseApi = {
     return axiosClient.put(url, toWarehouseFormData(data), {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
+  },
+
+  delete(id: string | number) {
+    const url = `/warehouses/${id}`;
+    return axiosClient.delete(url);
   }
 };
 
