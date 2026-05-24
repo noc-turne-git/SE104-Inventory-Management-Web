@@ -3,7 +3,8 @@ import authApi from './AuthAPI';
 import { type refreshFormData } from '../types/user';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:5074/api',//` Thay đổi URL này thành URL của API của bạn
+  // Tự động lấy cấu hình từ file .env, nếu không có thì mới dùng localhost làm dự phòng
+  baseURL: (import.meta as any).env.VITE_API_URL || 'http://localhost:5074/api', 
   headers: {
     'Content-Type': 'application/json',
   },
