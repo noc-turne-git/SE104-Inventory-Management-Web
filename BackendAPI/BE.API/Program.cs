@@ -34,20 +34,14 @@ Directory.CreateDirectory(Path.Combine(webRootPath, "uploads", "warehouses"));
 // Cho phép frontend gọi API.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("DevCors", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy
-            .WithOrigins(
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "http://localhost:4173",
-                "https://ztomatoz.id.vn",
-                "http://ztomatoz.id.vn"
-            )
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.AllowAnyOrigin()   // Cho phép tất cả các nguồn gọi tới
+              .AllowAnyMethod()   // Cho phép tất cả các phương thức GET, POST, PUT, DELETE...
+              .AllowAnyHeader();  // Cho phép tất cả các Header
     });
 });
+
 //Đọc secret key: Từ appsettings.json
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
 builder.Services.AddAuthentication("Bearer")
