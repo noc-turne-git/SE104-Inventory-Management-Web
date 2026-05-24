@@ -1,16 +1,20 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Activity } from 'lucide-react';
-import { InventoryTrendData } from '../../../data/dashboard/MOCK_STAFF_DASHBOARD';
+import { type InventoryTrend } from '../../../types/dashboard/staff';
 
-const InventoryMovement: React.FC = () => {
+type InventoryMovementProps = {
+  data: InventoryTrend[];
+};
+
+const InventoryMovement: React.FC<InventoryMovementProps> = ({ data }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <h3 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
         <Activity className="w-7 h-7 text-blue-500" /> Inventory Movement
       </h3>
       <ResponsiveContainer width="100%" height={550}>
-        <LineChart data={InventoryTrendData}>
+        <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="date" stroke="#9ca3af" />
           <YAxis stroke="#9ca3af" />

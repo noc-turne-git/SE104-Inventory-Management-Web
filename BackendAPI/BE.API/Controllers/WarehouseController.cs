@@ -22,25 +22,43 @@ public class WarehouseController : ControllerBase
     private readonly IWarehouseService _warehouseService;
     private readonly IWarehouseStaffService _warehouseStaffs;
     private readonly IWarehouseReadService _warehouseReads;
+    private readonly IWebHostEnvironment _environment;
 
     public WarehouseController(IWarehouseService warehouseService
     , IWarehouseStaffService warehouseStaffs
-    , IWarehouseReadService warehouseReads)
+    , IWarehouseReadService warehouseReads
+    , IWebHostEnvironment environment)
     {
         _warehouseService = warehouseService;
         _warehouseStaffs = warehouseStaffs;
         _warehouseReads = warehouseReads;
+        _environment = environment;
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> CreateWarehouse(CreateWarehouseDTO model)
+    public async Task<IActionResult> CreateWarehouse([FromForm] CreateWarehouseDTO model)
     {
         
         var userid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if (model.ImageFile != null)
+            model.urlimage = await SaveImageAsync(model.ImageFile, "warehouses");
+
         var result = await _warehouseService.CreateWarehouseAsync(model,userid);
         if (result <= 0)
             return BadRequest(new { Success = false, Message = "Failed to create warehouse." });
         return Ok(new { Success = true, Message = "Warehouse created successfully.", WarehouseId = result });
+    }
+
+    [HttpPut("/api/warehouses/{warehouseId:int}")]
+    [Authorize(Policy = PermissionCode.WAREHOUSE_MANAGE)]
+    public async Task<IActionResult> UpdateWarehouse(int warehouseId, [FromForm] UpdateWarehouseDTO model)
+    {
+        if (model.ImageFile != null)
+            model.urlimage = await SaveImageAsync(model.ImageFile, "warehouses");
+
+        var result = await _warehouseService.UpdateWarehouseAsync(warehouseId, model);
+        if (result == null) return NotFound();
+        return Ok(result);
     }
 
     [HttpPost("invite-staff")]
@@ -80,7 +98,7 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpGet("/api/warehouses/{warehouseId:int}/staff/search")]
-    [Authorize(Policy = PermissionCode.STAFF_VIEW)]
+    [Authorize(Policy = PermissionCode.STAFF_VIEW)] //Yêu cầu người dùng phải đăng nhập và có quyền:
     public async Task<IActionResult> SearchStaff(
         int warehouseId,
         [FromQuery] string? q,
@@ -89,5 +107,24 @@ public class WarehouseController : ControllerBase
     {
         var items = await _warehouseStaffs.SearchAsync(warehouseId, q, limit, cancellationToken);
         return Ok(items);
+    }
+
+    private async Task<string> SaveImageAsync(IFormFile file, string folder)
+    {
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!allowedExtensions.Contains(extension))
+            throw new InvalidOperationException("Unsupported image type.");
+
+        var uploadsRoot = Path.Combine(_environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"), "uploads", folder);
+        Directory.CreateDirectory(uploadsRoot);
+
+        var fileName = $"{Guid.NewGuid():N}{extension}";
+        var filePath = Path.Combine(uploadsRoot, fileName);
+
+        await using var stream = System.IO.File.Create(filePath);
+        await file.CopyToAsync(stream);
+
+        return $"/uploads/{folder}/{fileName}";
     }
 }

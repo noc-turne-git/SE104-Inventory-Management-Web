@@ -2,20 +2,20 @@ namespace BackendAPI.BE.BLL.Interfaces;
 
 using BackendAPI.BE.API.DTO.Notes;
 using BackendAPI.BE.DAL.Entities;
-
+//kết quả UPDATE note.
 public enum NoteEditResult
 {
     Updated,
     NotFound,
     Forbidden,
     NotPending
-}
-
+}   
+//Dùng cho: approve, reject
 public enum NoteDecisionResult
 {
     Succeeded,
     NotFound,
-    NotPending
+    NotPending //Chỉ note pending mới approve/reject được.
 }
 
 public interface INoteService

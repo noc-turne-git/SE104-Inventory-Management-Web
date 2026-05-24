@@ -1,41 +1,115 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { isAxiosError } from 'axios';
 import ProductViewRow from '../../features/products/ProductViewRowStyle';
 import OpenModalButton from '../../components/common/button/ModalButton';
 import SearchBar from '../../components/common/searchBar';
-//import { MOCK_INVENTORY_CHECKS } from '../../data/MOCK_INVENTORY_CHECK';
-import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS';
 import { toast } from 'sonner';
 import { type Product } from '../../types/product';
 import { type InventoryCheckFormData } from '../../types/note';
 import InventoryCheckModal from '../../features/products/InventoryCheckModal';
-
-
+import productApi from '../../api/ProductAPI';
+import warehouseNotesApi from '../../api/WarehouseNotesAPI';
+import { useWarehouseContext } from '../../context/WarehouseContext';
 import { useProducts } from '../../hooks/useProducts';
-import { useInventoryChecks } from '../../hooks/useInventoryChecks';
+
+const resolveImageUrl = (url: string) => {
+  if (!url) return '';
+  if (/^(https?:|blob:|data:)/i.test(url)) return url;
+  return `http://localhost:5074${url}`;
+};
+
+const mapApiProductToProduct = (data: any): Product => ({
+  id: String(data?.productId ?? data?.id ?? ''),
+  image: resolveImageUrl(data?.imageUrl ?? data?.image ?? ''),
+  name: data?.name ?? '',
+  sku: data?.sku ?? '',
+  category: data?.category ?? '',
+  description: data?.description ?? '',
+  sellPrice: Number(data?.sellPrice ?? 0),
+  stockQuantity: Number(data?.stockQuantity ?? 0),
+  defectiveQuantity: Number(data?.defectiveQuantity ?? 0),
+  damagedQuantity: Number(data?.damagedQuantity ?? 0),
+  status: (data?.status ?? 'undefined') as Product['status'],
+});
 
 const ProductViewScreen = () => {
-  const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
-  const { addInventoryCheck } = useInventoryChecks();
+  const { warehouseId } = useWarehouseContext();
+  const { products, replaceProducts, filteredProducts } = useProducts([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingItem, setEditingItem] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      if (!warehouseId) {
+        replaceProducts([]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        replaceProducts([]);
+        const res = await productApi.getAll(warehouseId);
+        const items = Array.isArray(res.data) ? res.data : [];
+        replaceProducts(items.map(mapApiProductToProduct));
+      } catch (err: unknown) {
+        replaceProducts([]);
+        if (!isAxiosError(err)) toast.error('Failed to fetch products');
+        else if (!err.response) toast.error('Cannot connect to server. Please check your network.');
+        else toast.error(err.response.data?.message || 'Failed to fetch products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadProducts();
+  }, [warehouseId, replaceProducts]);
 
   const handleSubmit = async (formData : InventoryCheckFormData) => {
-    const ok = await addInventoryCheck(formData);
-    if (ok) {
-      toast.success('Inventory check has been sent to manager');
+    if (!warehouseId) {
+      toast.error('Please select a warehouse before creating an inventory check.');
+      return false;
+    }
+
+    const items = formData.items
+      .map((item) => {
+        const productId = item.productId ?? Number(products.find((p) => p.name === item.product)?.id);
+        return {
+          productId,
+          stockQuantity: item.stockQuantity,
+          reason: item.reason || '',
+        };
+      })
+      .filter((item) => Number.isInteger(item.productId));
+
+    if (items.length === 0) {
+      toast.error('Please select at least one product.');
+      return false;
+    }
+
+    try {
+      await warehouseNotesApi.createInventoryCheck(warehouseId, { items });
+      toast.success('Inventory check sent to manager');
       handleCloseModal();
+      return true;
+    } catch (err: unknown) {
+      if (!isAxiosError(err)) toast.error('Failed to create inventory check');
+      else if (!err.response) toast.error('Cannot connect to server. Please check your network.');
+      else toast.error(err.response.data?.message || 'Failed to create inventory check');
+      return false;
     }
   }
 
   const handleOpenAddModal = () => {
-    setEditingItem(null);
     setShowAddModal(true)
   }
 
   const handleCloseModal = () => {
-    setEditingItem(null); 
     setShowAddModal(false);
+  }
+
+  if (!warehouseId) {
+    return <div className="p-8 text-gray-600">Please select a warehouse</div>;
   }
 
   return(
@@ -63,14 +137,18 @@ const ProductViewScreen = () => {
                     <th className="table-header">Defective</th>
                     <th className="table-header">Damage</th>
                     <th className="table-header">Status</th>
-                    <th className="table-header">Actions</th>
                   </tr>
               </thead>
               <tbody>
+                {loading && (
+                  <tr>
+                    <td className="px-6 py-6 text-gray-500" colSpan={8}>
+                      Loading products...
+                    </td>
+                  </tr>
+                )}
                 {filteredProducts(searchTerm).map(p => ( 
-                  <ProductViewRow key={p.id} product={p} 
-                    onDelete={deleteProduct} onOpenEditModal={(prod) => {setEditingItem(prod); setShowAddModal(true);}} >
-                  </ProductViewRow>
+                  <ProductViewRow key={p.id} product={p} />
                 ))}
               </tbody>
               </table>
@@ -81,6 +159,7 @@ const ProductViewScreen = () => {
             isOpen={showAddModal} 
             onClose={() => handleCloseModal()}
             onSubmit={handleSubmit}
+            products={products}
           />
         </div>
     );

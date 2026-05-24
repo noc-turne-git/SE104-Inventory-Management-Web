@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { ShieldAlert, Calendar } from 'lucide-react';
-import { infractionsData } from '../../../data/dashboard/MOCK_STAFF_DASHBOARD';
+import { type Infraction } from '../../../types/dashboard/staff';
 
-const Infractions: React.FC = () => {
+type InfractionsProps = {
+  infractions: Infraction[];
+};
+
+const Infractions: React.FC<InfractionsProps> = ({ infractions }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-  const totalEntries = infractionsData.length;
+  const totalEntries = infractions.length;
   const totalPages = Math.ceil(totalEntries / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = infractionsData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = infractions.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
@@ -27,7 +31,7 @@ const Infractions: React.FC = () => {
           <ShieldAlert className="w-7 h-7 text-orange-500" /> Violation
         </h3>
         <div className="space-y-4">
-          {currentItems.map((inf) => (
+          {currentItems.length > 0 ? currentItems.map((inf) => (
             <div key={inf.id} className="flex justify-between items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
               <div>
                 <p className="text-lg font-medium text-gray-900">{inf.reason}</p>
@@ -37,7 +41,11 @@ const Infractions: React.FC = () => {
               </div>
               <span className="text-lg font-bold text-red-600">-{inf.moneyPenalty}</span>
             </div>
-          ))}
+          )) : (
+            <div className="py-10 text-center text-lg text-gray-400">
+              No violations
+            </div>
+          )}
         </div>
       </div>
 

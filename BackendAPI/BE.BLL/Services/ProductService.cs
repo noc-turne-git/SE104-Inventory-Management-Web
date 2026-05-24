@@ -73,6 +73,25 @@ public class ProductService : IProductService
         return entity;
     }
 
+    public async Task<Product?> UpdateAsync(int warehouseId, int productId, ProductDTO productDTO, CancellationToken cancellationToken = default)
+    {
+        var product = await _products.GetByIdAsync(productId, cancellationToken);
+        if (product == null || product.WarehouseId != warehouseId) return null;
+
+        product.Sku = productDTO.Sku;
+        product.ImageUrl = productDTO.ImageUrl;
+        product.Name = productDTO.Name;
+        product.Category = productDTO.Category;
+        product.Description = productDTO.Description;
+        product.SellPrice = productDTO.SellPrice;
+        product.StockQuantity = productDTO.StockQuantity;
+        product.DefectiveQuantity = productDTO.DefectiveQuantity;
+        product.DamagedQuantity = productDTO.DamagedQuantity;
+
+        var ok = await _products.UpdateAsync(product, cancellationToken);
+        return ok ? product : null;
+    }
+
     public async Task<bool> DeleteAsync(int warehouseId, int productId, CancellationToken cancellationToken = default)
     {
         var product = await _products.GetByIdAsync(productId, cancellationToken);

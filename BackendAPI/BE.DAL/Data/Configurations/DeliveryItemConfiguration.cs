@@ -18,8 +18,6 @@ public class DeliveryItemConfiguration : IEntityTypeConfiguration<DeliveryItem>
             .HasForeignKey(di => di.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(
-            new DeliveryItem { DeliveryItemId = 1, NoteId = 2, ProductId = 1, Quantity = 10 }
-        );
+        builder.HasData(SeedData.DeliveryItems);
     }
 }

@@ -1,6 +1,6 @@
 using BackendAPI.BE.API.DTO;
 using BackendAPI.BE.BLL.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc; //Cho phép dùng: ControllerBase, IActionResult, Ok()
 
 namespace BackendAPI.Controllers;
 
@@ -8,7 +8,7 @@ namespace BackendAPI.Controllers;
 [ApiController]
 public class TestItemsController : ControllerBase
 {
-    private readonly ITestItemService _items;
+    private readonly ITestItemService _items; // là gì dị ??
 
     public TestItemsController(ITestItemService items)
     {
@@ -33,8 +33,9 @@ public class TestItemsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(TestItemDTO model, CancellationToken cancellationToken)
     {
-        var item = await _items.CreateAsync(model.Name, cancellationToken);
-        return CreatedAtAction(nameof(GetById), new { id = item.Id }, new TestItemDTO { Id = item.Id, Name = item.Name });
+        var item = await _items.CreateAsync(model.Name, cancellationToken); 
+        return CreatedAtAction(nameof(GetById), new { id = item.Id }, new TestItemDTO { Id = item.Id, Name = item.Name }); // trả về 201 Created
+        //nameof(GetById) : trả về chuỗi string "GetById" ---> đi tìm api tên GetById
     }
 
     // [HttpPut("{id}")]
@@ -51,7 +52,7 @@ public class TestItemsController : ControllerBase
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var ok = await _items.DeleteAsync(id, cancellationToken);
-        return ok ? NoContent() : NotFound();
+        return ok ? NoContent() : NotFound(); // hàm của ControllerBase trả về 204 No Content, 404 Not Found
     }
 
     // private static TestItemDTO MapToDto(TestItemModel model) => new()

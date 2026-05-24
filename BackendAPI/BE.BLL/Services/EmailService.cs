@@ -32,6 +32,8 @@ public class EmailService : IEmailService
 
     private async Task saveOtpAsync(string email, string otpCode)
     {
+        await _OTPRepository.InvalidateActiveByEmailAsync(email);
+
         var OTP = new OTP
         {
             Code = otpCode,
@@ -50,7 +52,7 @@ public class EmailService : IEmailService
         var emailMessage = new EmailMessageDTO
         {
             ToEmail = toEmail,
-            Subject = "Khôi phục mật khẩu tài khoản Staff",
+            Subject = "Khôi phục mật khẩu tài khoản của bạn",
             Body = $@"
             <div style='font-family: sans-serif; text-align: center;'>
                 <h3>Mã xác thực của bạn là:</h3>

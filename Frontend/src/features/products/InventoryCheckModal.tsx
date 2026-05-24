@@ -1,18 +1,20 @@
-import { Check, Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
-import { type InventoryCheck, type InventoryCheckFormData } from '../../types/note';
+import { type InventoryCheckFormData } from '../../types/note';
+import { type Product } from '../../types/product';
 import { useState, useEffect } from 'react';
-import { MOCK_PRODUCTS } from '../../data/MOCK_PRODUCTS';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: InventoryCheckFormData) => void;
+  onSubmit: (data: InventoryCheckFormData) => Promise<boolean | void> | boolean | void;
+  products: Product[];
   //initialData: InventoryCheck | null;
 }
 
 const DEFAULT_FORM: InventoryCheckFormData = {
+  warehouseId: '',
   dateCreated: new Date().toISOString().split('T')[0],
   status: 'new',
   items: [
@@ -24,22 +26,22 @@ const DEFAULT_FORM: InventoryCheckFormData = {
   ]
 };
 
-const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
+const InventoryCheckModal = ({ isOpen, onClose, onSubmit, products}: Props) => {
   const [formData, setFormData] = useState<any>(DEFAULT_FORM);
   //const [isMismatch, setIsMismatch] = useState(false);
 
-  // useEffect(() => {
-  //   if (initialData) {
-  //     setFormData({ ...initialData });
-  //   } else {
-  //     setFormData(DEFAULT_FORM);
-  //   }
-  // }, [initialData, isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(DEFAULT_FORM);
+    }
+  }, [isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
-    onClose();
+    const ok = await onSubmit(formData);
+    if (ok !== false) {
+      onClose();
+    }
   };
 
   const handleItemChange = (index: number, field: string, value: any) => {
@@ -48,10 +50,21 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
     setFormData({ ...formData, items: newItems });
   };
 
+  const handleProductChange = (index: number, productId: string) => {
+    const selected = products.find((product) => product.id === productId);
+    const newItems = [...formData.items];
+    newItems[index] = {
+      ...newItems[index],
+      productId: selected ? Number(selected.id) : undefined,
+      product: selected?.name ?? '',
+    };
+    setFormData({ ...formData, items: newItems });
+  };
+
   const addItem = () => {
     setFormData({
       ...formData,
-      items: [...formData.items, { product: '', stockQuantity: 0, reason: '', expectedQuantity: 0 }]
+      items: [...formData.items, { product: '', productId: undefined, stockQuantity: 0, reason: '', expectedQuantity: 0 }]
     });
   };
 
@@ -124,8 +137,9 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
             </div>
 
             {formData.items.map((item: any, index: number) => {
-              const originalProduct = MOCK_PRODUCTS.find(
-                (p) => p.name.toLowerCase() === item.product?.toLowerCase().trim()
+              const originalProduct = products.find(
+                (p) => String(p.id) === String(item.productId)
+                  || p.name.toLowerCase() === item.product?.toLowerCase().trim()
               );
   
               const isMismatch = originalProduct && item.stockQuantity !== 0 &&
@@ -138,13 +152,19 @@ const InventoryCheckModal = ({ isOpen, onClose, onSubmit}: Props) => {
 
                   {/* Product */}
                   <div className="col-span-7">
-                    <input
+                    <select
                       className="modal-input border-none! w-full focus:bg-white"
-                      placeholder="Product"
-                      value={item.product}
-                      onChange={(e) => handleItemChange(index, 'product', e.target.value)}
+                      value={item.productId ?? ''}
+                      onChange={(e) => handleProductChange(index, e.target.value)}
                       required
-                    />
+                    >
+                      <option value="">Select product</option>
+                      {products.map((product) => (
+                        <option key={product.id} value={product.id}>
+                          {product.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   {/* Actual */}

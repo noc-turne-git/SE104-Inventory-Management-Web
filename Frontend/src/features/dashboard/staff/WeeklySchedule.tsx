@@ -1,8 +1,12 @@
 import React from 'react';
 import { Briefcase } from 'lucide-react';
-import { weeklyScheduleData } from '../../../data/dashboard/MOCK_STAFF_DASHBOARD';
+import { type WorkSchedule } from '../../../types/dashboard/staff';
 
-const WeeklySchedule: React.FC = () => {
+type WeeklyScheduleProps = {
+  schedules: WorkSchedule[];
+};
+
+const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ schedules }) => {
   // Hàm format ngày hôm nay về định dạng "Thu, Apr 11" (khớp với Mock Data)
   const getTodayString = () => {
     const options: Intl.DateTimeFormatOptions = { 
@@ -22,7 +26,7 @@ const WeeklySchedule: React.FC = () => {
         <Briefcase className="w-5 h-5 text-purple-500" /> Weekly Schedule
       </h3>
       <div className="space-y-3">
-        {weeklyScheduleData.map((shift, idx) => {
+        {schedules.length > 0 ? schedules.map((shift, idx) => {
           // So sánh chuỗi date từ data với ngày hiện tại
           const isToday = shift.date.replace(',','') === todayStr;
 
@@ -62,7 +66,11 @@ const WeeklySchedule: React.FC = () => {
               )}
             </div>
           );
-        })}
+        }) : (
+          <div className="py-10 text-center text-lg text-gray-400">
+            No shifts scheduled this week
+          </div>
+        )}
       </div>
     </div>
   );

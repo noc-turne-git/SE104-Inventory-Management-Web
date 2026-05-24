@@ -13,21 +13,6 @@ public class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
             .HasForeignKey(w => w.CreatorId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(
-            new Warehouse
-            {
-                WarehouseId = 1,
-                Name = "Warehouse 1",
-                Location = "Ho Chi Minh City",
-                CreatorId = 1
-            },
-            new Warehouse
-            {
-                WarehouseId = 2,
-                Name = "Warehouse 2",
-                Location = "Ha Noi",
-                CreatorId = 2
-            }
-        );
+        builder.HasData(SeedData.Warehouses);
     }
 }

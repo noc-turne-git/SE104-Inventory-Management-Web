@@ -16,8 +16,10 @@ public class DamageItem : IEntity
     public string Reason { get; set; } = string.Empty;
 
     // Navigation property
-    public DamageNote DamageNote { get; set; } = null!;
+    public DamageNote DamageNote { get; set; } = null!; // Do bật nullable reference type.
     public Product Product { get; set; } = null!;
 
-    public string getKey() => DamageItemId.ToString();
+    public string getKey() => DamageItemId.ToString(); 
+    // ket thua tu IEntity phai co ham getKey
+    // tra ve gia tri primary key
 }

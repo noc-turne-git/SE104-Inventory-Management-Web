@@ -8,31 +8,33 @@ export const WarehouseStatus = {
 export type WarehouseStatusType = typeof WarehouseStatus[keyof typeof WarehouseStatus];
 
 export interface Warehouse {
-  warehouseId: number;
+  warehouseId: string;
+  role?: "manager" | "staff";
   name: string;
-  location: string;
-  lastUpdate?: string;
+  address?: string;
+  location?: string;
+  lastUpdate: string;
   status: WarehouseStatusType;
-  productCount?: number;
+  productCount: number | string;
   imageUrl?: string;
-  role: "manager" | "staff";
-}
-export interface FormCreateWarehouse {
-  name: string;
-  location: string; // fix viết nhầm l thành L
-  imageUrl?: string;
+  urlimage?: string;
 }
 
 export interface Invitation {
   id: string;
-  sendTime?: string;
+  userId: string;
   ownerId: string;
+  sendTime: string;
   warehouseId: string;
   warehouseName: string;
-  Role: "manager" | "staff";
+  address: string;
+  requestedRole: "manager" | "staff";
   imageUrl?: string;
 }
 
-export interface InvitationForm {
-  InvitationId:string
+export interface FormCreateWarehouse {
+  name: string;
+  location: string;
+  urlimage?: string;
+  imageFile?: File | null;
 }

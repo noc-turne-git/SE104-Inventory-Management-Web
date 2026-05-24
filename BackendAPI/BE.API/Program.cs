@@ -17,31 +17,32 @@ using Hangfire.PostgreSql;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.FileProviders;
 using Npgsql;
 
 
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-var builder = WebApplication.CreateBuilder(args);
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); //giữ nguyên tên claim.
+var builder = WebApplication.CreateBuilder(args); //thêm service, đọc config, cấu hình ứng dụng
+
+var webRootPath = builder.Environment.WebRootPath
+    ?? Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
+
+Directory.CreateDirectory(Path.Combine(webRootPath, "uploads", "products"));
+Directory.CreateDirectory(Path.Combine(webRootPath, "uploads", "warehouses"));
 
 
-
+// Cho phép frontend gọi API.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("DevCors", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy
-            .WithOrigins(
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "http://localhost:4173",
-                "https://ztomatoz.id.vn",
-                "http://ztomatoz.id.vn"
-            )
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.AllowAnyOrigin()   // Cho phép tất cả các nguồn gọi tới
+              .AllowAnyMethod()   // Cho phép tất cả các phương thức GET, POST, PUT, DELETE...
+              .AllowAnyHeader();  // Cho phép tất cả các Header
     });
 });
 
+//Đọc secret key: Từ appsettings.json
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -57,7 +58,7 @@ builder.Services.AddAuthentication("Bearer")
             ValidAudience = builder.Configuration["Jwt:Audience"]!,
             IssuerSigningKey = new SymmetricSecurityKey(key),
 
-            ClockSkew = TimeSpan.Zero 
+            ClockSkew = TimeSpan.Zero //Mặc định JWT cho phép lệch 5 phút. nhung cai nay thi het han ngay
         };
     });
 
@@ -104,7 +105,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>(); 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductSupplierService, ProductSupplierService>();
@@ -118,6 +119,7 @@ builder.Services.AddScoped<IWarehouseReadService, WarehouseReadService>();
 builder.Services.AddScoped<IWarehouseStaffService, WarehouseStaffService>();
 builder.Services.AddScoped<IInvitationReadService, InvitationReadService>();
 builder.Services.AddScoped<IInvitationInboxService, InvitationInboxService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddHttpContextAccessor();
@@ -151,7 +153,7 @@ using (var scope = app.Services.CreateScope()) // Tự động chạy migration 
     {
         var context = services.GetRequiredService<AppDbContext>();
         logger.LogInformation("Applying EF Core migrations...");
-        context.Database.Migrate(); 
+        context.Database.Migrate();  //app gọi: thì dữ liệu seed mới được apply vào DB.
         logger.LogInformation("EF Core migrations applied successfully.");
     }
     catch (Exception ex)
@@ -164,6 +166,10 @@ using (var scope = app.Services.CreateScope()) // Tự động chạy migration 
 app.UseRouting();
 
 app.UseCors("DevCors");
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(webRootPath)
+});
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -171,6 +177,7 @@ app.MapControllers();
 
 if (hangfireEnabled)
 {
-    app.UseHangfireDashboard();
+    if (app.Environment.IsDevelopment())
+        app.UseHangfireDashboard();
 }
 app.Run();

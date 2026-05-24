@@ -7,22 +7,22 @@ using BackendAPI.BE.DAL.Interfaces;
 
 public class WarehouseReadService : IWarehouseReadService
 {
-    private readonly IWarehouseRepository _warehouses;
-    private readonly IRepository<WarehouseStaff> _warehouseStaffs;
+    private readonly IWarehouseRepository _warehouses; // đọc dữ liệu kho.
+    private readonly IRepository<WarehouseStaff> _warehouseStaffs; //đọc bảng liên kết user thuộc kho nào, role gì.
 
     public WarehouseReadService(IWarehouseRepository warehouses, IRepository<WarehouseStaff> warehouseStaffs)
     {
         _warehouses = warehouses;
         _warehouseStaffs = warehouseStaffs;
     }
-
+    // memberships : kiểu WarehouseStaffs, warehouses: kiểu  Warehouse
     public async Task<IReadOnlyList<WarehouseSummaryDTO>> GetMineAsync(int userId, CancellationToken cancellationToken = default)
     {
-        var memberships = await _warehouseStaffs.GetAsync(ws => ws.UserId == userId, cancellationToken);
-        var warehouseIds = memberships.Select(ws => ws.WarehouseId).Distinct().ToList();
+        var memberships = await _warehouseStaffs.GetAsync(ws => ws.UserId == userId, cancellationToken); // liêt kê all warehouse user thuộc về
+        var warehouseIds = memberships.Select(ws => ws.WarehouseId).Distinct().ToList(); // lọc các id trùng nhau
         if (warehouseIds.Count == 0) return Array.Empty<WarehouseSummaryDTO>();
 
-        var warehouses = (await _warehouses.GetAsync(w => warehouseIds.Contains(w.WarehouseId), cancellationToken)).ToList();
+        var warehouses = (await _warehouses.GetAsync(w => warehouseIds.Contains(w.WarehouseId), cancellationToken)).ToList(); // lấy thông tin của warehouse từ list warehouseId tìm dc ở trên
         var roleByWarehouseId = memberships
             .GroupBy(ws => ws.WarehouseId)
             .ToDictionary(

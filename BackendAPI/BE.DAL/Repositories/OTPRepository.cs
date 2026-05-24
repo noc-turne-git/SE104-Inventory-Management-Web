@@ -12,7 +12,34 @@ public class OTPRepository : Repository<OTP>, IOTPRepository
 
     public async Task<OTP?> GetByEmailAsync(string email)
     {
-        return await _context.OTPs.FirstOrDefaultAsync(o => o.Email == email && !o.IsUsed);
+        return await _context.OTPs
+            .Where(o => o.Email == email && !o.IsUsed)
+            .OrderByDescending(o => o.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<OTP?> GetValidByEmailAndCodeAsync(string email, string code)
+    {
+        return await _context.OTPs
+            .Where(o => o.Email == email && o.Code == code && !o.IsUsed && o.Expiration >= DateTime.UtcNow)
+            .OrderByDescending(o => o.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task InvalidateActiveByEmailAsync(string email)
+    {
+        var activeOtps = await _context.OTPs
+            .Where(o => o.Email == email && !o.IsUsed && o.Expiration >= DateTime.UtcNow)
+            .ToListAsync();
+
+        if (!activeOtps.Any()) return;
+
+        foreach (var otp in activeOtps)
+        {
+            otp.IsUsed = true;
+        }
+
+        await _context.SaveChangesAsync();
     }
 
     public async Task MarkAsUsedAsync(int id)

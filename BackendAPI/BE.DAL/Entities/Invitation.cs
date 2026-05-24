@@ -16,5 +16,4 @@ public class Invitation: IEntity
     public User User { get; set; } = null!;
     //public User invited{ get; set; } = null!;
     public string getKey() => InvitationId.ToString(); // Assuming InvitationId is the unique identifier for Invitation
-
 }

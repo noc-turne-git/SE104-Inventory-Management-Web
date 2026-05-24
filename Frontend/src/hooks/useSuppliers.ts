@@ -67,6 +67,7 @@ export const useSuppliers = (warehouseId?: number | null) => {
     setLoading(true);
 
     try {
+      setSuppliers([]);
       const res = await supplierApi.getAll(warehouseId);
       const next = (Array.isArray(res.data) ? res.data : []).map(mapApiSupplierToSupplier);
 
@@ -80,6 +81,7 @@ export const useSuppliers = (warehouseId?: number | null) => {
       return true;
     } catch (err: unknown) {
       if (requestId === requestSeqRef.current) {
+        setSuppliers([]);
         toast.error(getSupplierErrorMessage(err, "Failed to fetch suppliers"));
       }
       return false;

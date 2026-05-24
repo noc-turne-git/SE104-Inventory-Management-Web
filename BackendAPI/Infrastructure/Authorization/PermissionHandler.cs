@@ -7,7 +7,7 @@ using System.Security.Claims;
 using BackendAPI.BE.DAL.Data;
 using BackendAPI.BE.DAL.Constants;
 
-public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
+public class PermissionHandler : AuthorizationHandler<PermissionRequirement> 
 {
     private readonly AppDbContext _db; // Inject DbContext của nhóm vào đây
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -15,26 +15,27 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     public PermissionHandler(AppDbContext db, IHttpContextAccessor httpContextAccessor)
     {
         _db = db;
-        _httpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor; //HttpContext hiện tại  để đọc: route, request, headers, ..
     }
-
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
+    //context Chứa: current user , claims , succeed/fail methods
+    // requirement : Chứa permission cần kiểm tra.
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement) 
     {
         //[cite_start]// 1. Lấy UserId từ JWT (đã được xác thực) [cite: 94]
-        if (!int.TryParse(context.User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+        if (!int.TryParse(context.User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId)) //claim đầu tiên có Type = NameIdentifier, claim giống object á
         {
             context.Fail();
             return;
         }
 
-        // 2. Lấy WarehouseId từ Route (ví dụ: api/warehouses/{warehouseId}/products)
+        // 2. Lấy WarehouseId từ Route (url) (ví dụ: api/warehouses/{warehouseId}/products)
         var routeData = _httpContextAccessor.HttpContext?.GetRouteData();
-        var warehouseIdRaw = routeData?.Values["warehouseId"]?.ToString();
+        var warehouseIdRaw = routeData?.Values["warehouseId"]?.ToString();  
 
         // Một số permission không gắn với 1 warehouse cụ thể (vd: liệt kê các warehouse mà user là thành viên).
         // Trong trường hợp route không có {warehouseId}, chỉ cho phép các policy dạng "global" được xử lý ở đây.
-        if (!int.TryParse(warehouseIdRaw, out var warehouseId))
-        {
+        if (!int.TryParse(warehouseIdRaw, out var warehouseId)) // neu ko convert dc warehouseIdRaw thanh int thi di vao day (vd : warehouseIdRaw === null do url ko co {warehouseId})
+        { //Nếu API này KHÔNG phải permission global WAREHOUSE_VIEW thì chặn luôn.
             if (requirement.Permission != PermissionCode.WAREHOUSE_VIEW)
             {
                 context.Fail();
@@ -75,3 +76,5 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
         }
     }
 }
+
+//Handler này dùng để xử lý PermissionRequirement

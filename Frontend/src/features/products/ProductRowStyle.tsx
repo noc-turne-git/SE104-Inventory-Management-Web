@@ -30,7 +30,7 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
           <div className="w-20 h-20 rounded-lg flex overflow-hidden items-center justify-center">
               {//overflow-hidden : tràn thì giấu
               }
-            {product.image? (<img src={product.image} alt={product.name} className='w-full h-full'/>) :
+            {product.image? (<img src={product.image} alt={product.name} className='w-full h-full object-cover'/>) :
             (<Package className="w-20 h-20 text-gray-400" />)}
           </div>
           <div>
@@ -71,9 +71,7 @@ const ProductRow: React.FC<ProductRowProps> = ({product, onDelete, onOpenEditMod
         isOpen={isOpenListSupplierModal} 
         onClose={() => setIsOpenListSupplierModal(false)}
         product={product}
-      >
-
-        </ListSupplierModal>
+      />
     </tr>
   );
 }

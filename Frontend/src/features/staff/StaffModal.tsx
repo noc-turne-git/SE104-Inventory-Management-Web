@@ -52,22 +52,24 @@ const StaffModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
       <form onSubmit={handleSubmit}>
 
         {/* NAME + EMAIL */}
-        <div className="grid grid-cols-2 gap-4 my-5">
+        <div className={`grid ${initialData ? 'grid-cols-2' : 'grid-cols-1'} gap-4 my-5`}>
+          {initialData && (
           <div>
-            <label className="modal-label">Full Name*</label>
+            <label className="modal-label">Full Name</label>
             <input
               className="modal-input"
-              placeholder="e.g., John Doe"
+              readOnly
               value={formData.name}
-              onChange={(e) => handleChange('name', e.target.value)}
             />
           </div>
+          )}
 
           <div>
-            <label className="modal-label">Email*</label>
+            <label className="modal-label">{initialData ? 'Email' : 'Existing User Email*'}</label>
             <input
               className="modal-input"
-              placeholder="john.doe@example.com"
+              readOnly={Boolean(initialData)}
+              placeholder="user@example.com"
               value={formData.email}
               onChange={(e) => handleChange('email', e.target.value)}
             />

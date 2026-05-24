@@ -18,27 +18,6 @@ public class ShiftConfiguration : IEntityTypeConfiguration<Shift>
             .HasForeignKey(s => s.WarehouseId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(
-            new Shift
-            {
-                ShiftId = 1,
-                WarehouseId = 1,
-                UserId = 2,
-                StartTime = new DateTime(2026, 01, 05, 08, 00, 00, DateTimeKind.Utc),
-                EndTime = new DateTime(2026, 01, 05, 16, 00, 00, DateTimeKind.Utc),
-                Duty = "Receive goods",
-                Note = "Morning shift"
-            },
-            new Shift
-            {
-                ShiftId = 2,
-                WarehouseId = 2,
-                UserId = 1,
-                StartTime = new DateTime(2026, 01, 06, 08, 00, 00, DateTimeKind.Utc),
-                EndTime = new DateTime(2026, 01, 06, 16, 00, 00, DateTimeKind.Utc),
-                Duty = "Inventory check",
-                Note = "Regular shift"
-            }
-        );
+        builder.HasData(SeedData.Shifts);
     }
 }

@@ -36,6 +36,7 @@ public class WarehouseService : IWarehouseService
         
 
         var warehouse = _mapper.Map<Warehouse>(model);
+        warehouse.urlimage = model.urlimage;
         warehouse.CreatedAt = DateTime.UtcNow;
         warehouse.UpdatedAt = DateTime.UtcNow;
         warehouse.CreatorId = userid;
@@ -49,6 +50,30 @@ public class WarehouseService : IWarehouseService
         await _warehouseStaffRepository.AddAsync(staff);
 
         return warehouse.WarehouseId;
+    }
+
+    public async Task<WarehouseDetailDTO?> UpdateWarehouseAsync(int warehouseId, UpdateWarehouseDTO model)
+    {
+        var warehouse = await _warehouseRepository.GetByIdAsync(warehouseId);
+        if (warehouse == null) return null;
+
+        warehouse.Name = model.Name;
+        warehouse.Location = model.Location;
+        warehouse.urlimage = model.urlimage ?? warehouse.urlimage;
+        warehouse.UpdatedAt = DateTime.UtcNow;
+
+        var ok = await _warehouseRepository.UpdateAsync(warehouse);
+        if (!ok) return null;
+
+        return new WarehouseDetailDTO
+        {
+            WarehouseId = warehouse.WarehouseId,
+            Name = warehouse.Name,
+            Location = warehouse.Location,
+            CreatorId = warehouse.CreatorId,
+            urlimage = warehouse.urlimage,
+            lastUpdate = warehouse.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss")
+        };
     }
 
     public async Task<InviteResponseDTO> InviteStaffAsync(InviteStaffDTO model, int inviterUserId)

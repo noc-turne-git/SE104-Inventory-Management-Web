@@ -19,7 +19,7 @@ export const MOCK_INVENTORY_CHECKS: InventoryCheck[] = [
         reason: "Stock discrepancy after delivery"
       }
     ],
-    operator: "Robert Wilson"
+    operator: "BOB WILSON"
   },
   {
     id: "2",

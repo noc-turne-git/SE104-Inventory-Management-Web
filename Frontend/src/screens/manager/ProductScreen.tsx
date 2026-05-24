@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 import OpenModalButton from '../../components/common/button/ModalButton';
@@ -10,12 +10,18 @@ import ProductRow from '../../features/products/ProductRowStyle';
 import { useProducts } from '../../hooks/useProducts';
 import { type Product, type ProductFormData } from '../../types/product';
 
+const resolveImageUrl = (url: string) => {
+  if (!url) return '';
+  if (/^(https?:|blob:|data:)/i.test(url)) return url;
+  return `http://localhost:5074${url}`;
+};
+//convert format của BE/api sang của FE
 const mapApiProductToProduct = (data: any): Product => {
-  const status = (data?.status ?? 'undefined') as Product['status'];
+  const status = (data?.status ?? 'undefined') as Product['status']; // cho phép null/defined nhưng nếu dị thì là string 'undefined'
 
   return {
     id: String(data?.productId ?? data?.id ?? ''),
-    image: data?.imageUrl ?? data?.image ?? '',
+    image: resolveImageUrl(data?.imageUrl ?? data?.image ?? ''),
     name: data?.name ?? '',
     sku: data?.sku ?? '',
     category: data?.category ?? '',
@@ -30,22 +36,37 @@ const mapApiProductToProduct = (data: any): Product => {
 
 const ProductScreen = () => {
   const { warehouseId } = useWarehouseContext();
-  const { appendProduct, replaceProducts, updateProduct, deleteProduct, filteredProducts } = useProducts([]);
+  const { products, appendProduct, replaceProducts, replaceProduct, deleteProduct, filteredProducts } = useProducts([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const categoryOptions = useMemo(() => {
+    return Array.from(
+      new Set(
+        products
+          .map((product) => product.category.trim())
+          .filter(Boolean)
+      )
+    ).sort((a, b) => a.localeCompare(b));
+  }, [products]);
+
   useEffect(() => {
     const loadProducts = async () => {
-      if (!warehouseId) return;
+      if (!warehouseId) {
+        replaceProducts([]);
+        return;
+      }
 
       setLoading(true);
       try {
+        replaceProducts([]);
         const res = await productApi.getAll(warehouseId);
         const items = Array.isArray(res.data) ? res.data : [];
         replaceProducts(items.map(mapApiProductToProduct));
       } catch (err: unknown) {
+        replaceProducts([]);
         if (!isAxiosError(err)) toast.error('Failed to fetch products');
         else if (!err.response) toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!');
         else toast.error(err.response.data?.message || 'Failed to fetch products');
@@ -58,11 +79,6 @@ const ProductScreen = () => {
   }, [warehouseId, replaceProducts]);
 
   const handleSubmit = async (formData: ProductFormData) => {
-    if (editingItem) {
-      updateProduct(editingItem.id, formData);
-      return true;
-    }
-
     if (!warehouseId) {
       toast.error('Vui lòng chọn kho trước khi thêm sản phẩm.');
       return false;
@@ -70,18 +86,26 @@ const ProductScreen = () => {
 
     try {
       const payload: Product = {
-        id: '0',
+        id: editingItem?.id ?? '0',
         image: formData.image,
+        imageFile: formData.imageFile ?? null,
         name: formData.name,
         sku: formData.sku,
         category: formData.category,
         description: formData.description,
         sellPrice: parseFloat(formData.sellPrice),
-        stockQuantity: 0,
-        defectiveQuantity: 0,
-        damagedQuantity: 0,
-        status: 'undefined',
+        stockQuantity: editingItem?.stockQuantity ?? 0,
+        defectiveQuantity: editingItem?.defectiveQuantity ?? 0,
+        damagedQuantity: editingItem?.damagedQuantity ?? 0,
+        status: editingItem?.status ?? 'undefined',
       };
+
+      if (editingItem) {
+        const res = await productApi.update(warehouseId, editingItem.id, payload);
+        replaceProduct(mapApiProductToProduct(res.data));
+        toast.success('Product updated successfully');
+        return true;
+      }
 
       const createRes = await productApi.create(warehouseId, payload);
       const createdId = createRes.data?.productId;
@@ -95,6 +119,8 @@ const ProductScreen = () => {
       toast.success('Product added successfully');
       return true;
     } catch (err: unknown) {
+      console.error('PRODCUCT ERROR:', err);
+
       if (!isAxiosError(err)) {
         toast.error('Failed to create product');
         return false;
@@ -108,6 +134,22 @@ const ProductScreen = () => {
       const message = err.response.data?.message;
       toast.error(message || 'Failed to create product');
       return false;
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!warehouseId) {
+      toast.error('Vui lÃ²ng chá»n kho trÆ°á»›c khi xÃ³a sáº£n pháº©m.');
+      return;
+    }
+
+    try {
+      await productApi.delete(warehouseId, id);
+      deleteProduct(id);
+    } catch (err: unknown) {
+      if (!isAxiosError(err)) toast.error('Failed to delete product');
+      else if (!err.response) toast.error('KhÃ´ng thá»ƒ káº¿t ná»‘i Ä‘áº¿n mÃ¡y chá»§. Vui lÃ²ng kiá»ƒm tra láº¡i máº¡ng!');
+      else toast.error(err.response.data?.message || 'Failed to delete product');
     }
   };
 
@@ -131,7 +173,7 @@ const ProductScreen = () => {
         <OpenModalButton label="Add Product" onClick={() => handleOpenAddModal()}></OpenModalButton>
       </div>
 
-      <SearchBar label="Search Product's Name ...." onChange={(e) => setSearchTerm(e.target.value)}></SearchBar>
+      <SearchBar label="Search Product's Name or SKU...." onChange={(e) => setSearchTerm(e.target.value)}></SearchBar>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
@@ -161,7 +203,7 @@ const ProductScreen = () => {
                 <ProductRow
                   key={p.id}
                   product={p}
-                  onDelete={deleteProduct}
+                  onDelete={(id) => void handleDelete(id)}
                   onOpenEditModal={(prod) => {
                     setEditingItem(prod);
                     setShowAddModal(true);
@@ -178,6 +220,7 @@ const ProductScreen = () => {
         onClose={() => handleCloseModal()}
         initialData={editingItem}
         onSubmit={handleSubmit}
+        categoryOptions={categoryOptions}
       />
     </div>
   );

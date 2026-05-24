@@ -24,6 +24,7 @@ const WareHouseContent = () => {
     openModal,
     closeModal,
     createWarehouse,
+    updateWarehouseImage,
     acceptInvitation,
     declineInvitation,
     manageWarehouse,
@@ -176,6 +177,7 @@ const WareHouseContent = () => {
                 key={wh.warehouseId} 
                 warehouse={wh} 
                 onManage={() => manageWarehouse(wh.warehouseId)}
+                onUpdateImage={updateWarehouseImage}
               />
             ))}
             <CreateWarehousePlaceholder onClick={openModal} />

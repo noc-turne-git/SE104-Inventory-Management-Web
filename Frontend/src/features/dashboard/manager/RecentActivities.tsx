@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { Activity, Handshake, Contact2, ShieldAlert } from 'lucide-react';
-import { RecentActivitiesData } from '../../../data/dashboard/MOCK__MANAGER_DASHBOARD';
+import { type RecentActivity } from '../../../types/dashboard/manager';
 
-const RecentActivities: React.FC = () => {
+type RecentActivitiesProps = {
+  activities: RecentActivity[];
+};
+
+const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
-  const totalEntries = RecentActivitiesData.length;
+  const totalEntries = activities.length;
   const totalPages = Math.ceil(totalEntries / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = RecentActivitiesData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = activities.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -46,7 +50,7 @@ const RecentActivities: React.FC = () => {
           <Activity className="w-5 h-5 text-gray-400" />
         </div>
         <div className="space-y-4">
-          {currentItems.map((activity) => (
+          {currentItems.length > 0 ? currentItems.map((activity) => (
             <div key={activity.id} className="flex items-start gap-4 pb-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
               <div className={`mt-1 rounded-full p-2 ${getBgColor(activity.type)}`}>
                 {getIcon(activity.type)}
@@ -57,7 +61,11 @@ const RecentActivities: React.FC = () => {
               </div>
               <span className="text-lg text-gray-400 whitespace-nowrap">{activity.time}</span>
             </div>
-          ))}
+          )) : (
+            <div className="py-10 text-center text-lg text-gray-400">
+              No recent activities
+            </div>
+          )}
         </div>
       </div>
 

@@ -14,11 +14,13 @@ public class WarehouseProductsController : ControllerBase
 {
     private readonly IProductService _products;
     private readonly IMapper _mapper;
+    private readonly IWebHostEnvironment _environment;
 
-    public WarehouseProductsController(IProductService products, IMapper mapper)
+    public WarehouseProductsController(IProductService products, IMapper mapper, IWebHostEnvironment environment)
     {
         _products = products;
         _mapper = mapper;
+        _environment = environment;
     }
 
     [HttpGet]
@@ -55,10 +57,25 @@ public class WarehouseProductsController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = PermissionCode.PRODUCT_ADD)]
-    public async Task<IActionResult> Create(int warehouseId, ProductDTO model, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(int warehouseId, [FromForm] ProductFormDTO model, CancellationToken cancellationToken)
     {
-        var entity = await _products.CreateAsync(warehouseId, model, cancellationToken);
+        var imageUrl = model.ImageFile != null
+            ? await SaveImageAsync(model.ImageFile, "products")
+            : model.ImageUrl ?? string.Empty;
+        var entity = await _products.CreateAsync(warehouseId, model.ToProductDTO(imageUrl), cancellationToken);
         return CreatedAtAction(nameof(GetById), new { warehouseId, productId = entity.ProductId }, Map(entity));
+    }
+
+    [HttpPut("{productId:int}")]
+    [Authorize(Policy = PermissionCode.PRODUCT_ADD)]
+    public async Task<IActionResult> Update(int warehouseId, int productId, [FromForm] ProductFormDTO model, CancellationToken cancellationToken)
+    {
+        var imageUrl = model.ImageFile != null
+            ? await SaveImageAsync(model.ImageFile, "products")
+            : model.ImageUrl ?? string.Empty;
+        var entity = await _products.UpdateAsync(warehouseId, productId, model.ToProductDTO(imageUrl), cancellationToken);
+        if (entity == null) return NotFound();
+        return Ok(Map(entity));
     }
 
     [HttpDelete("{productId:int}")]
@@ -82,5 +99,24 @@ public class WarehouseProductsController : ControllerBase
         if (stockQuantity <= 0) return "out of stock";
         if (stockQuantity <= 20) return "low stock";
         return "in stock";
+    }
+
+    private async Task<string> SaveImageAsync(IFormFile file, string folder)
+    {
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!allowedExtensions.Contains(extension))
+            throw new InvalidOperationException("Unsupported image type.");
+
+        var uploadsRoot = Path.Combine(_environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot"), "uploads", folder);
+        Directory.CreateDirectory(uploadsRoot);
+
+        var fileName = $"{Guid.NewGuid():N}{extension}";
+        var filePath = Path.Combine(uploadsRoot, fileName);
+
+        await using var stream = System.IO.File.Create(filePath);
+        await file.CopyToAsync(stream, HttpContext.RequestAborted);
+
+        return $"/uploads/{folder}/{fileName}";
     }
 }

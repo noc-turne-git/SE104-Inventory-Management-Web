@@ -4,6 +4,7 @@ import { User as UserIcon, Mail, Shield, Save, Calendar, Phone, MapPin, Plus, Ch
 import { Modal } from './ProfileModal';
 import { useAuth } from '../../context/AuthContext';
 import { type User } from '../../types/user';
+import { useWarehouseContext } from '../../context/WarehouseContext';
 
 interface ToastProps {
   message: string;
@@ -45,16 +46,9 @@ interface ProfileFeatureProps {
 export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
   const [showToast, setShowToast] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  const {user, setUser} = useAuth();
-  // const [formData, setFormData] = useState({
-  //   fullName: 'John Manager',
-  //   dob: '1995-05-20', 
-  //   phone: '+1 234 567 890', 
-  //   address: '123 Warehouse St, NY', 
-  //   email: 'warehouse@example.com',
-  //   role: 'Warehouse Keeper'
-  // });
-  const [formData, setFormData] = useState<User | null>(user);
+  const { user, setUser } = useAuth();
+  const { role } = useWarehouseContext();
+  const [formData, setFormData] = useState<User | null>(user ?? null);
 
   // Đồng bộ khi user từ context thay đổi
   useEffect(() => {
@@ -81,14 +75,14 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           onClick={() => setIsAvatarModalOpen(true)}
           className="w-20 h-20 bg-[#4f46e5] rounded-full flex items-center justify-center text-white text-4xl font-semibold shadow-inner hover:opacity-90 transition-opacity cursor-pointer group relative"
         >
-          {user?.role === 'manager' ? 'M' : 'S'}
+          {role === 'manager' ? 'M' : 'S'}
           <div className="absolute inset-0 bg-black/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <Plus className="w-5 h-5 text-white/80" />
           </div>
         </button>
         <div>
-          <h2 className="text-2xl font-bold text-[#1e293b]">{formData?.userName}</h2>
-          <p className="text-[#64748b] text-lg">{formData?.role}</p>
+          <h2 className="text-2xl font-bold text-[#1e293b]">{formData?.fullName || 'Unknown user'}</h2>
+          <p className="text-[#64748b] text-lg capitalize">{role || 'user'}</p>
         </div>
       </div>
 
@@ -100,8 +94,8 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           </label>
           <input
             type="text"
-            value={formData?.userName || ""}
-            onChange={(e) => formData && setFormData({ ...formData, userName: e.target.value })}
+            value={formData?.fullName || ""}
+            onChange={(e) => formData && setFormData({ ...formData, fullName: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5]/20 focus:border-[#4f46e5] transition-all text-[#1e293b] text-lg"
             placeholder="Enter your full name"
           />
@@ -169,7 +163,7 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           </label>
           <input
             type="text"
-            value={formData?.role}
+            value={role || 'user'}
             readOnly
             className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#f8fafc] text-[#94a3b8] text-lg cursor-not-allowed"
           />

@@ -1,11 +1,35 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TrendingUp, ArrowUpRight, ArrowDownRight, Package } from 'lucide-react';
-import { topProductsData } from '../../../data/dashboard/MOCK__MANAGER_DASHBOARD';
+import { type YearlyTopProducts } from '../../../types/dashboard/manager';
 
-const TopProducts = () => {
-  const [selectedYear, setSelectedYear] = useState<number>(topProductsData[topProductsData.length - 1].year);
-  const yearData = topProductsData.find(d => d.year === selectedYear);
-  const [selectedMonth, setSelectedMonth] = useState<number>(yearData?.months[yearData.months.length - 1].month || 1);
+type TopProductsProps = {
+  topProductsByYear: YearlyTopProducts[];
+  selectedYear: number;
+  selectedMonth: number;
+  onYearChange: (year: number) => void;
+  onMonthChange: (month: number) => void;
+};
+
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    maximumFractionDigits: 0,
+  }).format(value);
+
+const TopProducts = ({
+  topProductsByYear,
+  selectedYear,
+  selectedMonth,
+  onYearChange,
+  onMonthChange,
+}: TopProductsProps) => {
+  const currentYear = new Date().getFullYear();
+  const years = Array.from(new Set([
+    ...topProductsByYear.map((item) => item.year),
+    ...Array.from({ length: 5 }, (_, index) => currentYear - index),
+  ])).sort((a, b) => b - a);
+  const yearData = topProductsByYear.find(d => d.year === selectedYear);
 
   const currentMonthData = yearData?.months.find(m => m.month === selectedMonth);
   const topProducts = currentMonthData?.topProducts || [];
@@ -18,6 +42,10 @@ const TopProducts = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = topProducts.slice(indexOfFirstItem, indexOfLastItem);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedYear, selectedMonth]);
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
@@ -38,17 +66,17 @@ const TopProducts = () => {
                 className="text-lg border border-gray-300 rounded-xl px-2 p-1" 
                 value={selectedYear} 
                 onChange={(e) => {
-                  setSelectedYear(Number(e.target.value));
+                  onYearChange(Number(e.target.value));
                   setCurrentPage(1);
                 }}
               >
-                {topProductsData.map(item => <option key={item.year} value={item.year}>Year {item.year}</option>)}
+                {years.map(year => <option key={year} value={year}>Year {year}</option>)}
               </select>
               <select 
                 className="text-lg border border-gray-300 rounded-xl px-2 p-1" 
                 value={selectedMonth} 
                 onChange={(e) => {
-                  setSelectedMonth(Number(e.target.value));
+                  onMonthChange(Number(e.target.value));
                   setCurrentPage(1);
                 }}
               >
@@ -67,7 +95,7 @@ const TopProducts = () => {
                   <p className="text-lg font-medium text-gray-900">{p.product}</p>
                   <p className="text-md text-gray-500">{p.sales} units sold</p>
                 </div>
-                <div className="text-lg text-right mr-4 font-semibold text-gray-900">{p.revenue}</div>
+                <div className="text-lg text-right mr-4 font-semibold text-gray-900">{formatCurrency(p.revenue)}</div>
                 {p.trend === 'up' ? <ArrowUpRight className="text-green-500" /> : <ArrowDownRight className="text-red-500" />}
               </div>
             ))

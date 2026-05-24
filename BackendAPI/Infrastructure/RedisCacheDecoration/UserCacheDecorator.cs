@@ -9,7 +9,7 @@ public class UserCacheDecorator : GenericCacheDecorator<User>, IUserRepository
 {
     
     private readonly IDistributedCache _cache;
-    private readonly IUserRepository _inner;
+    private readonly IUserRepository _inner; //Là repository thật. hay DB
 
     public UserCacheDecorator(IUserRepository inner, IDistributedCache cache) 
         : base(inner, cache) // Gọi constructor của lớp Generic để xử lý các hàm chung

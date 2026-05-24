@@ -1,13 +1,15 @@
-import React from 'react';
 import StatsCards from '../../features/dashboard/StatsCards';
-import InventoryMovement from '../../features/dashboard/staff/InventoryMovement';
-import WeeklySchedule from '../../features/dashboard/staff/WeeklySchedule';
-import StaffLowStock from '../../features/dashboard/LowStockAlert';
+import LowStockAlert from '../../features/dashboard/LowStockAlert';
 import Infractions from '../../features/dashboard/staff/Infractions';
-import StaffRecentActivities from '../../features/dashboard/staff/StaffRecentActivities';
+import InventoryMovement from '../../features/dashboard/staff/InventoryMovement';
 import NoteTable from '../../features/dashboard/staff/NoteView';
+import StaffRecentActivities from '../../features/dashboard/staff/StaffRecentActivities';
+import WeeklySchedule from '../../features/dashboard/staff/WeeklySchedule';
+import { useDashboard } from '../../hooks/useDashboard';
 
 const DashboardStaffScreen = () => {
+  const { staff } = useDashboard();
+
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="mb-8">
@@ -15,28 +17,28 @@ const DashboardStaffScreen = () => {
         <p className="text-gray-600 mt-1">Welcome back, stay updated with your work and warehouse status.</p>
       </div>
 
-      <StatsCards role='staff' />
+      <StatsCards stats={staff.stats} />
 
       <div className="grid grid-cols-5 gap-6 mb-8">
         <div className="col-span-3">
-          <InventoryMovement />
+          <InventoryMovement data={staff.inventoryTrend} />
         </div>
         <div className="col-span-2">
-          <WeeklySchedule />
+          <WeeklySchedule schedules={staff.weeklySchedule} />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-8">
-        <StaffLowStock />
-        <NoteTable/>
+        <LowStockAlert items={staff.lowStockItems} />
+        <NoteTable notes={staff.noteEntries} />
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        <Infractions />
-        <StaffRecentActivities />
+        <Infractions infractions={staff.infractions} />
+        <StaffRecentActivities activities={staff.recentActivities} />
       </div>
     </div>
   );
-}
+};
 
 export default DashboardStaffScreen;

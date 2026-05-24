@@ -1,4 +1,3 @@
-import { Clock } from 'lucide-react';
 import { ShiftCalendarItem } from './ShiftCalendarItem';
 import { type Shift, type ShiftFormData } from '../../types/shift';
 import { useShifts } from '../../hooks/useShifts';
@@ -62,6 +61,7 @@ const ShiftsCalendar = ({shifts, onOpenEditModal, onDelete,}: Props) => {
               <div className="space-y-2">
                   {dayShifts.map((shift) => (
                     <ShiftCalendarItem
+                      key={shift.id}
                       shift={shift} onDelete={onDelete} onOpenEditModal={onOpenEditModal}>
 
                     </ShiftCalendarItem>

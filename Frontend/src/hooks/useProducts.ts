@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import { type Product, type ProductFormData } from '../types/product';
 import { toast } from 'sonner';
+import { MOCK_PRODUCTS } from '../data/MOCK_PRODUCTS';
 
-export const useProducts = (initialData: Product[]) => {
+export const useProducts = (initialData: Product[] = MOCK_PRODUCTS) => {
   const [products, setProducts] = useState<Product[]>(initialData);
 
   const getProductStatus = (stockQuantity: number): Product['status'] => {
@@ -44,6 +45,10 @@ export const useProducts = (initialData: Product[]) => {
     setProducts(next);
   }, []);
 
+  const replaceProduct = useCallback((product: Product) => {
+    setProducts((prev) => prev.map((p) => (p.id === product.id ? product : p)));
+  }, []);
+
   const updateProduct = (id: string, data: ProductFormData) => {
     //const stock = parseInt(data.stock);
     setProducts((prev) =>
@@ -62,5 +67,5 @@ export const useProducts = (initialData: Product[]) => {
   };
 
 
-  return { products, addProduct, appendProduct, replaceProducts, updateProduct, deleteProduct, filteredProducts };
+  return { products, addProduct, appendProduct, replaceProducts, replaceProduct, updateProduct, deleteProduct, filteredProducts };
 };

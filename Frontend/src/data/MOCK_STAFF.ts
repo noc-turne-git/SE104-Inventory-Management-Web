@@ -23,7 +23,7 @@ export const MOCK_STAFF: Staff[] = [
   },
   {
     id: '2',
-    name: 'Bob Wilson',
+    name: 'BOB WILSON',
     email: 'bob@example.com',
     role: 'Staff',
     accountStatus: 'Active',
@@ -32,7 +32,14 @@ export const MOCK_STAFF: Staff[] = [
     dob: '1995-08-22',
     phone: '0987-654-321',
     address: '456 Oak Ave, Riverdale',
-    infractions: [],
+    infractions: [
+      {
+        id: 'inf-1',
+        datetime: '2024-03-10T08:30:00',
+        reason: 'Late for shift',
+        penalty: 50
+      }
+    ],
   },
   {
     id: '3',

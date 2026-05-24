@@ -2,24 +2,13 @@ import {CancelButton, ConfirmButton} from '../../components/common/button/ModalB
 import Modal from '../../components/common/Modal';
 import {ShiftTimes, type Shift, type ShiftFormData} from '../../types/shift'
 import { MOCK_STAFF } from '../../data/MOCK_STAFF';
-import { type Staff } from '../../types/staff';
 import { useState, useEffect} from 'react';
-import '../../components/common/modal.css';
 
 interface Props {
   isOpen : boolean;
   onClose : () => void;
   onSubmit: (formData: ShiftFormData) => Promise<void> | void;
   initialData: Shift | null;
-}
-
-// CHINH SUA SAU
-const getAvailableStaff = (staffList: Staff[]) => {
-    return staffList.filter(s => 
-        s.accountStatus === 'Active'
-        //s.availability === 'Available' &&
-        //s.position === position
-    );
 }
 
 const DEFAULT_FORM = {
@@ -37,20 +26,6 @@ const DEFAULT_FORM = {
 export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => {
     // do formData ko có dữ liệu id nên lưu id trong editingItem để biết dang editing Shift nèo
     const [formData, setFormData] = useState<ShiftFormData>(DEFAULT_FORM);
-
-    const resetForm = () => {
-      setFormData({
-        date: '',
-        startTime: '',
-        endTime: '',
-        position: '',
-        assignedTo: '',
-        shiftType: '',
-        notes: '',
-        repeatWeekly: false,
-        repeatCount: '1',
-      });
-    };
 
     useEffect(() => {
       if (initialData) {
@@ -90,7 +65,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
         }
     };    
 
-    //const availableStaff = getAvailableStaff(MOCK_STAFF, formData.position);
+    const availableStaff = MOCK_STAFF.filter((staff) => staff.accountStatus === 'Active');
 
     return (
     <Modal
@@ -197,7 +172,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
                 className="modal-input"
               >
                 <option value="">Unassigned</option>
-                {MOCK_STAFF.map((staff) => (
+                {availableStaff.map((staff) => (
                                 <option key={staff.id} value={staff.name}>
                                     {staff.name}
                                 </option>

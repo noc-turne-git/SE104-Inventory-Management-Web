@@ -5,7 +5,7 @@ import { Icons } from "./iconWareHouse";
 interface CreateWareHouseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (name: string, address: string) => void;
+  onCreate: (name: string, address: string, imageFile?: File | null) => void;
 }
 
 export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
@@ -16,14 +16,28 @@ export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
   const [name, setName] = React.useState("");
   const [city, setCity] = React.useState("");
   const [country, setCountry] = React.useState("");
+  const [imageFile, setImageFile] = React.useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = React.useState("");
+
+  React.useEffect(() => {
+    if (!imageFile) {
+      setPreviewUrl("");
+      return;
+    }
+
+    const url = URL.createObjectURL(imageFile); //Browser tạo URL tạm cho file local.
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [imageFile]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name && city && country) {
-      onCreate(name, `${city}, ${country}`);
+      onCreate(name, `${city}, ${country}`, imageFile);
       setName("");
       setCity("");
       setCountry("");
+      setImageFile(null);
       onClose();
     }
   };
@@ -96,11 +110,23 @@ export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
 
                   <div>
                     <label className="block text-sm font-bold text-inverse-surface mb-2">Warehouse Photo</label>
-                    <div className="border-2 border-dashed border-[#e5e7eb] rounded-xl p-8 flex flex-col items-center justify-center bg-[#F8FAFC] hover:bg-white hover:border-[#1E3A8A] transition-colors cursor-pointer group">
-                      <Icons.Plus className="w-8 h-8 text-primary mb-2" />
-                      <p className="text-sm font-bold text-inverse-surface">Click to upload photo</p>
-                      <p className="text-xs text-on-surface-variant mt-1">SVG, PNG, JPG (MAX. 800x400px)</p>
-                    </div>
+                    <label className="border-2 border-dashed border-[#e5e7eb] rounded-xl p-4 min-h-48 flex flex-col items-center justify-center bg-[#F8FAFC] hover:bg-white hover:border-[#1E3A8A] transition-colors cursor-pointer group overflow-hidden">
+                      {previewUrl ? (
+                        <img src={previewUrl} alt="Warehouse preview" className="w-full h-44 object-cover rounded-lg" />
+                      ) : (
+                        <>
+                          <Icons.Plus className="w-8 h-8 text-primary mb-2" />
+                          <p className="text-sm font-bold text-inverse-surface">Click to upload photo</p>
+                          <p className="text-xs text-on-surface-variant mt-1">PNG, JPG, WEBP</p>
+                        </>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                        className="hidden"
+                        onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+                      />
+                    </label>
                   </div>
                 </div>
 

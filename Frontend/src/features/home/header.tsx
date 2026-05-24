@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = () => {
             <button className="text-slate-400 font-bold hover:text-slate-100 transition-colors text-sm sm:text-base md:text-lg cursor-pointer"
               onClick={() => navigate('/signin', {replace: false})}
               >
-              Sign In
+              Sign in
             </button>
             
             <button 

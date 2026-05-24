@@ -9,10 +9,12 @@ interface Props {
   onClose: () => void;
   onSubmit: (data: ProductFormData) => boolean | void | Promise<boolean | void>;
   initialData: Product | null;
+  categoryOptions?: string[];
 }
 
 const DEFAULT_FORM: ProductFormData = {
   image: '',
+  imageFile: null,
   name: '',
   sku: '',
   sellPrice: '',
@@ -20,20 +22,32 @@ const DEFAULT_FORM: ProductFormData = {
   category: ''
 };
 
-const ProductModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
+const ProductModal = ({ isOpen, onClose, onSubmit, initialData, categoryOptions = [] }: Props) => {
   const [formData, setFormData] = useState<ProductFormData>(DEFAULT_FORM);
   const [submitting, setSubmitting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
 
   useEffect(() => {
     if (initialData) {
       setFormData({
         ...initialData,
+        imageFile: null,
         sellPrice: initialData.sellPrice.toString(),
       });
     } else {
       setFormData(DEFAULT_FORM);
     }
   }, [initialData, isOpen]);
+
+  useEffect(() => {
+    if (formData.imageFile) {
+      const url = URL.createObjectURL(formData.imageFile);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+
+    setPreviewUrl(formData.image ?? '');
+  }, [formData.image, formData.imageFile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,12 +72,19 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
       <form onSubmit={handleSubmit}>
         <div className="">
           <div className="">
-            <button
-              type="button"
-              className="bg-gray-200 rounded-lg w-30 h-30 flex items-center justify-center hover:bg-gray-300 transition-colors"
-            >
-              <Plus className="w-10 h-10 text-gray-500" />
-            </button>
+            <label className="bg-gray-200 rounded-lg w-30 h-30 flex overflow-hidden items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer">
+              {previewUrl ? (
+                <img src={previewUrl} alt="Product preview" className="w-full h-full object-cover" />
+              ) : (
+                <Plus className="w-10 h-10 text-gray-500" />
+              )}
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                className="hidden"
+                onChange={(e) => setFormData({ ...formData, imageFile: e.target.files?.[0] ?? null })}
+              />
+            </label>
           </div>
         </div>
 
@@ -100,21 +121,18 @@ const ProductModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
           </div>
           <div className="">
             <label className="modal-label">Category *</label>
-            <select
-              className={`modal-input ${formData.category === '' ? 'text-gray-400' : 'text-black'}`}
+            <input
+              className="modal-input"
+              list="product-category-options"
+              placeholder="Select or enter category"
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            >
-              <option value="" disabled>
-                Select a category
-              </option>
-              <option value="T-Shirt">T-Shirt</option>
-              <option value="Jeans">Jeans</option>
-              <option value="Shoes">Shoes</option>
-              <option value="Jacket">Jacket</option>
-              <option value="Hoodie">Hoodie</option>
-              <option value="Boot">Boot</option>
-            </select>
+            />
+            <datalist id="product-category-options">
+              {categoryOptions.map((category) => (
+                <option key={category} value={category} />
+              ))}
+            </datalist>
           </div>
         </div>
 

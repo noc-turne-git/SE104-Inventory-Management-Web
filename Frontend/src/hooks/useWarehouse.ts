@@ -8,6 +8,25 @@ import invitationApi from "../api/InvitationAPI";
 
 import { isAxiosError } from "axios";
 
+const resolveImageUrl = (url?: string) => {
+  if (!url) return "";
+  if (/^(https?:|blob:|data:)/i.test(url)) return url;
+  return `http://localhost:5074${url}`;
+};
+
+const mapApiWarehouse = (data: any): Warehouse => ({
+  ...data,
+  warehouseId: String(data?.warehouseId ?? ""),
+  role: data?.role ?? "staff",
+  name: data?.name ?? "",
+  location: data?.location ?? data?.address ?? "",
+  address: data?.address ?? data?.location ?? "",
+  imageUrl: resolveImageUrl(data?.imageUrl ?? data?.urlimage),
+  status: data?.status ?? "Stable Operations",
+  productCount: data?.productCount ?? 0,
+  lastUpdate: data?.lastUpdate ?? "",
+});
+
 export const useWarehouse = () => {
   const { setWarehouse } = useWarehouseContext();
 
@@ -23,7 +42,8 @@ export const useWarehouse = () => {
     setLoading(true);
     try {
       const response = await warehouseApi.getAll(); // Gọi API để lấy danh sách warehouses
-      setWarehouses(response.data); // Cập nhật state với dữ liệu mới
+      const items = Array.isArray(response.data) ? response.data : [];
+      setWarehouses(items.map(mapApiWarehouse));
     } catch {
       toast.error("Failed to fetch warehouses");
     } finally {
@@ -68,7 +88,7 @@ export const useWarehouse = () => {
   const closeModal = () => setIsModalOpen(false);
 
   // Tạo Warehouse mới
-  const createWarehouse = async (name: string, address: string, urlimage?: string) => {
+  const createWarehouse = async (name: string, address: string, imageFile?: File | null) => {
     
     // const newWarehouse: Warehouse = {
     //   warehouseId: Date.now().toString(),
@@ -83,19 +103,21 @@ export const useWarehouse = () => {
     const form = {
       name,
       location : address,
-      urlimage: urlimage || ''
+      urlimage: '',
+      imageFile: imageFile ?? null
     };
     try {
       const response = await warehouseApi.create(form);
       const getWarehouseResponse = await warehouseApi.getById(response.data.warehouseId);
+      const createdWarehouse = mapApiWarehouse(getWarehouseResponse.data);
       
       setWarehouse({
         role: "manager",
-        warehouseId: getWarehouseResponse.data.warehouseId,
-        warehouseName: getWarehouseResponse.data.name,
+        warehouseId: createdWarehouse.warehouseId,
+        warehouseName: createdWarehouse.name,
       });
 
-      setWarehouses((prev) => [...prev || [], getWarehouseResponse.data]); // Cập nhật state với warehouse mới
+      setWarehouses((prev) => [...prev || [], createdWarehouse]);
       closeModal();
       toast.success(`Warehouse "${name}" created successfully`);
     } catch  {
@@ -112,13 +134,14 @@ export const useWarehouse = () => {
         const form = {InvitationId:id }
         await invitationApi.accept(form);
         const wh = await warehouseApi.getById(invitedWh.warehouseId);
+        const mappedWarehouse = mapApiWarehouse(wh.data);
         setWarehouse({
           role: "staff",
-          warehouseId: wh.data.warehouseId,
-          warehouseName: wh.data.name,
+          warehouseId: mappedWarehouse.warehouseId,
+          warehouseName: mappedWarehouse.name,
         });
 
-        setWarehouses((prev) => [...prev || [], wh.data]); 
+        setWarehouses((prev) => [...prev || [], mappedWarehouse]); 
         
         setInvitations((prev) => (prev || []).filter((inv) => inv.id !== id));
         toast.success("Invitation accepted");
@@ -187,10 +210,33 @@ export const useWarehouse = () => {
   };
 
   // Điều hướng/Quản lý (Logic này thường là dùng router.push)
-  const manageWarehouse = (id: number) => {
+  const updateWarehouseImage = async (id: string | number, imageFile: File) => {
+    const current = warehouses.find((w) => String(w.warehouseId) === String(id));
+    if (!current) return;
+
+    try {
+      const response = await warehouseApi.update(id, {
+        name: current.name,
+        location: current.location ?? current.address ?? "",
+        urlimage: current.urlimage ?? current.imageUrl ?? "",
+        imageFile,
+      });
+      const updatedWarehouse = mapApiWarehouse(response.data);
+      setWarehouses((prev) =>
+        prev.map((warehouse) =>
+          String(warehouse.warehouseId) === String(id) ? { ...warehouse, ...updatedWarehouse } : warehouse
+        )
+      );
+      toast.success("Warehouse image updated successfully");
+    } catch {
+      toast.error("Failed to update warehouse image");
+    }
+  };
+
+  const manageWarehouse = (id: string | number) => {
    // console.log(`Navigating to warehouse: ${id}`);
     // Window.location.href = ... hoặc useHistory/useNavigate
-    const wh = warehouses.find(w => w.warehouseId === id);
+    const wh = warehouses.find(w => String(w.warehouseId) === String(id));
     if (wh) {
       setWarehouse({
         role: wh.role,
@@ -211,6 +257,7 @@ export const useWarehouse = () => {
     createWarehouse,
     acceptInvitation,
     declineInvitation,
+    updateWarehouseImage,
     manageWarehouse,
   };
 };

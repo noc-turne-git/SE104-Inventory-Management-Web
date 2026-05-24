@@ -23,7 +23,7 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
     {
         _inner = inner;
         _cache = cache;
-        _entityName = typeof(T).Name; // Tự động lấy tên Class làm Prefix
+        _entityName = typeof(T).Name; // Tự động lấy tên Class làm Prefix vd Product
     }
     
    protected static byte[] Serialize<TResult>(TResult obj)
@@ -114,7 +114,8 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
     {
         return await _inner.GetAllAsync(cancellationToken);
     }
-
+    // Get entity bằng composite key - khóa chính gồm 2 cột vd (UserId, WarehouseId)
+    // đang thiếu hàm lưu lại vào Cache 
     public async Task<T?> GetByIdAsync(object id1, object id2, CancellationToken cancellationToken = default)
     {
         string key = $"{_entityName}:{id1}:{id2}";
@@ -152,8 +153,5 @@ public class GenericCacheDecorator<T> : IRepository<T> where T : class, IEntity
         await _inner.DeleteAsync(id1, id2, cancellationToken);
         await _cache.RemoveAsync($"{_entityName}:{id1}:{id2}", cancellationToken);
     }
-
-
-
 
 }

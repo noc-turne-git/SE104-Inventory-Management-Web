@@ -1,37 +1,56 @@
-import React from 'react';
-
+import { useMemo, useState } from 'react';
 import StatsCards from '../../features/dashboard/StatsCards';
+import LowStockAlert from '../../features/dashboard/LowStockAlert';
+import ProductCategoryChart from '../../features/dashboard/manager/ProductCategoryChart';
+import RecentActivities from '../../features/dashboard/manager/RecentActivities';
 import RevenueChart from '../../features/dashboard/manager/RevenueChart';
-import ProductCategoryChart from '../../features/dashboard/manager/ProductCategoryChart'; // Tương tự tách như trên
 import TopProducts from '../../features/dashboard/manager/TopProducts';
-import LowStockAlert from '../../features/dashboard/LowStockAlert'; // Tương tự tách như trên
-import RecentActivities from '../../features/dashboard/manager/RecentActivities'; // Tương tự tách như trên
+import { useDashboard } from '../../hooks/useDashboard';
 
-const DashboardManagerScreen: React.FC = () => {
+const DashboardManagerScreen = () => {
+  const now = new Date();
+  const [revenueYear, setRevenueYear] = useState(now.getFullYear());
+  const [topProductsYear, setTopProductsYear] = useState(now.getFullYear());
+  const [topProductsMonth, setTopProductsMonth] = useState(now.getMonth() + 1);
+  const managerParams = useMemo(
+    () => ({ revenueYear, topProductsYear, topProductsMonth }),
+    [revenueYear, topProductsYear, topProductsMonth],
+  );
+  const { manager } = useDashboard(managerParams);
+
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-gray-900">Manager Dashboard</h1>
         <p className="text-gray-600 mt-1">Welcome back, Here's what's happening today.</p>
       </div>
 
-      <StatsCards role='manager'/>
+      <StatsCards stats={manager.stats} />
 
       <div className="grid grid-cols-5 gap-6 mb-8">
         <div className="col-span-3">
-          <RevenueChart />
+          <RevenueChart
+            revenueByYear={manager.revenueByYear}
+            selectedYear={revenueYear}
+            onYearChange={setRevenueYear}
+          />
         </div>
         <div className="col-span-2">
-          <ProductCategoryChart />
+          <ProductCategoryChart categories={manager.productCategories} />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6 mb-8">
-        <TopProducts />
-        <LowStockAlert />
+        <TopProducts
+          topProductsByYear={manager.topProductsByYear}
+          selectedYear={topProductsYear}
+          selectedMonth={topProductsMonth}
+          onYearChange={setTopProductsYear}
+          onMonthChange={setTopProductsMonth}
+        />
+        <LowStockAlert items={manager.lowStockItems} />
       </div>
-      <RecentActivities />
+      <RecentActivities activities={manager.recentActivities} />
     </div>
   );
 };

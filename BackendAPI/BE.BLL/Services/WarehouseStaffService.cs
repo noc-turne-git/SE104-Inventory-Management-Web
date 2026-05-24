@@ -26,15 +26,9 @@ public class WarehouseStaffService : IWarehouseStaffService
 
     public async Task<bool> AddAsync(Invitation model, int userId, CancellationToken cancellationToken = default)
     {
-        var rolename= model.Role.ToUpper();
-        var roleEntitys = await _roleRepository.GetAsync(r => r.RoleName == rolename, cancellationToken);
-        
-        var roleEntity = roleEntitys.FirstOrDefault();
-        Console.Write($"role: {roleEntity.RoleName}");
+        var roleEntity = await ResolveAssignableRoleAsync(model.Role, cancellationToken);
         if (roleEntity == null)
         {
-            
-            // throw new InvalidOperationException("Role not found");
             return false;
         }
 
@@ -165,6 +159,37 @@ public class WarehouseStaffService : IWarehouseStaffService
         return MapDetail(wsEntity, new Dictionary<int, User> { [userId] = user }, roleNameById, infractionsByUserId);
     }
 
+    public async Task<WarehouseStaffDetailDTO?> CreateAsync(int warehouseId, WarehouseStaffCreateDTO model, CancellationToken cancellationToken = default)
+    {
+        var email = model.Email.Trim();
+        if (string.IsNullOrWhiteSpace(email)) return null;
+
+        var users = await _userRepository.GetAsync(u => u.Email == email, cancellationToken);
+        var user = users.FirstOrDefault();
+        if (user == null) return null;
+
+        var existingStaff = await _warehouseStaffRepository.GetAsync(
+            ws => ws.WarehouseId == warehouseId && ws.UserId == user.UserId,
+            cancellationToken);
+        if (existingStaff.Any()) return null;
+
+        var role = await ResolveAssignableRoleAsync(model.Role, cancellationToken);
+        if (role == null) return null;
+
+        var entity = new WarehouseStaff
+        {
+            WarehouseId = warehouseId,
+            UserId = user.UserId,
+            RoleId = role.RoleId,
+            AccountStatus = string.IsNullOrWhiteSpace(model.AccountStatus) ? "Active" : model.AccountStatus,
+            Salary = model.Salary ?? 0,
+            HireDate = model.HireDate ?? DateTime.UtcNow
+        };
+
+        await _warehouseStaffRepository.AddAsync(entity, cancellationToken);
+        return await GetByUserIdAsync(warehouseId, user.UserId, cancellationToken);
+    }
+
     public async Task<bool> UpdateAsync(int warehouseId, int userId, WarehouseStaffUpdateDTO model, CancellationToken cancellationToken = default)
     {
         var matches = await _warehouseStaffRepository.GetAsync(ws => ws.WarehouseId == warehouseId && ws.UserId == userId, cancellationToken);
@@ -174,9 +199,33 @@ public class WarehouseStaffService : IWarehouseStaffService
         if (model.AccountStatus != null) entity.AccountStatus = model.AccountStatus;
         if (model.Salary.HasValue) entity.Salary = model.Salary.Value;
         if (model.HireDate.HasValue) entity.HireDate = model.HireDate.Value;
-        if (model.RoleId.HasValue) entity.RoleId = model.RoleId.Value;
+        if (!string.IsNullOrWhiteSpace(model.Role) && entity.RoleId != 1)
+        {
+            var role = await ResolveAssignableRoleAsync(model.Role, cancellationToken);
+            if (role == null) return false;
+            entity.RoleId = role.RoleId;
+        }
 
         return await _warehouseStaffRepository.UpdateAsync(entity, cancellationToken);
+    }
+
+    public async Task<bool> DeleteAsync(int warehouseId, int userId, CancellationToken cancellationToken = default)
+    {
+        var entity = await _warehouseStaffRepository.GetByIdAsync(warehouseId, userId, cancellationToken);
+        if (entity == null || entity.RoleId == 1) return false;
+
+        await _warehouseStaffRepository.DeleteAsync(warehouseId, userId, cancellationToken);
+        return true;
+    }
+
+    private async Task<Role?> ResolveAssignableRoleAsync(string? role, CancellationToken cancellationToken)
+    {
+        var roleName = string.IsNullOrWhiteSpace(role) ? "STAFF" : role.Trim().ToUpperInvariant();
+        if (roleName == "OWNER") return null;
+        if (roleName != "MANAGER" && roleName != "STAFF") return null;
+
+        var roles = await _roleRepository.GetAsync(r => r.RoleName == roleName, cancellationToken);
+        return roles.FirstOrDefault();
     }
 
     private static WarehouseStaffDetailDTO MapDetail(
