@@ -130,26 +130,26 @@ const ProductViewScreen = () => {
       )}
           
       {filtered.length > 0 && (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6">
-        <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-100">
+      <div className="table-panel">
+        <div className="table-scroll">
+              <table className="table-base">
+                <thead className="table-head">
                   <tr>
-                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                    <th className="table-th">
                       Product </th>
-                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                    <th className="table-th">
                       SKU </th>
-                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                    <th className="table-th">
                       Description </th>
-                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                    <th className="table-th">
                       Sell Price </th>
-                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                    <th className="table-th">
                       Stock </th>
-                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                    <th className="table-th">
                       Defective </th>
-                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                    <th className="table-th">
                       Damage </th>
-                    <th className="px-6 py-4 text-left text-md text-gray-600 uppercase">
+                    <th className="table-th">
                       Status </th>
                   </tr>
               </thead>

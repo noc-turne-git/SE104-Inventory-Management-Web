@@ -29,10 +29,10 @@ const ProductRow: React.FC<ProductRowProps> = ({ product, onDelete, onOpenEditMo
   return (
     <>
       <tr
-        className="hover:bg-gray-100 transition-colors"
+        className="table-row"
         onDoubleClick={() => setIsOpenListSupplierModal(true)}
       >
-        <td className="px-6 py-4">
+        <td className="table-td">
           <div className="flex items-center gap-3">
             <div className="w-16 h-16 rounded-full bg-blue-50 border border-blue-100 shadow-sm flex overflow-hidden items-center justify-center shrink-0">
               {product.image ? (
@@ -43,25 +43,25 @@ const ProductRow: React.FC<ProductRowProps> = ({ product, onDelete, onOpenEditMo
             </div>
             <div>
               <p className="font-medium text-gray-900">{product.name}</p>
-              <p className="text-md text-gray-500">{product.category}</p>
+              <p className="text-sm text-gray-500">{product.category}</p>
             </div>
           </div>
         </td>
 
-        <td className="px-6 py-4 text-md text-gray-600">{product.sku}</td>
-        <td className="px-6 py-4 text-md text-gray-600 max-w-[220px] truncate">
+        <td className="table-td">{product.sku}</td>
+        <td className="table-td max-w-[220px] truncate">
           {product.description}
         </td>
-        <td className="px-6 py-4 text-md font-medium text-gray-900">${product.sellPrice}</td>
-        <td className="px-6 py-4 text-md text-gray-600">{product.stockQuantity}</td>
-        <td className="px-6 py-4 text-md text-gray-600">{product.defectiveQuantity}</td>
-        <td className="px-6 py-4 text-md text-gray-600">{product.damagedQuantity}</td>
-        <td className="px-6 py-4">
+        <td className="table-td font-medium text-gray-900">${product.sellPrice}</td>
+        <td className="table-td">{product.stockQuantity}</td>
+        <td className="table-td">{product.defectiveQuantity}</td>
+        <td className="table-td">{product.damagedQuantity}</td>
+        <td className="table-td">
           <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(product.status)}`}>
             {product.status}
           </span>
         </td>
-        <td className="px-6 py-4">
+        <td className="table-td">
           <div className="flex items-center justify-end gap-5">
             <button onClick={() => onOpenEditModal(product)}>
               <Edit className="w-5 h-5 text-blue-600" />

@@ -87,30 +87,30 @@ const StaffScreen = () => {
 
       {/* TABLE */}
       {filtered.length > 0 && (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-100">
+      <div className="table-panel">
+        <div className="table-scroll">
+          <table className="table-base">
+            <thead className="table-head">
               <tr>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Employee </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Status </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Phone </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Address </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   DOB </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Role </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Salary </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Hire Date </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Violation </th>
-                <th className="px-3 py-2 text-center text-base text-gray-600 uppercase">
+                <th className="table-th">
                   Action </th>
               </tr>
             </thead>

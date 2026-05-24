@@ -22,3 +22,34 @@
   --error: #ef4444;
 }
 
+@layer components {
+  .table-panel {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6;
+  }
+
+  .table-scroll {
+    @apply overflow-x-auto;
+  }
+
+  .table-base {
+    @apply w-full;
+  }
+
+  .table-head {
+    @apply bg-gray-50 border-b border-gray-100;
+  }
+
+  .table-row {
+    @apply hover:bg-gray-100 transition-colors;
+  }
+
+  .table-th {
+    @apply px-4 py-3 text-center text-sm text-gray-600 uppercase whitespace-nowrap;
+    /* whitespace-nowrap giúp header không bị xuống dòng*/
+  }
+
+  .table-td {
+    @apply px-3 py-2 text-sm text-gray-600;
+  }
+}
+
