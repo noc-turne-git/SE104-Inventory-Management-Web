@@ -109,7 +109,10 @@ export const useWarehouse = () => {
     try {
       const response = await warehouseApi.create(form);
       const getWarehouseResponse = await warehouseApi.getById(response.data.warehouseId);
-      const createdWarehouse = mapApiWarehouse(getWarehouseResponse.data);
+      const createdWarehouse = {
+        ...mapApiWarehouse(getWarehouseResponse.data),
+        role: "manager" as const,
+      };
       
       setWarehouse({
         role: "manager",
