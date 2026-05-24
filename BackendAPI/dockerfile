@@ -1,23 +1,25 @@
+# Stage 1: Build & Publish
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy file project và restore package
+# Copy project file và restore dependencies
 COPY ["BackendAPI.csproj", "./"]
-# Thêm dòng này để chắc chắn có công cụ EF
 RUN dotnet restore "BackendAPI.csproj"
 
-# Copy toàn bộ code (lúc này đã xóa thư mục Migrations ở máy thật)
+# Copy toàn bộ mã nguồn mới nhất vào container
 COPY . .
 
-# Build dự án
-RUN dotnet build "BackendAPI.csproj" -c Release -o /app/build
+# Sử dụng dotnet publish để đóng gói sạch sẽ toàn bộ code mới vào thư mục /app/publish
+RUN dotnet publish "BackendAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Stage 2: Run
+# Stage 2: Môi trường chạy (Runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
-COPY --from=build /app/build .
 
-# Cổng này phải khớp với cổng trong docker-compose.yml (5074)
+# CHÚ Ý: Copy từ thư mục /app/publish sang để lấy bản sạch nhất
+COPY --from=build /app/publish .
+
+# Cấu hình cổng chạy ứng dụng
 ENV ASPNETCORE_URLS=http://+:5074
 EXPOSE 5074
 
