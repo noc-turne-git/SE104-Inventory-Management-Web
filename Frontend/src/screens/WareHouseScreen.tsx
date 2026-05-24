@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { ProfileFeature } from '../features/profile/profile';
 import { Icons } from "../features/warehouse/iconWareHouse";
-import { 
-  WarehouseCard, 
-  InvitationCard, 
-  CreateWarehousePlaceholder 
-} from "../features/warehouse/warehouse";
+import { WarehouseCard, InvitationCard, CreateWarehousePlaceholder } from "../features/warehouse/warehouse";
 import { CreateWareHouseModal } from "../features/warehouse/CreateWareHouseModal";
 import { useWarehouse } from "../hooks/useWarehouse";
 import { useWarehouseContext } from "../context/WarehouseContext";

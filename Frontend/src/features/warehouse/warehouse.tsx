@@ -7,7 +7,7 @@ import { WarehouseStatus } from "../../types/warehouse";
 
 interface WarehouseCardProps {
   warehouse: Warehouse;
-  onManage: (id: string) => void;
+  onManage: (id: number) => void;
 }
 
 export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManage }) => {
@@ -21,6 +21,7 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
   return (
     <motion.div 
       whileHover={{ y: -4 }}
+      onClick={() => onManage(warehouse.warehouseId)}
       className="flex flex-col bg-[#ffffff] rounded-2xl overflow-hidden shadow-[0px_8px_24px_rgba(0,0,0,0.04)] border border-[#e5e7eb] group"
     >
       <div className="relative h-56 w-full overflow-hidden">
@@ -45,17 +46,12 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
           </div>
           <div className="flex items-center text-[#666666] gap-3 text-sm font-medium">
             <Icons.Package className="w-4 h-4 text-[#666666]" />
-            <span>{warehouse.productCount ?? 0 .toLocaleString()} Products</span>
+            <span>{(warehouse.productCount ?? 0).toLocaleString()} Products</span>
           </div>
         </div>
         <div className="pt-6 border-t border-[#e5e7eb] flex items-center justify-between">
-          <span className="text-[11px] text-[#666666]/60 font-bold uppercase tracking-widest">Updated {warehouse.lastUpdate}</span>
-          <button 
-            onClick={() => onManage(warehouse.warehouseId)}
-            className="text-primary font-black text-sm flex items-center gap-1 group/btn hover:translate-x-1 transition-transform"
-          >
-            Manage
-            <Icons.ChevronRight className="w-4 h-4" />
+          <button className="text-primary font-black text-sm flex items-center gap-1 group/btn hover:translate-x-1 transition-transform">
+            Manage<Icons.ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>

@@ -13,19 +13,19 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
     <tr className="hover:bg-gray-100 transition-colors">
 
       {/* EMPLOYEE */}
-      <td className="px-6 py-4">
+      <td className="px-3 py-2">
         <div className="flex items-center gap-3">
-          <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-xl font-semibold text-white shadow-sm ring-2 ring-blue-100">
+          <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-xl font-semibold text-white shadow-sm ring-2 ring-blue-100">
             {staff.name.charAt(0)}
           </div>
           <div>
-            <p className="font-medium text-gray-900">{staff.name}</p>
-            <p className="text-md text-gray-500">{staff.email}</p>
+            <p className="text-sm font-medium text-gray-900">{staff.name}</p>
+            <p className="text-xs text-gray-500">{staff.email}</p>
           </div>
         </div>
       </td>
 
-      <td className="px-6 py-4">
+      <td className="px-3 py-2">
         <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
           staff.accountStatus === 'Active' 
             ? "bg-green-100 text-green-700 border border-green-200" 
@@ -35,27 +35,26 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
         </span>
       </td>
 
-      <td className="px-6 py-4 text-md text-gray-600">{staff.phone || "N/A"}</td>
-      <td className="px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate">
+      <td className="px-3 py-2 text-xs text-gray-600">{staff.phone || "N/A"}</td>
+      <td className="px-3 py-2 text-xs text-gray-600 max-w-[150px] truncate">
         {staff.address || "N/A"}
       </td>
-      <td className="px-6 py-4 text-md text-gray-600">{staff.dob || "N/A"}</td>
+      <td className="px-3 py-2 text-xs text-gray-600">{staff.dob || "N/A"}</td>
 
-      <td className="px-6 py-4 text-md text-gray-600">{staff.role}</td>
+      <td className="px-3 py-2 text-xs text-gray-600">{staff.role}</td>
       {/* <td className="px-6 py-4 text-md text-gray-600">{staff.accountStatus}</td> */}
 
-      <td className="px-6 py-4 font-medium">${staff.salary}</td>
-      <td className="px-6 py-4 text-center">
-        {new Date(staff.hireDate).toLocaleDateString('vi-VN')}</td>
+      <td className="px-3 py-2 text-sm font-medium">${staff.salary}</td>
+      <td className="px-3 py-2 text-xs text-center">{new Date(staff.hireDate).toLocaleDateString('vi-VN')}</td>
 
       {/* INFRACTIONS */}
-      <td className="px-6 py-4 text-center">
+      <td className="px-3 py-2 text-center">
         <span
           onClick={() => onViewInfractions(staff)}
-          className={`cursor-pointer px-3 py-1 text-lg rounded-full ${
+          className={`cursor-pointer px-2 py-1 rounded-full ${
             staff.infractions.length === 0
-              ? "bg-green-100 text-green-700"
-              : "bg-yellow-100 text-yellow-700"
+              ? "bg-green-100 text-sm text-green-700"
+              : "bg-yellow-100 test-sm text-yellow-700"
           }`}
         >
           {staff.infractions.length}
@@ -63,8 +62,8 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
       </td>
 
       {/* ACTION */}
-      <td className="px-6 py-4">
-        <div className="flex justify-end gap-5">
+      <td className="px-3 py-2">
+        <div className="flex justify-end gap-4">
           <button onClick={() => onEdit(staff)}>
             <Edit className="w-5 h-5 text-blue-600" />
           </button>

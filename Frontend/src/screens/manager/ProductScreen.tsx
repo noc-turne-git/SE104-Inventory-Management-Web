@@ -47,7 +47,7 @@ const ProductScreen = () => {
         replaceProducts(items.map(mapApiProductToProduct));
       } catch (err: unknown) {
         if (!isAxiosError(err)) toast.error('Failed to fetch products');
-        else if (!err.response) toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!');
+        else if (!err.response) toast.error('Unable to connect to the server. Please check your network.');
         else toast.error(err.response.data?.message || 'Failed to fetch products');
       } finally {
         setLoading(false);
@@ -59,7 +59,7 @@ const ProductScreen = () => {
 
   const handleSubmit = async (formData: ProductFormData) => {
     if (!warehouseId) {
-      toast.error('Vui lòng chọn kho trước khi thêm sản phẩm.');
+      toast.error('Please select a warehouse before adding a product.');
       return false;
     }
 
@@ -103,7 +103,7 @@ const ProductScreen = () => {
       }
 
       if (!err.response) {
-        toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!');
+        toast.error('Unable to connect to the server. Please check your network.');
         return false;
       }
 
@@ -115,16 +115,17 @@ const ProductScreen = () => {
 
   const handleDelete = async (id: string) => {
     if (!warehouseId) {
-      toast.error('Vui lÃ²ng chá»n kho trÆ°á»›c khi xÃ³a sáº£n pháº©m.');
+      toast.error('Please select a warehouse before deleting a product.');
       return;
     }
 
     try {
       await productApi.delete(warehouseId, id);
       deleteProduct(id);
+      toast.success('Product deleted successfully');
     } catch (err: unknown) {
       if (!isAxiosError(err)) toast.error('Failed to delete product');
-      else if (!err.response) toast.error('KhÃ´ng thá»ƒ káº¿t ná»‘i Ä‘áº¿n mÃ¡y chá»§. Vui lÃ²ng kiá»ƒm tra láº¡i máº¡ng!');
+      else if (!err.response) toast.error('Unable to connect to the server. Please check your network.');
       else toast.error(err.response.data?.message || 'Failed to delete product');
     }
   };

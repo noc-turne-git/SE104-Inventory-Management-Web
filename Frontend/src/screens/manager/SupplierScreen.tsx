@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import SupplierCard from "../../features/suppliers/SupplierCard";
 import SupplierModal from "../../features/suppliers/SupplierModal";
 import SearchBar from "../../components/common/searchBar";
@@ -9,40 +9,20 @@ import { type Supplier, type SupplierInput } from "../../types/supplier";
 
 const SupplierScreen = () => {
   const { warehouseId } = useWarehouseContext();
-  const { suppliers, loading, addSupplier, updateSupplier, deleteSupplier, searchSuppliers, refetch, } = useSuppliers(warehouseId);
+  const { suppliers, loading, addSupplier, updateSupplier, deleteSupplier } = useSuppliers(warehouseId);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedValue, setDebouncedValue] = useState("");
+  const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Supplier | null>(null);
-  const hasActiveSearchRef = useRef(false);
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setDebouncedValue(searchTerm);
-    }, 300);
-
-    return () => window.clearTimeout(timer);
-  }, [searchTerm]);
-
-  useEffect(() => {
-    if (!warehouseId) {
-      hasActiveSearchRef.current = false;
-      return;
-    }
-
-    const value = debouncedValue.trim();
-    if (value) {
-      hasActiveSearchRef.current = true;
-      void searchSuppliers(value);
-      return;
-    }
-
-    if (hasActiveSearchRef.current) {
-      hasActiveSearchRef.current = false;
-      void refetch();
-    }
-  }, [debouncedValue, warehouseId, refetch, searchSuppliers]);
+  const filtered = suppliers.filter(
+    (s) =>
+      s.name.toLowerCase().includes(search.toLowerCase()) ||
+      s.contact.toLowerCase().includes(search.toLowerCase()) ||
+      s.email.toLowerCase().includes(search.toLowerCase()) ||
+      s.phone.toLowerCase().includes(search.toLowerCase()) ||
+      s.address.toLowerCase().includes(search.toLowerCase())
+  );
 
   const handleSubmit = async (data: SupplierInput) => {
     const ok = editingItem
@@ -85,19 +65,20 @@ const SupplierScreen = () => {
 
       <SearchBar
         label="Search supplier..."
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => setSearch(e.target.value)}
       />
 
       {loading && (
-        <div className="text-gray-500 mb-4">Loading suppliers...</div>
+        <div className="text-gray-500 mt-6">Loading suppliers...</div>
       )}
 
-      {!loading && suppliers.length === 0 && (
+      {!loading && filtered.length === 0 && (
         <div className="text-gray-500 mt-6">No suppliers found.</div>
       )}
 
+      {filtered.length > 0 && (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {suppliers.map((supplier) => (
+        {filtered.map((supplier) => (
           <SupplierCard
             key={supplier.id}
             supplier={supplier}
@@ -109,6 +90,7 @@ const SupplierScreen = () => {
           />
         ))}
       </div>
+      )}
 
       <SupplierModal
         isOpen={showModal}
