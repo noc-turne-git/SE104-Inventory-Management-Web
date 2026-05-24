@@ -19,14 +19,14 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
             {staff.name.charAt(0)}
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900">{staff.name}</p>
-            <p className="text-xs text-gray-500">{staff.email}</p>
+            <p className="text-base font-medium text-gray-900">{staff.name}</p>
+            <p className="text-sm text-gray-500">{staff.email}</p>
           </div>
         </div>
       </td>
 
       <td className="px-3 py-2">
-        <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+        <span className={`px-2.5 py-0.5 rounded-full text-sm font-medium ${
           staff.accountStatus === 'Active' 
             ? "bg-green-100 text-green-700 border border-green-200" 
             : "bg-red-100 text-red-700 border border-red-200"
@@ -35,17 +35,19 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
         </span>
       </td>
 
-      <td className="px-3 py-2 text-xs text-gray-600">{staff.phone || "N/A"}</td>
-      <td className="px-3 py-2 text-xs text-gray-600 max-w-[150px] truncate">
+      <td className="px-3 py-2 text-sm text-gray-600">{staff.phone || "N/A"}</td>
+      <td className="px-3 py-2 text-sm text-gray-600 max-w-[150px] truncate">
         {staff.address || "N/A"}
       </td>
-      <td className="px-3 py-2 text-xs text-gray-600">{staff.dob || "N/A"}</td>
+      <td className="px-3 py-2 text-sm text-gray-600">
+        {staff.dob ? new Date(staff.dob).toLocaleDateString('vi-VN') : "N/A"}
+      </td>
 
-      <td className="px-3 py-2 text-xs text-gray-600">{staff.role}</td>
+      <td className="px-3 py-2 text-sm text-gray-600">{staff.role}</td>
       {/* <td className="px-6 py-4 text-md text-gray-600">{staff.accountStatus}</td> */}
 
-      <td className="px-3 py-2 text-sm font-medium">${staff.salary}</td>
-      <td className="px-3 py-2 text-xs text-center">{new Date(staff.hireDate).toLocaleDateString('vi-VN')}</td>
+      <td className="px-3 py-2 text-base font-medium">${staff.salary}</td>
+      <td className="px-3 py-2 text-sm text-center">{new Date(staff.hireDate).toLocaleDateString('vi-VN')}</td>
 
       {/* INFRACTIONS */}
       <td className="px-3 py-2 text-center">
@@ -53,8 +55,8 @@ const StaffRow = ({ staff, onEdit, onDelete, onViewInfractions }: Props) => {
           onClick={() => onViewInfractions(staff)}
           className={`cursor-pointer px-2 py-1 rounded-full ${
             staff.infractions.length === 0
-              ? "bg-green-100 text-sm text-green-700"
-              : "bg-yellow-100 test-sm text-yellow-700"
+              ? "bg-green-100 text-base text-green-700"
+              : "bg-yellow-100 text-base text-yellow-700"
           }`}
         >
           {staff.infractions.length}
