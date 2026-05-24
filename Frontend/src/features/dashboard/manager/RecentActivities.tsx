@@ -42,7 +42,7 @@ const RecentActivities: React.FC = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col min-h-[500px] overflow-hidden">
       <div className="p-6 flex-1">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-semibold text-gray-900">Recent Activities</h3>
+          <h3 className="text-xl font-semibold text-gray-900">Recent Activities</h3>
           <Activity className="w-5 h-5 text-gray-400" />
         </div>
         <div className="space-y-4">
@@ -52,17 +52,17 @@ const RecentActivities: React.FC = () => {
                 {getIcon(activity.type)}
               </div>
               <div className="flex-1">
-                <p className="text-lg font-medium text-gray-900">{activity.action}</p>
-                <p className="text-md text-gray-500 mt-1">by {activity.actor}</p>
+                <p className="text-base font-medium text-gray-900">{activity.action}</p>
+                <p className="text-sm text-gray-500 mt-1">by {activity.actor}</p>
               </div>
-              <span className="text-lg text-gray-400 whitespace-nowrap">{activity.time}</span>
+              <span className="text-base text-gray-400 whitespace-nowrap">{activity.time}</span>
             </div>
           ))}
         </div>
       </div>
 
       <div className="sticky bottom-0 mt-auto px-6 py-4 bg-gray-100 border-t border-gray-100 flex justify-between items-center">
-        <p className="text-md text-gray-500">
+        <p className="text-sm text-gray-500">
           Showing {totalEntries === 0 ? 0 : indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalEntries)} of {totalEntries} entries
         </p>
 
@@ -70,7 +70,7 @@ const RecentActivities: React.FC = () => {
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className={`px-3 py-1 text-md font-medium transition-colors ${
+            className={`px-1 py-1 text-sm font-medium transition-colors ${
               currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600'
             }`}
           >
@@ -94,7 +94,7 @@ const RecentActivities: React.FC = () => {
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages || totalPages === 0}
-            className={`px-3 py-1 text-md font-medium transition-colors ${
+            className={`px-1 py-1 text-sm font-medium transition-colors ${
               currentPage === totalPages || totalPages === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600'
             }`}
           >

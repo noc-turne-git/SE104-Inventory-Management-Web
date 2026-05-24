@@ -11,11 +11,11 @@ const RevenueChart = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-semibold text-gray-900">Revenue Overview</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Revenue Overview</h3>
           <select 
             value={selectedYear}
             onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-            className="text-lg border border-gray-300 rounded-xl px-2 p-1"
+            className="border border-gray-300 rounded-xl px-1 p-1"
           >
             {managerRevenueData.map((item) => (
               <option key={item.year} value={item.year}>Year {item.year}</option>
