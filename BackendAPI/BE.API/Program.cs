@@ -34,7 +34,7 @@ Directory.CreateDirectory(Path.Combine(webRootPath, "uploads", "warehouses"));
 // Cho phép frontend gọi API.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("DevCors", policy =>
     {
         policy.AllowAnyOrigin()   // Cho phép tất cả các nguồn gọi tới
               .AllowAnyMethod()   // Cho phép tất cả các phương thức GET, POST, PUT, DELETE...
