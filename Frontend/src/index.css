@@ -31,10 +31,6 @@
     @apply overflow-x-auto;
   }
 
-  .table-base {
-    @apply w-full;
-  }
-
   .table-head {
     @apply bg-gray-50 border-b border-gray-100;
   }
@@ -48,8 +44,19 @@
     /* whitespace-nowrap giúp header không bị xuống dòng*/
   }
 
-  .table-td {
-    @apply px-3 py-2 text-sm text-gray-600;
+  .table-td-left {
+    @apply px-3 py-2 text-sm text-gray-600 text-left;
+  }
+
+  .table-td-center {
+    @apply px-3 py-2 text-sm text-gray-600 text-center;
+  }
+
+  .table-money {
+    @apply text-base font-medium text-gray-900;
+  }
+
+  .table-status-badge {
+    @apply whitespace-nowrap px-2.5 py-0.5 rounded-full text-sm font-medium;
   }
 }
-

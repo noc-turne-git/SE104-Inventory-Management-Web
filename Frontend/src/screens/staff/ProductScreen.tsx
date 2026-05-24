@@ -132,7 +132,7 @@ const ProductViewScreen = () => {
       {filtered.length > 0 && (
       <div className="table-panel">
         <div className="table-scroll">
-              <table className="table-base">
+              <table className="w-full">
                 <thead className="table-head">
                   <tr>
                     <th className="table-th">
