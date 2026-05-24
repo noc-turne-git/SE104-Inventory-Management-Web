@@ -24,6 +24,7 @@ jobs:
           file: ./BackendAPI/Dockerfile
           push: true
           tags: huongztomato/se104-backend:latest
+          no-cache: true
 
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
@@ -32,3 +33,4 @@ jobs:
           file: ./Frontend/Dockerfile
           push: true
           tags: huongztomato/se104-frontend:latest
+          no-cache: true
