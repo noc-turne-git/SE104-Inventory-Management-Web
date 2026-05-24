@@ -1,0 +1,34 @@
+name: CD Pipeline (Docker Deploy)
+
+on:
+  push:
+    branches: [ "deploy" ] 
+
+jobs:
+  deploy-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code from Deploy Branch
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and Push Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./BackendAPI
+          file: ./BackendAPI/Dockerfile
+          push: true
+          tags: huongztomato/se104-backend:latest
+
+      - name: Build and Push Frontend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Frontend
+          file: ./Frontend/Dockerfile
+          push: true
+          tags: huongztomato/se104-frontend:latest

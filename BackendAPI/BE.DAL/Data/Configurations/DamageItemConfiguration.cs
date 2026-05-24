@@ -18,8 +18,6 @@ public class DamageItemConfiguration : IEntityTypeConfiguration<DamageItem>
             .HasForeignKey(di => di.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(
-            new DamageItem { DamageItemId = 1, NoteId = 3, ProductId = 2, Quantity = 1, Reason = "Broken" }
-        );
+        builder.HasData(SeedData.DamageItems);
     }
 }

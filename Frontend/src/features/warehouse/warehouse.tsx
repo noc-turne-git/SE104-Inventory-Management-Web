@@ -8,9 +8,10 @@ import { WarehouseStatus } from "../../types/warehouse";
 interface WarehouseCardProps {
   warehouse: Warehouse;
   onManage: (id: number) => void;
+  onUpdateImage?: (id: string, file: File) => void;
 }
 
-export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManage }) => {
+export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManage, onUpdateImage }) => {
   const statusColors = {
     [WarehouseStatus.STABLE_OPERATIONS]: "bg-emerald-500",
     [WarehouseStatus.LOW_STOCK]: "bg-amber-500",
@@ -21,7 +22,7 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
   return (
     <motion.div 
       whileHover={{ y: -4 }}
-      onClick={() => onManage(warehouse.warehouseId)}
+      onClick={() => onManage(w.warehouseId)}
       className="flex flex-col bg-[#ffffff] rounded-2xl overflow-hidden shadow-[0px_8px_24px_rgba(0,0,0,0.04)] border border-[#e5e7eb] group"
     >
       <div className="relative h-56 w-full overflow-hidden">
@@ -31,11 +32,26 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           referrerPolicy="no-referrer"
         />
-        {/* <div className="absolute top-4 left-4">
+        <div className="absolute top-4 left-4">
           <span className={`px-2 py-1 rounded backdrop-blur-sm text-[#ffffff] text-[10px] font-black uppercase tracking-widest ${statusColors[warehouse.status] || 'bg-black/80'}`}>
             {warehouse.status}
           </span>
-        </div> */}
+        </div>
+        {onUpdateImage && warehouse.role === "manager" && (
+          <label className="absolute top-4 right-4 h-9 w-9 rounded bg-white/90 text-[#1E3A8A] flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors">
+            <Icons.Image className="w-4 h-4" />
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onUpdateImage(warehouse.warehouseId, file);
+                e.currentTarget.value = "";
+              }}
+            />
+          </label>
+        )}
       </div>
       <div className="p-8">
         <h3 className="text-4xl font-headline font-bold text-[#000000] mb-4">{warehouse.name}</h3>

@@ -18,16 +18,7 @@ public class InventoryCheckItemConfiguration : IEntityTypeConfiguration<Inventor
             .HasForeignKey(i => i.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(
-            new InventoryCheckItem
-            {
-                InventoryCheckItemId = 1,
-                NoteId = 4,
-                ProductId = 1,
-                StockQuantity = 120,
-                Reason = "Monthly routine stock take"
-            }
-        );
+        builder.HasData(SeedData.InventoryCheckItems);
     }
 }
 

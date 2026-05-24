@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Hangfire;
+using Microsoft.Extensions.Configuration;
 
 public class AuthService: IAuthService
 {
@@ -25,6 +26,7 @@ public class AuthService: IAuthService
     private readonly ITokenService _tokenService;
     private readonly IRepository<RefreshToken> _refreshTokenRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IConfiguration _configuration;
     //private readonly ICacheService<User> _cacheService;
     public AuthService(
         IUserRepository userRepository,
@@ -35,7 +37,8 @@ public class AuthService: IAuthService
         IEmailService emailService,
         ITokenService tokenService,
         IRepository<RefreshToken> refreshTokenRepository,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IConfiguration configuration)
     {
         _userRepository = userRepository;
         _OTPRepository = OTPRepository;
@@ -46,6 +49,7 @@ public class AuthService: IAuthService
         _tokenService = tokenService;
         _refreshTokenRepository = refreshTokenRepository;
         _httpContextAccessor = httpContextAccessor;
+        _configuration = configuration;
         //_cacheService = cacheService;
 
         //_configuration = configuration;
@@ -83,8 +87,11 @@ public class AuthService: IAuthService
         user.PasswordHash = BCrypt.HashPassword(model.Password);  
         user = await _userRepository.AddAsync(user);
 
-        //await _emailService.SendConfirmationEmailAsync(model.Email, user.UserId);   
-        BackgroundJob.Enqueue<IEmailService>(x => x.SendConfirmationEmailAsync(model.Email, user.UserId));
+        var hangfireEnabled = _configuration.GetValue<bool?>("Hangfire:Enabled") ?? true;
+        if (hangfireEnabled)
+            BackgroundJob.Enqueue<IEmailService>(x => x.SendConfirmationEmailAsync(model.Email, user.UserId));
+        else
+            await _emailService.SendConfirmationEmailAsync(model.Email, user.UserId);
 
         return true;
     }
@@ -130,9 +137,11 @@ public class AuthService: IAuthService
     }
 
     public async Task<bool> verifyOtpAsync(string otp, string email) {
-        var otpEntity = await _OTPRepository.GetByEmailAsync(email);
-        if(otpEntity == null || otpEntity.Expiration < DateTime.UtcNow || otpEntity.IsUsed) return false;
-        if(otpEntity.Code != otp) return false;
+        if (string.IsNullOrWhiteSpace(otp) || string.IsNullOrWhiteSpace(email)) return false;
+
+        var otpEntity = await _OTPRepository.GetValidByEmailAndCodeAsync(email, otp);
+        if(otpEntity == null) return false;
+
         await _OTPRepository.MarkAsUsedAsync(otpEntity.Id);
 
         return true;

@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import { type Product, type ProductFormData } from '../types/product';
 import { toast } from 'sonner';
+import { MOCK_PRODUCTS } from '../data/MOCK_PRODUCTS';
 
-export const useProducts = (initialData: Product[]) => {
+export const useProducts = (initialData: Product[] = MOCK_PRODUCTS) => {
   const [products, setProducts] = useState<Product[]>(initialData);
 
   const getProductStatus = (stockQuantity: number): Product['status'] => {

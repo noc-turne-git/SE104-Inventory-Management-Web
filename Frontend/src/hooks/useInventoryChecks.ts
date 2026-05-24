@@ -26,7 +26,7 @@ export function useInventoryChecks() {
       id: Date.now().toString(),
       warehouseId: '',
       type: 'INVENTORY_CHECK',
-      operator: user?.userName || '',
+      operator: user?.fullName || '',
       noteNumber: `IC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,
     };
     return addNote(newInventoryCheck);

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendAPI.BE.DAL.Data;
 
 public class AppDbContext : DbContext
-{
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+{ // gọi constructor để biết dùng SQL Server hay PostgreSQL, ....
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
     {
     }
-
+    // < > là nhưng Class trong Entities
     public DbSet<TestItem> TestItems { get; set; }
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<User> Users { get; set; }
@@ -40,17 +40,18 @@ public class AppDbContext : DbContext
     public DbSet<RolePermission> RolePermissions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(modelBuilder); //gọi cấu hình mặc định của EF trước.
 
         
 
         
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly); 
+        //Dòng này tự động load toàn bộ file cấu hình trong folder Configurations.
 
         var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
             v => v.Kind == DateTimeKind.Unspecified ? DateTime.SpecifyKind(v, DateTimeKind.Utc) : v.ToUniversalTime(),
             v => v
-        );
+        ); 
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
@@ -67,3 +68,12 @@ public class AppDbContext : DbContext
     
 }
 
+//AppDbContext là trung tâm của Entity Framework Core.
+
+//DbSet : Entity User sẽ map tới table Users
+
+// DateTimeKind thuong co 2 khung gio: Local and UTC
+// code sau modelBuilder ==> Toàn bộ DateTime trong project theo gio UTC
+
+
+//

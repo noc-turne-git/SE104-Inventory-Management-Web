@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BarChart3 } from 'lucide-react';
-import { managerRevenueData } from '../../../data/dashboard/MOCK__MANAGER_DASHBOARD';
+import { type YearlyRevenueData } from '../../../types/dashboard/manager';
 
-const RevenueChart = () => {
-  const [selectedYear, setSelectedYear] = useState<number>(managerRevenueData[managerRevenueData.length - 1].year);
-  const revenue = managerRevenueData.find(item => item.year === selectedYear);
+type RevenueChartProps = {
+  revenueByYear: YearlyRevenueData[];
+  selectedYear: number;
+  onYearChange: (year: number) => void;
+};
+
+const RevenueChart = ({ revenueByYear, selectedYear, onYearChange }: RevenueChartProps) => {
+  const currentYear = new Date().getFullYear();
+  const years = Array.from(new Set([
+    ...revenueByYear.map((item) => item.year),
+    ...Array.from({ length: 5 }, (_, index) => currentYear - index),
+  ])).sort((a, b) => b - a);
+  const revenue = revenueByYear.find(item => item.year === selectedYear);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full">
@@ -14,11 +23,11 @@ const RevenueChart = () => {
           <h3 className="text-xl font-semibold text-gray-900 mb-2">Revenue Overview</h3>
           <select 
             value={selectedYear}
-            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-            className="border border-gray-300 rounded-xl px-1 p-1"
+            onChange={(e) => onYearChange(parseInt(e.target.value))}
+            className="text-base border border-gray-300 rounded-xl px-2 p-1"
           >
-            {managerRevenueData.map((item) => (
-              <option key={item.year} value={item.year}>Year {item.year}</option>
+            {years.map((year) => (
+              <option key={year} value={year}>Year {year}</option>
             ))}
           </select>
         </div>

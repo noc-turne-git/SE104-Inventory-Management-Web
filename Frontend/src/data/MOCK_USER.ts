@@ -3,7 +3,7 @@
   export const MOCK_USERS: User[] = [
     {
       id: 'u1',
-      fullName: 'ALICE SMITH', // Viết hoa theo yêu cầu
+      userName: 'ALICE SMITH', // Viết hoa theo yêu cầu
       email: 'alice@example.com',
       dob: '1990-05-15',
       phone: '0123456789',
@@ -12,7 +12,7 @@
     },
     {
       id: 'u2',
-      fullName: 'BOB WILSON', // Viết hoa theo yêu cầu
+      userName: 'BOB WILSON', // Viết hoa theo yêu cầu
       email: 'bob@example.com',
       dob: '1995-10-20',
       phone: '0987654321',

@@ -18,9 +18,6 @@ public class ReceiptItemConfiguration : IEntityTypeConfiguration<ReceiptItem>
             .HasForeignKey(ri => ri.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(
-            new ReceiptItem { ReceiptItemId = 1, NoteId = 1, ProductId = 1, OrderedQuantity = 60, Quantity = 60, DefectiveQuantity = 2 },
-            new ReceiptItem { ReceiptItemId = 2, NoteId = 1, ProductId = 1, OrderedQuantity = 40, Quantity = 40, DefectiveQuantity = 0 }
-        );
+        builder.HasData(SeedData.ReceiptItems);
     }
 }

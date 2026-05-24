@@ -8,9 +8,12 @@ public class OTPConfiguration : IEntityTypeConfiguration<OTP>
 {
     public void Configure(EntityTypeBuilder<OTP> builder)
     {
-        builder.Property(o => o.Code).IsRequired();
+        builder.Property(o => o.Code).IsRequired(); // not null
         builder.Property(o => o.Email).IsRequired();
         builder.HasIndex(o => new { o.Email, o.Code });
+        builder.HasIndex(o => o.Email)
+            .IsUnique()
+            .HasFilter("\"IsUsed\" = FALSE");
 
         builder.HasData(
             new OTP

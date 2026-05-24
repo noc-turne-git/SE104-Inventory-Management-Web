@@ -25,7 +25,7 @@ export const MOCK_RECEIPTS: Receipt[] = [
       { product: "Slim Fit Jeans", ordered: 100, received: 98, defective: 2 }
     ],
     status: "in process",
-    operator: "John Wick"
+    operator: "BOB WILSON"
   },
   {
     id: "rec-003",
@@ -38,7 +38,7 @@ export const MOCK_RECEIPTS: Receipt[] = [
       { product: "Mechanical Keyboard", ordered: 80, received: 75, defective: 3 }
     ],
     status: "pending",
-    operator: "Elena Fisher"
+    operator: "BOB WILSON"
   },
   {
     id: "rec-004",

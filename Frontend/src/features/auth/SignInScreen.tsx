@@ -7,6 +7,22 @@ import { useAuth } from "../../context/AuthContext";
 import authApi from "../../api/AuthAPI";
 import { isAxiosError } from "axios";
 import "./auth.css";
+import { type User } from "../../types/user";
+
+const toDateInputValue = (value: unknown): string => {
+  if (!value) return "";
+  const text = String(value);
+  return text.includes("T") ? text.split("T")[0] : text;
+};
+
+const normalizeUserFromApi = (raw: any): User => ({
+  id: String(raw?.id ?? raw?.userId ?? ""),
+  fullName: raw?.fullName ?? raw?.userName ?? "",
+  email: raw?.email ?? "",
+  dob: toDateInputValue(raw?.dob ?? raw?.dateOfBirth),
+  phone: raw?.phone ?? "",
+  address: raw?.address ?? "",
+});
 
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -49,7 +65,7 @@ const SignInScreen = () => {
     try {
       const response = await authApi.signIn(form);
 
-      signin(response.data.user);
+      signin(normalizeUserFromApi(response.data.user));
       localStorage.setItem("access_token", response.data.accessToken);
       localStorage.setItem("refresh_token", response.data.refreshToken);
     } catch (err: unknown) {

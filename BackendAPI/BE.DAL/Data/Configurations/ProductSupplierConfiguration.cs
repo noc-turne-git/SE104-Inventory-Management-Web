@@ -20,9 +20,6 @@ public class ProductSupplierConfiguration : IEntityTypeConfiguration<ProductSupp
             .HasForeignKey(ps => ps.SupplierId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasData(
-            new ProductSupplier { ProductId = 1, SupplierId = 1, Type = "PRIMARY", Price = 90000 },
-            new ProductSupplier { ProductId = 2, SupplierId = 2, Type = "PRIMARY", Price = 180000 }
-        );
+        builder.HasData(SeedData.ProductSuppliers);
     }
 }

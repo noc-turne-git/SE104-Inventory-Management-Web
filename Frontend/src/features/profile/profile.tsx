@@ -86,8 +86,8 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           {role === 'manager' ? 'M' : 'S'}
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-[#1e293b]">{formData?.fullName}</h2>
-          <p className="text-[#64748b] text-lg">{role}</p>
+          <h2 className="text-2xl font-bold text-[#1e293b]">{formData?.fullName || 'Unknown user'}</h2>
+          <p className="text-[#64748b] text-lg capitalize">{role || 'user'}</p>
         </div>
       </div>
 
@@ -168,7 +168,7 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
           </label>
           <input
             type="text"
-            value={role || ""}
+            value={role || 'user'}
             readOnly
             className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] bg-[#f8fafc] text-[#94a3b8] text-lg cursor-not-allowed"
           />

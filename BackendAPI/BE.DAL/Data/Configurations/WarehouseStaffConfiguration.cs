@@ -25,25 +25,6 @@ public class WarehouseStaffConfiguration : IEntityTypeConfiguration<WarehouseSta
             .HasForeignKey(ws => ws.RoleId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasData(
-            new WarehouseStaff
-            {
-                WarehouseId = 1,
-                UserId = 1,
-                RoleId = 1,
-                Salary = 65000000,
-                HireDate = new DateTime(2023, 01, 15, 0, 0, 0, DateTimeKind.Utc),
-                AccountStatus = "Active"
-            },
-            new WarehouseStaff
-            {
-                WarehouseId = 1,
-                UserId = 2,
-                RoleId = 3,
-                Salary = 45000000,
-                HireDate = new DateTime(2023, 03, 20, 0, 0, 0, DateTimeKind.Utc),
-                AccountStatus = "Active"
-            }
-        );
+        builder.HasData(SeedData.WarehouseStaffs);
     }
 }

@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { Activity, CheckCircle } from 'lucide-react';
-import { recentActivitiesData } from '../../../data/dashboard/MOCK_STAFF_DASHBOARD';
+import { type RecentActivity } from '../../../types/dashboard/staff';
 
-const StaffRecentActivities: React.FC = () => {
+type StaffRecentActivitiesProps = {
+  activities: RecentActivity[];
+};
+
+const StaffRecentActivities: React.FC<StaffRecentActivitiesProps> = ({ activities }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-  const totalEntries = recentActivitiesData.length;
+  const totalEntries = activities.length;
   const totalPages = Math.ceil(totalEntries / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = recentActivitiesData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = activities.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -27,7 +31,7 @@ const StaffRecentActivities: React.FC = () => {
           <Activity className="w-5 h-5 text-blue-500" /> Recent Activities
         </h3>
         <div className="space-y-4">
-          {currentItems.map((activity) => (
+          {currentItems.length > 0 ? currentItems.map((activity) => (
             <div
               key={activity.id}
               className="flex items-start gap-3 pb-4 border-b border-gray-50 last:border-0 last:pb-0"
@@ -57,7 +61,11 @@ const StaffRecentActivities: React.FC = () => {
                 {activity.time}
               </span>
             </div>
-          ))}
+          )) : (
+            <div className="py-10 text-center text-lg text-gray-400">
+              No recent activities
+            </div>
+          )}
         </div>
       </div>
 

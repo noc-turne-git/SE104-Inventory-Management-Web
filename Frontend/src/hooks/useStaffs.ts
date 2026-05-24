@@ -39,10 +39,12 @@ export const useStaff = (warehouseId?: number | null) => {
 
     setLoading(true);
     try {
+      setStaffs([]);
       const res = await staffApi.getAll(warehouseId);
       setStaffs((res.data || []).map(normalizeStaff));
       return true;
     } catch (err: unknown) {
+      setStaffs([]);
       toast.error(getStaffErrorMessage(err, "Failed to fetch staff"));
       return false;
     } finally {

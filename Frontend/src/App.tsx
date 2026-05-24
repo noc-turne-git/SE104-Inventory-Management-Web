@@ -66,14 +66,14 @@ function App() {
   // Nếu đã login: Có role → /app, chưa có role → /warehouse
   const GuestOnlyRoute = () => {
     const { user, loading: authLoading } = useAuth();
-    const { role, loading: whLoading } = useWarehouseContext();
+    const { role, loading: whLoading } = useWarehouseContext(); //đổi tên loading thành whLoading để trách trùng tên biến vs loading của useAuth
     // Có thêm loading check để tránh redirect sai khi reload
     if (authLoading || whLoading) {
       return null; // hoặc spinner
     }
     if (user) {
       return role
-        ? <Navigate to="/app" replace />
+        ? <Navigate to="/app" replace /> //Nếu đã login và đã chọn warehouse role: chuyển /app.
         : <Navigate to="/warehouse" replace />;
     }
     return <Outlet />;

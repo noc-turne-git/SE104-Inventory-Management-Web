@@ -18,7 +18,8 @@ import {
   Languages,
   Moon,
   Sun,
-  LogOut
+  LogOut,
+  Image
 } from "lucide-react";
 
 export const Icons = {
@@ -41,5 +42,6 @@ export const Icons = {
   Languages,
   Moon,
   Sun,
-  LogOut
+  LogOut,
+  Image
 };

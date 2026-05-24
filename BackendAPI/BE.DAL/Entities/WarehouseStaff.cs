@@ -18,3 +18,6 @@ public class WarehouseStaff:IEntity
     public User User { get; set; } = null!;
     public Role Role{get; set; } = null!;
 }
+
+
+// 1 user --> nhiều WarehouseStaff 

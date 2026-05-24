@@ -11,11 +11,16 @@ import productApi from '../../api/ProductAPI';
 import warehouseNotesApi from '../../api/WarehouseNotesAPI';
 import { useWarehouseContext } from '../../context/WarehouseContext';
 import { useProducts } from '../../hooks/useProducts';
-import { useInventoryChecks } from '../../hooks/useInventoryChecks';
+
+const resolveImageUrl = (url: string) => {
+  if (!url) return '';
+  if (/^(https?:|blob:|data:)/i.test(url)) return url;
+  return `http://localhost:5074${url}`;
+};
 
 const mapApiProductToProduct = (data: any): Product => ({
   id: String(data?.productId ?? data?.id ?? ''),
-  image: data?.imageUrl ?? data?.image ?? '',
+  image: resolveImageUrl(data?.imageUrl ?? data?.image ?? ''),
   name: data?.name ?? '',
   sku: data?.sku ?? '',
   category: data?.category ?? '',
@@ -30,8 +35,6 @@ const mapApiProductToProduct = (data: any): Product => ({
 const ProductViewScreen = () => {
   const { warehouseId } = useWarehouseContext();
   const { products, replaceProducts, filteredProducts } = useProducts([]);
-  // (main) const { products, addProduct, updateProduct, deleteProduct, filteredProducts } = useProducts(MOCK_PRODUCTS);
-  // (main) const { addInventoryCheck } = useInventoryChecks();
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,10 +48,12 @@ const ProductViewScreen = () => {
 
       setLoading(true);
       try {
+        replaceProducts([]);
         const res = await productApi.getAll(warehouseId);
         const items = Array.isArray(res.data) ? res.data : [];
         replaceProducts(items.map(mapApiProductToProduct));
       } catch (err: unknown) {
+        replaceProducts([]);
         if (!isAxiosError(err)) toast.error('Failed to fetch products');
         else if (!err.response) toast.error('Cannot connect to server. Please check your network.');
         else toast.error(err.response.data?.message || 'Failed to fetch products');

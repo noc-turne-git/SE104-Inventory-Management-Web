@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
-import { lowStockItemsData } from '../../data/dashboard/MOCK__MANAGER_DASHBOARD';
+import { type LowStockItem } from '../../types/dashboard/manager';
 
-const LowStockAlert: React.FC = () => {
+type LowStockAlertProps = {
+  items: LowStockItem[];
+};
+
+const LowStockAlert: React.FC<LowStockAlertProps> = ({ items }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const totalEntries = lowStockItemsData.length;
+  const totalEntries = items.length;
   const totalPages = Math.ceil(totalEntries / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = lowStockItemsData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -40,7 +44,7 @@ const LowStockAlert: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((item) => (
+              {currentItems.length > 0 ? currentItems.map((item) => (
                 <tr key={item.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-100 transition-colors">
                   <td className="py-3 text-base text-gray-900 font-medium">{item.name}</td>
                   <td className="px-3 py-3 text-base text-center text-gray-500">{item.sku}</td>
@@ -52,7 +56,13 @@ const LowStockAlert: React.FC = () => {
                     </span>
                   </td>
                 </tr>
-              ))}
+              )) : (
+                <tr>
+                  <td colSpan={3} className="py-10 text-center text-lg text-gray-400">
+                    No low stock items
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
