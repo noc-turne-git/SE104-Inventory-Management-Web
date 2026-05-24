@@ -50,6 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          token: ${{ secrets.PAT_DEPLOY }}
           fetch-depth: 0
       - name: Push changes to deploy branch
         run: |
