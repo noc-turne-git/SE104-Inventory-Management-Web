@@ -27,7 +27,7 @@ export interface Invitation {
   id: string;
   sendTime?: string;
   ownerId: string;
-  warehouseId: string;
+  warehouseId: number;
   warehouseName: string;
   Role: "manager" | "staff";
   imageUrl?: string;

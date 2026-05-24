@@ -31,14 +31,14 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute top-4 left-4">
+        {/* <div className="absolute top-4 left-4">
           <span className={`px-2 py-1 rounded backdrop-blur-sm text-[#ffffff] text-[10px] font-black uppercase tracking-widest ${statusColors[warehouse.status] || 'bg-black/80'}`}>
             {warehouse.status}
           </span>
-        </div>
+        </div> */}
       </div>
       <div className="p-8">
-        <h3 className="text-4xl font-font-headline font-bold text-[#000000] mb-4">{warehouse.name}</h3>
+        <h3 className="text-4xl font-headline font-bold text-[#000000] mb-4">{warehouse.name}</h3>
         <div className="space-y-4 mb-8">
           <div className="flex items-center text-[#666666] gap-3 text-sm font-medium">
             <Icons.MapPin className="w-4 h-4 text-[#666666]" />
@@ -78,7 +78,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, onAc
       </div>
       <div className="grow">
         <div className="flex items-center gap-2 mb-1">
-          <span className="te</div>xt-xs font-bold text-[#0040a1] uppercase tracking-widest font-headline">{invitation.ownerId}</span>
+          <span className="text-xs font-bold text-[#0040a1] uppercase tracking-widest font-headline">{invitation.ownerId}</span>
           <span className="w-1 h-1 rounded-full bg-[#e5e7eb]" />
           <span className="text-xs text-[#666666]">Sent {invitation.sendTime}</span>
         </div>
@@ -109,7 +109,7 @@ export const CreateWarehousePlaceholder: React.FC<{ onClick: () => void }> = ({ 
   return (
     <button 
       onClick={onClick}
-      className="flex flex-col items-center justify-center bg-[#f8f9fa]/50 border-2 border-dashed border-[#e5e7eb] rounded-2xl p-12 group hover:bg-white hover:border-[#000000] transition-all duration-500 min-h-112.5"
+      className="flex flex-col items-center justify-center bg-[#f8f9fa]/50 border-2 border-dashed border-[#e5e7eb] rounded-2xl p-12 group hover:bg-white hover:border-[#000000] transition-all duration-500 min-h-[28.125rem]"
     >
       <div className="w-20 h-20 rounded-full bg-[#ffffff] flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-blue-50 transition-all duration-500">
         <Icons.Plus className="w-10 h-10 text-[#000000]" />

@@ -39,7 +39,7 @@ const WareHouseContent = () => {
       <header className="w-full h-16 sticky top-0 z-30 bg-white border-b border-outline-variant/15 shadow-sm">
         <div className="flex items-center justify-between px-8 w-full max-w-7xl mx-auto h-full">
           <div className="flex items-center gap-8">
-            <span className="text-xl font-extrabold text-[#1E3A8A] font-headline">Stokify</span>
+            <span className="text-xl font-extrabold text-[#1E3A8A] font-headline">Stockify</span>
             <nav className="hidden md:flex items-center gap-6 font-headline text-sm font-semibold">
               <button className="relative group text-[#1E3A8A] px-1 py-4 font-semibold transition-colors hover:text-[#2563EB]">
                 Warehouses
@@ -104,7 +104,7 @@ const WareHouseContent = () => {
                       clearWarehouse();
                     }}>
                     <Icons.LogOut className="w-4 h-4" />
-                    <span>Logout</span>
+                    <span>Sign out</span>
                   </button>
                 </div>
               </>
