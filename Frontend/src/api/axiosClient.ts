@@ -60,10 +60,8 @@ axiosClient.interceptors.response.use(
 
         return axiosClient(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('warehouse');
+        localStorage.clear();
+        window.location.href = '/home';
         return Promise.reject(refreshError);
       }
     }
