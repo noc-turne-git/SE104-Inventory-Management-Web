@@ -77,7 +77,7 @@ const StaffModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
         </div>
 
         {/* ROLE + POSITION */}
-        <div className="grid grid-cols-2 gap-4 my-5">
+        <div className={`grid ${initialData ? 'grid-cols-2' : 'grid-cols-1'} gap-4 my-5`}>
           <div>
             <label className="modal-label">Role*</label>
             <select
@@ -90,6 +90,7 @@ const StaffModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
             </select>
           </div>
 
+          {initialData && (
           <div>
             <label className="modal-label">Status*</label>
             <select
@@ -101,6 +102,7 @@ const StaffModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
               <option value="Inactive">Inactive</option>
             </select>
           </div>
+          )}
         </div>
 
         {/* STATUS + AVAILABILITY */}
@@ -120,6 +122,7 @@ const StaffModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
         </div> */}
 
         {/* SALARY + DATE */}
+        {initialData && (
         <div className="grid grid-cols-2 gap-4 my-5">
           <div>
             <label className="modal-label">Salary*</label>
@@ -142,13 +145,14 @@ const StaffModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
             />
           </div>
         </div>
+        )}
 
         {/* BUTTONS */}
         <div className="mt-10 grid grid-cols-2 gap-3">
           <CancelButton label="Cancel" onClick={onClose} />
           <ConfirmButton
             type="submit"
-            label={initialData ? 'Update' : 'Create'}
+            label={initialData ? 'Update' : 'Send Invite'}
           />
         </div>
 
