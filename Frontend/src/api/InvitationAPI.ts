@@ -1,5 +1,14 @@
 import axiosClient from './axiosClient';
-import { type Invitation, type InvitationForm } from '../types/warehouse';
+
+export interface InviteStaffPayload {
+  warehouseId: number;
+  email: string;
+  role: "Manager" | "Staff";
+}
+
+export interface InvitationActionPayload {
+  InvitationId: string;
+}
 
 const invitationApi = {
   getAll() {
@@ -7,16 +16,16 @@ const invitationApi = {
     return axiosClient.get(url);
   },
 
-  create(data: Invitation) {
+  create(data: InviteStaffPayload) {
     const url = '/warehouse/invite-staff';
     return axiosClient.post(url, data);
   },
 
-  accept(data: InvitationForm) {
+  accept(data: InvitationActionPayload) {
     const url = '/invitations/accept';
     return axiosClient.post(url, data);
   },
-  reject(data: InvitationForm) {
+  reject(data: InvitationActionPayload) {
     const url = '/invitations/reject';
     return axiosClient.post(url, data);
   }
