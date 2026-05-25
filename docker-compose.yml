@@ -1,15 +1,17 @@
 services:
   frontend:
-    image: ${FRONTEND_IMAGE}
-    pull_policy: always
+    build:
+      context: ./Frontend
+      dockerfile: dockerfile
     ports:
       - "5173:5173"
     depends_on:
       - backend
 
   backend:
-    image: ${BACKEND_IMAGE}
-    pull_policy: always
+    build:
+      context: ./BackendAPI
+      dockerfile: dockerfile
     ports:
       - "5074:5074"
     volumes:
@@ -63,16 +65,6 @@ services:
     container_name: redis_server
     ports:
       - "6379:6379"
-
-  watchtower:
-    image: containrrr/watchtower:latest
-    container_name: watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - DOCKER_API_VERSION=1.40
-    command: --interval 30 --cleanup
-    restart: always
 
 volumes:
   postgres_data:
