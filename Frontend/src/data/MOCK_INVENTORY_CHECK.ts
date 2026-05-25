@@ -61,7 +61,7 @@ export const MOCK_INVENTORY_CHECKS: InventoryCheck[] = [
     noteNumber: "IC-20260404-004",
     type: 'INVENTORY_CHECK',
     dateCreated: "2026-04-04 08:45",
-    status: "new",
+    status: "pending",
     items: [
       {
         product: "Slim Fit Jeans",

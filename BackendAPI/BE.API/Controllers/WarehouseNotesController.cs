@@ -17,6 +17,11 @@ public class WarehouseNotesController : ControllerBase
     private readonly INoteService _notes;
     private readonly AppDbContext _db;
 
+    public sealed class RejectNoteRequest
+    {
+        public string? Reason { get; set; }
+    }
+
     public WarehouseNotesController(INoteService notes, AppDbContext db)
     {
         _notes = notes;
@@ -220,7 +225,7 @@ public class WarehouseNotesController : ControllerBase
         {
             NoteEditResult.NotFound => NotFound(),
             NoteEditResult.Forbidden => Forbid(),
-            NoteEditResult.NotPending => BadRequest(new { Message = "Only pending notes can be edited." }),
+            NoteEditResult.NotPending => BadRequest(new { Message = "Only pending or in process notes can be edited." }),
             _ => NoContent()
         };
     }
@@ -235,7 +240,7 @@ public class WarehouseNotesController : ControllerBase
         {
             NoteEditResult.NotFound => NotFound(),
             NoteEditResult.Forbidden => Forbid(),
-            NoteEditResult.NotPending => BadRequest(new { Message = "Only pending notes can be edited." }),
+            NoteEditResult.NotPending => BadRequest(new { Message = "Only pending or in process notes can be edited." }),
             _ => NoContent()
         };
     }
@@ -265,7 +270,22 @@ public class WarehouseNotesController : ControllerBase
         {
             NoteEditResult.NotFound => NotFound(),
             NoteEditResult.Forbidden => Forbid(),
-            NoteEditResult.NotPending => BadRequest(new { Message = "Only pending notes can be edited." }),
+            NoteEditResult.NotPending => BadRequest(new { Message = "Only pending or in process notes can be edited." }),
+            _ => NoContent()
+        };
+    }
+
+    [HttpDelete("{noteId:int}")]
+    [Authorize(Policy = PermissionCode.NOTE_EDIT)]
+    public async Task<IActionResult> DeleteOwnDeliveryOrReceipt(int warehouseId, int noteId, CancellationToken cancellationToken)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var result = await _notes.DeleteOwnDeliveryOrReceiptAsync(warehouseId, noteId, userId, cancellationToken);
+        return result switch
+        {
+            NoteDeleteResult.NotFound => NotFound(),
+            NoteDeleteResult.Forbidden => Forbid(),
+            NoteDeleteResult.Approved => BadRequest(new { Message = "Approved notes cannot be cancelled." }),
             _ => NoContent()
         };
     }
@@ -278,27 +298,35 @@ public class WarehouseNotesController : ControllerBase
         return result switch
         {
             NoteDecisionResult.NotFound => NotFound(),
-            NoteDecisionResult.NotPending => BadRequest(new { Message = "Only pending notes can be approved." }),
+            NoteDecisionResult.NotPending => BadRequest(new { Message = "Only pending or rejected notes can be approved." }),
             _ => Ok(new { Success = true })
         };
     }
 
     [HttpPost("{noteId:int}/reject")]
     [Authorize(Policy = PermissionCode.NOTE_REJECT)]
-    public async Task<IActionResult> Reject(int warehouseId, int noteId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Reject(int warehouseId, int noteId, [FromBody] RejectNoteRequest? request, CancellationToken cancellationToken)
     {
-        var result = await _notes.RejectAsync(warehouseId, noteId, cancellationToken);
+        if (string.IsNullOrWhiteSpace(request?.Reason))
+        {
+            return BadRequest(new { Message = "Reject reason is required." });
+        }
+
+        var result = await _notes.RejectAsync(warehouseId, noteId, request.Reason.Trim(), cancellationToken);
         return result switch
         {
             NoteDecisionResult.NotFound => NotFound(),
-            NoteDecisionResult.NotPending => BadRequest(new { Message = "Only pending notes can be rejected." }),
+            NoteDecisionResult.NotPending => BadRequest(new { Message = "Only pending or approved notes can be rejected." }),
             _ => Ok(new { Success = true })
         };
     }
 
     private static string MapStatus(string status)
     {
+        if (string.Equals(status, "IN_PROCESS", StringComparison.OrdinalIgnoreCase)) return "in process";
+        if (string.Equals(status, "IN PROCESS", StringComparison.OrdinalIgnoreCase)) return "in process";
         if (string.Equals(status, "PENDING", StringComparison.OrdinalIgnoreCase)) return "pending";
+        if (string.Equals(status, "IN_PROCESS", StringComparison.OrdinalIgnoreCase)) return "in process";
         if (string.Equals(status, "APPROVED", StringComparison.OrdinalIgnoreCase)) return "approved";
         if (string.Equals(status, "REJECTED", StringComparison.OrdinalIgnoreCase)) return "rejected";
         return status.Trim().ToLowerInvariant();
@@ -313,6 +341,7 @@ public class WarehouseNotesController : ControllerBase
         NoteNumber = BuildNoteNumber("DN", note.Date, note.NoteId),
         DateCreated = note.Date.ToString("yyyy-MM-dd HH:mm"),
         Status = MapStatus(note.Status),
+        Reason = note.Reason,
         Operator = note.User.FullName,
         Destination = note.Destination,
         Items = note.DeliveryItems.Select(i => new DeliveryNoteViewItemDTO
@@ -328,6 +357,7 @@ public class WarehouseNotesController : ControllerBase
         NoteNumber = BuildNoteNumber("GR", note.Date, note.NoteId),
         DateCreated = note.Date.ToString("yyyy-MM-dd HH:mm"),
         Status = MapStatus(note.Status),
+        Reason = note.Reason,
         Operator = note.User.FullName,
         Supplier = note.Supplier.Name,
         Items = note.ReceiptItems.Select(i => new GoodsReceiptViewItemDTO
@@ -345,6 +375,7 @@ public class WarehouseNotesController : ControllerBase
         NoteNumber = BuildNoteNumber("IC", note.Date, note.NoteId),
         DateCreated = note.Date.ToString("yyyy-MM-dd HH:mm"),
         Status = MapStatus(note.Status),
+        Reason = note.Reason,
         Operator = note.User.FullName,
         Items = note.InventoryCheckItems.Select(i => new InventoryCheckViewItemDTO
         {
