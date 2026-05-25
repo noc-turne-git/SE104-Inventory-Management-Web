@@ -32,7 +32,7 @@ export const Sidebar = () => {
       { name: 'Shifts', icon: <Calendar size={20} />, path: '/app/shifts' },
       { name: 'Notes', icon: <NotebookPen size={20} />, path: '/app/notes' },
     ],
-    Staff: [
+    staff: [
       { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/app/dashboard_staff' },
       { name: 'Products', icon: <Package size={20} />, path: '/app/products_view' },
       { name: 'Delivery', icon: <Van size={20} />, path: '/app/delivery' },
@@ -63,11 +63,7 @@ export const Sidebar = () => {
           onClick={() => setIsProfileOpen(true)}
           className="user-card w-full hover:bg-gray-100"
         >
-<<<<<<< HEAD
           <div className="avatar">{role === "owner" ? 'O' : role === "manager" ? 'M' : 'S'}</div>
-=======
-          <div className="avatar">{role === "Manager" ? 'M' : 'S'}</div>
->>>>>>> ff143421cecdff580b32960c1bbdaafc3d3cccde
           <div className="user-info">
             <span className="full-name">{user?.fullName}</span>
             <span className="user-role">{role}</span>

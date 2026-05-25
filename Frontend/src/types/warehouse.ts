@@ -8,7 +8,7 @@ export const WarehouseStatus = {
 export type WarehouseStatusType = typeof WarehouseStatus[keyof typeof WarehouseStatus];
 
 export interface Warehouse {
-  warehouseId: string;
+  warehouseId: number;
   role?: "owner" | "manager" | "staff";
   name: string;
   address?: string;
@@ -28,7 +28,7 @@ export interface Invitation {
   warehouseId: number;
   warehouseName: string;
   address: string;
-  requestedRole: "Manager" | "Staff";
+  requestedRole: "owner" | "manager" | "staff";
   imageUrl?: string;
 }
 

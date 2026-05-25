@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { isAxiosError } from 'axios';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import warehouseNotesApi from '../api/WarehouseNotesAPI';
 import { getErrorMessage } from '../services/notes/noteErrors';
@@ -25,6 +26,7 @@ const initialData: WarehouseNote[] = [];
 export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [allNotes, setAllNotes] = useState<WarehouseNote[]>(initialData);
   const { warehouseId, role } = useWarehouseContext();
+  const location = useLocation();
 
   const getErrorMessage = (err: unknown, fallback: string) => {
     if (!isAxiosError(err)) return fallback;
@@ -102,7 +104,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     try {
-      const isStaff = role === 'Staff';
+      const isStaff = role === 'staff';
       const [deliveriesRes, receiptsRes, inventoryRes] = await Promise.all([
         isStaff ? warehouseNotesApi.getMyDeliveries(warehouseId) : warehouseNotesApi.getAllDeliveries(warehouseId),
         isStaff ? warehouseNotesApi.getMyReceipts(warehouseId) : warehouseNotesApi.getAllReceipts(warehouseId),
@@ -120,13 +122,23 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   useEffect(() => {
+    const shouldFetchNotes =
+      location.pathname === '/app/notes'
+      || location.pathname === '/app/delivery'
+      || location.pathname === '/app/receipts';
+
+    if (!shouldFetchNotes) {
+      setAllNotes(initialData);
+      return;
+    }
+
     void fetchApiNotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [warehouseId, role]);
+  }, [warehouseId, role, location.pathname]);
 
   const getCurrentWarehouseNotes = () => {
     if (!warehouseId) return [];
-    return allNotes.filter((note) => note.warehouseId === warehouseId);
+    return allNotes.filter((note) => String(note.warehouseId) === String(warehouseId));
   };
 
   const addNote = async (newNote: WarehouseNote) => {

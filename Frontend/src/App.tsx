@@ -173,7 +173,7 @@ function App() {
                     <Route path="shifts" element={<ShiftScreen />} />
                   </Route>
                   {/* Staff Routes */}
-                  <Route element={<RoleRoute allow={["Staff"]} />}>
+                  <Route element={<RoleRoute allow={["staff"]} />}>
                     <Route path="dashboard_staff" element={<DashboardStaffScreen />} />
                     <Route path="products_view" element={<ProductViewScreen />} />
                     <Route path="delivery" element={<DeliveryScreen />} />
