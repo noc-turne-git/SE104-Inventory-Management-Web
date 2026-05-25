@@ -4,16 +4,29 @@ import OpenModalButton from '../../components/common/button/ModalButton';
 import { type Shift } from '../../types/shift';
 import ShiftsCalendar from "../../features/shifts/ShiftsCalendar";
 import { ShiftsModal } from '../../features/shifts/ShiftsModal';
-import { toast } from 'sonner';
 import {type ShiftFormData } from '../../types/shift';
 import { useShifts } from '../../hooks/useShifts';
+import { useWarehouseContext } from '../../context/WarehouseContext';
+import { useStaff } from '../../hooks/useStaffs';
 
 const ShiftScreen = () => {
-    const { shifts, deleteShift, updateShift, addShift, getTotalShifts, getEmptyShiftsCount, getUrgentCoverageCount } = useShifts();
+    const {
+        shifts,
+        deleteShift,
+        updateShift,
+        addShift,
+        weekDates,
+        goToToday,
+        goToNextWeek,
+        goToPreviousWeek,
+        getTotalShifts,
+        getEmptyShiftsCount,
+        getUrgentCoverageCount,
+    } = useShifts();
+    const { warehouseId } = useWarehouseContext();
+    const { staffs } = useStaff(warehouseId);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingItem, setEditingItem] = useState<Shift | null>(null);
-
-    const emptyShifts = shifts.filter(s => s.assignedTo === null);
     
     const handleSubmit = async (formData : ShiftFormData) => {
         if(editingItem) {
@@ -86,6 +99,10 @@ const ShiftScreen = () => {
             </div>
             <ShiftsCalendar 
                 shifts={shifts}
+                weekDates={weekDates}
+                onToday={goToToday}
+                onNextWeek={goToNextWeek}
+                onPreviousWeek={goToPreviousWeek}
                 onDelete={deleteShift}
                 onOpenEditModal={handleOpenEditModal}
             />
@@ -94,6 +111,7 @@ const ShiftScreen = () => {
                 onClose={handleCloseAddModal}
                 onSubmit={handleSubmit}
                 initialData={editingItem}
+                staffs={staffs}
             />
         </div>
     );

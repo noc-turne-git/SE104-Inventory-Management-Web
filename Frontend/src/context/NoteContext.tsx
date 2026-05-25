@@ -32,7 +32,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     try {
-      const isStaff = role === 'staff';
+      const isStaff = role === 'Staff';
       const [deliveriesRes, receiptsRes, inventoryRes] = await Promise.all([
         isStaff ? warehouseNotesApi.getMyDeliveries(warehouseId) : warehouseNotesApi.getAllDeliveries(warehouseId),
         isStaff ? warehouseNotesApi.getMyReceipts(warehouseId) : warehouseNotesApi.getAllReceipts(warehouseId),
@@ -56,7 +56,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const getCurrentWarehouseNotes = () => {
     if (!warehouseId) return [];
-    return allNotes.filter((note) => Number(note.warehouseId) === Number(warehouseId));
+    return allNotes.filter((note) => note.warehouseId === warehouseId);
   };
 
   const addNote = async (newNote: WarehouseNote) => {

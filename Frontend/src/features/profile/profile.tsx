@@ -83,7 +83,7 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
         <div
           className="w-20 h-20 bg-[#4f46e5] rounded-full flex items-center justify-center text-white text-4xl font-semibold shadow-inner"
         >
-          {role === 'manager' ? 'M' : 'S'}
+          {role === 'Manager' ? 'M' : 'S'}
         </div>
         <div>
           <h2 className="text-2xl font-bold text-[#1e293b]">{formData?.fullName || 'Unknown user'}</h2>

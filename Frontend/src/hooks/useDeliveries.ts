@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext';
+import { useWarehouseContext } from '../context/WarehouseContext';
 import { useNotes } from '../context/NoteContext';
 import { type Delivery, type DeliveryFormData } from '../types/note';
 
@@ -9,6 +10,7 @@ export function useDeliveries() {
   const deliveries = getDeliveries();
 
   const {user} = useAuth();
+  const { warehouseId } = useWarehouseContext();
 
   // Logic lọc dữ liệu
   const filterDeliveries = (searchTerm: string, statusFilter: string) => {
@@ -28,7 +30,7 @@ export function useDeliveries() {
       operator: user?.fullName || "",
       type: 'DELIVERY',
       noteNumber: `DLV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,
-      warehouseId: '',
+      warehouseId: warehouseId ?? 0,
     };
     return addNote(newDelivery);
   };

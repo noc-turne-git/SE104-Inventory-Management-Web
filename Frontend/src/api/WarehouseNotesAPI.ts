@@ -18,15 +18,15 @@ export interface InventoryCheckUpsertPayload {
 
 const warehouseNotesApi = {
   // Delivery notes
-  getMyDeliveries(warehouseId: string | number) {
+  getMyDeliveries(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/notes/delivery-notes/mine`;
     return axiosClient.get<Delivery[]>(url);
   },
-  getAllDeliveries(warehouseId: string | number) {
+  getAllDeliveries(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/notes/delivery-notes`;
     return axiosClient.get<Delivery[]>(url);
   },
-  createDelivery(warehouseId: string | number, data: DeliveryUpsertPayload) {
+  createDelivery(warehouseId: number, data: DeliveryUpsertPayload) {
     const url = `/warehouses/${warehouseId}/notes/delivery-notes`;
     return axiosClient.post<Delivery>(url, {
       destination: data.destination,
@@ -34,7 +34,7 @@ const warehouseNotesApi = {
       items: data.items,
     });
   },
-  updateDelivery(warehouseId: string | number, noteId: string | number, data: DeliveryUpsertPayload) {
+  updateDelivery(warehouseId: number, noteId: string | number, data: DeliveryUpsertPayload) {
     const url = `/warehouses/${warehouseId}/notes/delivery-notes/${noteId}`;
     return axiosClient.put(url, {
       destination: data.destination,
@@ -44,15 +44,15 @@ const warehouseNotesApi = {
   },
 
   // Goods receipts
-  getMyReceipts(warehouseId: string | number) {
+  getMyReceipts(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/notes/goods-receipts/mine`;
     return axiosClient.get<Receipt[]>(url);
   },
-  getAllReceipts(warehouseId: string | number) {
+  getAllReceipts(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/notes/goods-receipts`;
     return axiosClient.get<Receipt[]>(url);
   },
-  createReceipt(warehouseId: string | number, data: ReceiptUpsertPayload) {
+  createReceipt(warehouseId: number, data: ReceiptUpsertPayload) {
     const url = `/warehouses/${warehouseId}/notes/goods-receipts`;
     return axiosClient.post<Receipt>(url, {
       supplierId: data.supplierId,
@@ -60,7 +60,7 @@ const warehouseNotesApi = {
       items: data.items,
     });
   },
-  updateReceipt(warehouseId: string | number, noteId: string | number, data: ReceiptUpsertPayload) {
+  updateReceipt(warehouseId: number, noteId: string | number, data: ReceiptUpsertPayload) {
     const url = `/warehouses/${warehouseId}/notes/goods-receipts/${noteId}`;
     return axiosClient.put(url, {
       supplierId: data.supplierId,
@@ -70,21 +70,21 @@ const warehouseNotesApi = {
   },
 
   // Inventory checks
-  getMyInventoryChecks(warehouseId: string | number) {
+  getMyInventoryChecks(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/notes/inventory-checks/mine`;
     return axiosClient.get<InventoryCheck[]>(url);
   },
-  getAllInventoryChecks(warehouseId: string | number) {
+  getAllInventoryChecks(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/notes/inventory-checks`;
     return axiosClient.get<InventoryCheck[]>(url);
   },
-  createInventoryCheck(warehouseId: string | number, data: InventoryCheckUpsertPayload) {
+  createInventoryCheck(warehouseId: number, data: InventoryCheckUpsertPayload) {
     const url = `/warehouses/${warehouseId}/notes/inventory-checks`;
     return axiosClient.post<InventoryCheck>(url, {
       items: data.items,
     });
   },
-  updateInventoryCheck(warehouseId: string | number, noteId: string | number, data: InventoryCheckUpsertPayload) {
+  updateInventoryCheck(warehouseId: number, noteId: string | number, data: InventoryCheckUpsertPayload) {
     const url = `/warehouses/${warehouseId}/notes/inventory-checks/${noteId}`;
     return axiosClient.put(url, {
       items: data.items,
@@ -92,11 +92,11 @@ const warehouseNotesApi = {
   },
 
   // Approve / Reject (manager)
-  approve(warehouseId: string | number, noteId: string | number) {
+  approve(warehouseId: number, noteId: string | number) {
     const url = `/warehouses/${warehouseId}/notes/${noteId}/approve`;
     return axiosClient.post(url);
   },
-  reject(warehouseId: string | number, noteId: string | number, reason?: string) {
+  reject(warehouseId: number, noteId: string | number, reason?: string) {
     const url = `/warehouses/${warehouseId}/notes/${noteId}/reject`;
     // backend currently ignores reason; keep for forward-compat
     return axiosClient.post(url, { reason });

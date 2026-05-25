@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext';
+import { useWarehouseContext } from '../context/WarehouseContext';
 import { useNotes } from '../context/NoteContext';
 import { type Receipt, type ReceiptFormData } from '../types/note';
 
@@ -7,6 +8,7 @@ export function useReceipts() {
 
   const receipts = getReceipts();
   const {user} = useAuth();
+  const { warehouseId } = useWarehouseContext();
 
   const filterReceipts = (searchTerm: string, statusFilter: string) => {
     return receipts.filter((receipt) => {
@@ -28,7 +30,7 @@ export function useReceipts() {
       operator: user?.fullName || "",
       // Format: REC-YYYYMMDD-Random
       noteNumber: `REC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,
-      warehouseId: '',
+      warehouseId: warehouseId ?? 0,
     };
 
     return addNote(newReceipt);

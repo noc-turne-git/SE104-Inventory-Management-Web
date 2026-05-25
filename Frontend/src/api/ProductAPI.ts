@@ -19,36 +19,36 @@ const toProductFormData = (data: Product, productId: number = 0) => {
 };
 
 const productApi = {
-  getAll(warehouseId: string | number) {
+  getAll(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/products`;
     return axiosClient.get(url);
   },
   
-  getById(warehouseId: string | number, id: string | number) {
+  getById(warehouseId: number, id: string | number) {
     const url = `/warehouses/${warehouseId}/products/${id}`;
     return axiosClient.get(url);
   },
 
-  search(warehouseId: string | number, q?: string, limit: number = 20) {
+  search(warehouseId: number, q?: string, limit: number = 20) {
     const url = `/warehouses/${warehouseId}/products/search`;
     return axiosClient.get(url, { params: { q, limit } });
   },
 
-  create(warehouseId: string | number, data: Product) {
+  create(warehouseId: number, data: Product) {
     const url = `/warehouses/${warehouseId}/products`;
     return axiosClient.post(url, toProductFormData(data), {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 
-  update(warehouseId: string | number, id: string | number, data: Product) {
+  update(warehouseId: number, id: string | number, data: Product) {
     const url = `/warehouses/${warehouseId}/products/${id}`;
     return axiosClient.put(url, toProductFormData(data, Number(id)), {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 
-  delete(warehouseId: string | number, id: string | number) {
+  delete(warehouseId: number, id: string | number) {
     const url = `/warehouses/${warehouseId}/products/${id}`;
     return axiosClient.delete(url);
   },

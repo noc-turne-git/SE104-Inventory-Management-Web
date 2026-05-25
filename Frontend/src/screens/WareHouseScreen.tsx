@@ -113,7 +113,7 @@ const WareHouseContent = () => {
             </div>
             <button onClick={() => setIsProfileOpen(true)}
             className="h-8 w-8 rounded-full bg-[#1E3A8A] flex items-center justify-center text-white text-xs font-bold hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-[#2563EB] active:scale-90 active:shadow-inner border border-white/10">
-              {role === "manager" ? 'M' : 'S'}
+              {role === "Manager" ? 'M' : 'S'}
             </button>
           </div>
           <ProfileFeature 

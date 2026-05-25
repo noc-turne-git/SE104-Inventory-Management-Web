@@ -13,17 +13,17 @@ export interface StaffCreatePayload extends StaffUpdatePayload {
 }
 
 const staffApi = {
-  getAll(warehouseId: string | number) {
+  getAll(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/staff`;
     return axiosClient.get<Staff[]>(url);
   },
 
-  getById(warehouseId: string | number, userId: string | number) {
+  getById(warehouseId: number, userId: string | number) {
     const url = `/warehouses/${warehouseId}/staff/${userId}`;
     return axiosClient.get<Staff>(url);
   },
 
-  update(warehouseId: string | number, userId: string | number, data: StaffUpdatePayload) {
+  update(warehouseId: number, userId: string | number, data: StaffUpdatePayload) {
     const url = `/warehouses/${warehouseId}/staff/${userId}`;
     return axiosClient.put(url, {
       role: data.role,
@@ -33,7 +33,7 @@ const staffApi = {
     });
   },
 
-  create(warehouseId: string | number, data: StaffCreatePayload) {
+  create(warehouseId: number, data: StaffCreatePayload) {
     const url = `/warehouses/${warehouseId}/staff`;
     return axiosClient.post<Staff>(url, {
       email: data.email,
@@ -44,7 +44,7 @@ const staffApi = {
     });
   },
 
-  delete(warehouseId: string | number, userId: string | number) {
+  delete(warehouseId: number, userId: string | number) {
     const url = `/warehouses/${warehouseId}/staff/${userId}`;
     return axiosClient.delete<void>(url);
   },

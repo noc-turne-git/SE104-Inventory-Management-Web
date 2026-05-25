@@ -8,7 +8,7 @@ import { WarehouseStatus } from "../../types/warehouse";
 interface WarehouseCardProps {
   warehouse: Warehouse;
   onManage: (id: number) => void;
-  onUpdateImage?: (id: string, file: File) => void;
+  onUpdateImage?: (id: number, file: File) => void;
 }
 
 export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManage, onUpdateImage }) => {
@@ -22,7 +22,7 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
   return (
     <motion.div 
       whileHover={{ y: -4 }}
-      onClick={() => onManage(w.warehouseId)}
+      onClick={() => onManage(warehouse.warehouseId)}
       className="flex flex-col bg-[#ffffff] rounded-2xl overflow-hidden shadow-[0px_8px_24px_rgba(0,0,0,0.04)] border border-[#e5e7eb] group"
     >
       <div className="relative h-56 w-full overflow-hidden">
@@ -37,7 +37,7 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
             {warehouse.status}
           </span>
         </div>
-        {onUpdateImage && warehouse.role === "manager" && (
+        {onUpdateImage && warehouse.role === "Manager" && (
           <label className="absolute top-4 right-4 h-9 w-9 rounded bg-white/90 text-[#1E3A8A] flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors">
             <Icons.Image className="w-4 h-4" />
             <input
@@ -100,7 +100,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, onAc
         </div>
         <h3 className="text-xl font-headline font-bold text-[#000000] mb-1">{invitation.warehouseName}</h3>
         <p className="text-sm text-[#666666]">
-          Requested your role as <span className="font-semibold text-[#000000] capitalize">{invitation.Role}</span>
+          Requested your role as <span className="font-semibold text-[#000000] capitalize">{invitation.requestedRole}</span>
         </p>
       </div>
       <div className="flex md:flex-col gap-2 w-full md:w-auto">

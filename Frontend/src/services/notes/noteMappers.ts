@@ -24,12 +24,12 @@ export const normalizeStatus = (status: string): WarehouseNote['status'] => {
   return 'pending';
 };
 
-export const toDelivery = (rawValue: unknown, warehouseId?: number | string | null): Delivery => {
+export const toDelivery = (rawValue: unknown, warehouseId?: number | null): Delivery => {
   const raw = asRecord(rawValue);
 
   return {
     id: asString(raw.id),
-    warehouseId: String(warehouseId ?? ''),
+    warehouseId: warehouseId ?? 0,
     noteNumber: asString(raw.noteNumber),
     dateCreated: asString(raw.dateCreated),
     status: normalizeStatus(asString(raw.status, 'pending')),
@@ -47,12 +47,12 @@ export const toDelivery = (rawValue: unknown, warehouseId?: number | string | nu
   };
 };
 
-export const toReceipt = (rawValue: unknown, warehouseId?: number | string | null): Receipt => {
+export const toReceipt = (rawValue: unknown, warehouseId?: number | null): Receipt => {
   const raw = asRecord(rawValue);
 
   return {
     id: asString(raw.id),
-    warehouseId: String(warehouseId ?? ''),
+    warehouseId: warehouseId ?? 0,
     noteNumber: asString(raw.noteNumber),
     dateCreated: asString(raw.dateCreated),
     status: normalizeStatus(asString(raw.status, 'pending')),
@@ -72,12 +72,12 @@ export const toReceipt = (rawValue: unknown, warehouseId?: number | string | nul
   };
 };
 
-export const toInventoryCheck = (rawValue: unknown, warehouseId?: number | string | null): InventoryCheck => {
+export const toInventoryCheck = (rawValue: unknown, warehouseId?: number | null): InventoryCheck => {
   const raw = asRecord(rawValue);
 
   return {
     id: asString(raw.id),
-    warehouseId: String(warehouseId ?? ''),
+    warehouseId: warehouseId ?? 0,
     noteNumber: asString(raw.noteNumber),
     dateCreated: asString(raw.dateCreated),
     status: normalizeStatus(asString(raw.status, 'pending')),
