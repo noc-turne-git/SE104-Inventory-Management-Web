@@ -5,7 +5,7 @@ export interface User {
   dob: string; // date of birth
   phone: string;
   address?: string; // Dấu ? vì address có thể không bắt buộc
-  //role: 'manager' | 'staff' | ''; 
+  //role: 'Manager' | 'Staff' | ''; 
 }
 
 export interface SignupFormData {

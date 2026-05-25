@@ -157,6 +157,10 @@ export const useShifts = () => {
     setCurrentDate(new Date());
   };
 
+  const getTotalShifts = () => shifts.length;
+  const getEmptyShiftsCount = () => shifts.filter((shift) => shift.status === 'empty').length;
+  const getUrgentCoverageCount = () => shifts.filter((shift) => shift.status === 'urgent').length;
+
   return {
     shifts,
     setShifts,
@@ -170,5 +174,8 @@ export const useShifts = () => {
     goToNextWeek,
     goToPreviousWeek,
     fetchShifts,
+    getTotalShifts,
+    getEmptyShiftsCount,
+    getUrgentCoverageCount,
   };
 };

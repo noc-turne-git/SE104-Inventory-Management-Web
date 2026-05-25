@@ -68,7 +68,7 @@ const ProductScreen = () => {
       } catch (err: unknown) {
         replaceProducts([]);
         if (!isAxiosError(err)) toast.error('Failed to fetch products');
-        else if (!err.response) toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!');
+        else if (!err.response) toast.error('Unable to connect to the server. Please check your network.');
         else toast.error(err.response.data?.message || 'Failed to fetch products');
       } finally {
         setLoading(false);
@@ -80,7 +80,7 @@ const ProductScreen = () => {
 
   const handleSubmit = async (formData: ProductFormData) => {
     if (!warehouseId) {
-      toast.error('Vui lòng chọn kho trước khi thêm sản phẩm.');
+      toast.error('Please select a warehouse before adding a product.');
       return false;
     }
 
@@ -127,7 +127,7 @@ const ProductScreen = () => {
       }
 
       if (!err.response) {
-        toast.error('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!');
+        toast.error('Unable to connect to the server. Please check your network.');
         return false;
       }
 
@@ -139,16 +139,17 @@ const ProductScreen = () => {
 
   const handleDelete = async (id: string) => {
     if (!warehouseId) {
-      toast.error('Vui lÃ²ng chá»n kho trÆ°á»›c khi xÃ³a sáº£n pháº©m.');
+      toast.error('Please select a warehouse before deleting a product.');
       return;
     }
 
     try {
       await productApi.delete(warehouseId, id);
       deleteProduct(id);
+      toast.success('Product deleted successfully');
     } catch (err: unknown) {
       if (!isAxiosError(err)) toast.error('Failed to delete product');
-      else if (!err.response) toast.error('KhÃ´ng thá»ƒ káº¿t ná»‘i Ä‘áº¿n mÃ¡y chá»§. Vui lÃ²ng kiá»ƒm tra láº¡i máº¡ng!');
+      else if (!err.response) toast.error('Unable to connect to the server. Please check your network.');
       else toast.error(err.response.data?.message || 'Failed to delete product');
     }
   };
@@ -163,11 +164,17 @@ const ProductScreen = () => {
     setShowAddModal(false);
   };
 
+  const filtered = filteredProducts(searchTerm);
+
+  if (!warehouseId) {
+    return <div className="p-8 text-gray-600">Please select a warehouse</div>;
+  }
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Product Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
         <OpenModalButton label="Add Product" onClick={() => handleOpenAddModal()}></OpenModalButton>
@@ -175,31 +182,42 @@ const ProductScreen = () => {
 
       <SearchBar label="Search Product's Name or SKU...." onChange={(e) => setSearchTerm(e.target.value)}></SearchBar>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
+      {loading && (
+        <div className="text-gray-500 mt-6">Loading products...</div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="text-gray-500 mt-6">No products found.</div>
+      )}
+
+      {filtered.length > 0 && (
+      <div className="table-panel">
+        <div className="table-scroll">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="table-head">
               <tr>
-                <th className="table-header">Product</th>
-                <th className="table-header">SKU</th>
-                <th className="table-header">Description</th>
-                <th className="table-header">Sell Price</th>
-                <th className="table-header">Stock</th>
-                <th className="table-header">Defective</th>
-                <th className="table-header">Damage</th>
-                <th className="table-header">Status</th>
-                <th className="table-header">Actions</th>
+                <th className="table-th">
+                  Product </th>
+                <th className="table-th">
+                  SKU </th>
+                <th className="table-th">
+                  Description </th>
+                <th className="table-th">
+                  Sell Price </th>
+                <th className="table-th">
+                  Stock </th>
+                <th className="table-th">
+                  Defective </th>
+                <th className="table-th">
+                  Damage </th>
+                <th className="table-th">
+                  Status </th>
+                <th className="table-th">
+                  Actions </th>
               </tr>
             </thead>
             <tbody>
-              {loading && (
-                <tr>
-                  <td className="px-6 py-6 text-gray-500" colSpan={9}>
-                    Loading...
-                  </td>
-                </tr>
-              )}
-              {filteredProducts(searchTerm).map((p) => (
+              {filtered.map((p) => (
                 <ProductRow
                   key={p.id}
                   product={p}
@@ -214,6 +232,7 @@ const ProductScreen = () => {
           </table>
         </div>
       </div>
+      )}
 
       <ProductModal
         isOpen={showAddModal}

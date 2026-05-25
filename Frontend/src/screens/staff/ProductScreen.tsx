@@ -108,6 +108,8 @@ const ProductViewScreen = () => {
     setShowAddModal(false);
   }
 
+  const filtered = filteredProducts(searchTerm);
+
   if (!warehouseId) {
     return <div className="p-8 text-gray-600">Please select a warehouse</div>;
   }
@@ -116,44 +118,55 @@ const ProductViewScreen = () => {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Product Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
           <p className="text-gray-600 mt-1">Manage your product catalog</p>
         </div>
         <OpenModalButton label="Check Inventory" onClick={() => handleOpenAddModal()}></OpenModalButton>
       </div>
     
       <SearchBar label="Search Product's Name ...."  onChange={(e) => setSearchTerm(e.target.value)}></SearchBar>
+
+      {loading && (
+        <div className="text-gray-500 mt-6">Loading products...</div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="text-gray-500 mt-6">No products found.</div>
+      )}
           
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
+      {filtered.length > 0 && (
+      <div className="table-panel">
+        <div className="table-scroll">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="table-head">
                   <tr>
-                    <th className="table-header">Product</th>
-                    <th className="table-header">SKU</th>
-                    <th className="table-header">Description</th>
-                    <th className="table-header">Sell Price</th>
-                    <th className="table-header">Stock</th>
-                    <th className="table-header">Defective</th>
-                    <th className="table-header">Damage</th>
-                    <th className="table-header">Status</th>
+                    <th className="table-th">
+                      Product </th>
+                    <th className="table-th">
+                      SKU </th>
+                    <th className="table-th">
+                      Description </th>
+                    <th className="table-th">
+                      Sell Price </th>
+                    <th className="table-th">
+                      Stock </th>
+                    <th className="table-th">
+                      Defective </th>
+                    <th className="table-th">
+                      Damage </th>
+                    <th className="table-th">
+                      Status </th>
                   </tr>
               </thead>
               <tbody>
-                {loading && (
-                  <tr>
-                    <td className="px-6 py-6 text-gray-500" colSpan={8}>
-                      Loading products...
-                    </td>
-                  </tr>
-                )}
-                {filteredProducts(searchTerm).map(p => ( 
+                {filtered.map(p => ( 
                   <ProductViewRow key={p.id} product={p} />
                 ))}
               </tbody>
               </table>
             </div>
           </div>
+          )}
           
           <InventoryCheckModal
             isOpen={showAddModal} 

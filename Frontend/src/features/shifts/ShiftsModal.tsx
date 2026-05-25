@@ -1,7 +1,7 @@
 import {CancelButton, ConfirmButton} from '../../components/common/button/ModalButton';
 import Modal from '../../components/common/Modal';
 import {ShiftTimes, type Shift, type ShiftFormData} from '../../types/shift'
-import { MOCK_STAFF } from '../../data/MOCK_STAFF';
+import { type Staff } from '../../types/staff';
 import { useState, useEffect} from 'react';
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
   onClose : () => void;
   onSubmit: (formData: ShiftFormData) => Promise<void> | void;
   initialData: Shift | null;
+  staffs: Staff[];
 }
 
 const DEFAULT_FORM = {
@@ -23,31 +24,28 @@ const DEFAULT_FORM = {
   repeatCount: '1',
 }
 
-export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => {
+export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData, staffs}: Props) => {
     // do formData ko có dữ liệu id nên lưu id trong editingItem để biết dang editing Shift nèo
     const [formData, setFormData] = useState<ShiftFormData>(DEFAULT_FORM);
 
     useEffect(() => {
       if (initialData) {
+        const assignedStaff = staffs.find((staff) => staff.name === initialData.assignedTo);
         setFormData({
           date: initialData.date,
           startTime: initialData.startTime,
           endTime: initialData.endTime,
           position: initialData.position,
-          assignedTo: initialData.assignedTo || '',
+          assignedTo: assignedStaff?.id ?? '',
           shiftType: initialData.shiftType,
-          notes: initialData.notes,
+          notes: initialData.notes ?? '',
           repeatWeekly: false,
           repeatCount: '1',
         });
       } else {
         setFormData(DEFAULT_FORM);
       }
-    }, [initialData, isOpen]);
-
-    const handleCloseAddModal = () => {
-      //resetForm();
-    }
+    }, [initialData, isOpen, staffs]);
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -65,7 +63,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
         }
     };    
 
-    const availableStaff = MOCK_STAFF.filter((staff) => staff.accountStatus === 'Active');
+    const availableStaff = staffs.filter((staff) => staff.accountStatus === 'Active');
 
     return (
     <Modal
@@ -173,7 +171,7 @@ export const ShiftsModal = ({isOpen, onClose, onSubmit, initialData}: Props) => 
               >
                 <option value="">Unassigned</option>
                 {availableStaff.map((staff) => (
-                                <option key={staff.id} value={staff.name}>
+                                <option key={staff.id} value={staff.id}>
                                     {staff.name}
                                 </option>
                 ))}

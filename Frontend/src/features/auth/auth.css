@@ -1,159 +1,369 @@
-/* fix lỗi bị nhảy form */
+/* Fix lỗi layout bị nhảy khi scrollbar xuất hiện */
 html {
   scrollbar-gutter: stable;
 }
 
-/* Kiểu dáng cho Input */
-.auth-input {
-  width: 100%;
-  padding: 0.625rem;
-  font-size: 1.0rem;
-  line-height: 3rem;
-  
-  /* Đảm bảo nền luôn trắng */
-  background-color: #ffffff; 
-  
-  /* Border mặc định */
-  border: 1.5px solid #d1d5db;
-  border-radius: 0.5rem;
-
-  /* Hiệu ứng chuyển cảnh mượt mà */
-  transition: border-color 0.2s, box-shadow 0.2s;
-  outline: none;
-  
-  /* Quan trọng: Để padding không đẩy giãn width */
-  box-sizing: border-box; 
-}
-
-/* Hiệu ứng khi Focus */
-.auth-input-with-toggle {
-  padding-right: 2.5rem;
-}
-
-.auth-input:focus {
-  background-color: #ffffff; /* Giữ trắng khi click vào */
-  border-color: #3b82f6;     /* Màu xanh chủ đạo (blue-500) */
-}
-
-/* Kiểu dáng cho nhãn (Label) */
-.auth-label {
-  display: block;
-  font-weight: 600;
-  font-size: 1rem;
-  color: #374151;
-  margin-bottom: 0.25rem;
-  text-align: left;
-}
-
-/* Container bọc toàn bộ logo và tên thương hiệu */
-.auth-logo-container {
-  text-align: center;
-  margin-bottom: 2.5rem; /* mb-10 */
-}
-
-/* Hình vuông xanh chứa logo */
-/* .auth-logo-box {
-  width: 6rem;           w-12
-  height: 6rem;          h-12
-  margin-left: auto;     mx-auto
-  margin-right: auto;
-  margin-bottom: 0rem;   mb-3
-  border-radius: 1rem;   rounded-lg
-  background-color: #7da1ef;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+/* Layout trang auth dạng card ở giữa màn hình */
+.auth-card-page {
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  font-size: 4rem;       text-xl
-  font-weight: 700;      font-bold
-} */
-
-/* Chữ STOCKIFY */
-.auth-logo-text {
-  font-size: 3rem;    /* text-6xl */
-  font-weight: 700;      /* font-bold */
-  /* letter-spacing: 0.1em; tracking-widest */
-  color: #0c1a6d;        /* text-gray-500 */
-  text-transform: uppercase;
-  margin: 0;
+  background-color: #f9fafb;
+  padding: 1.25rem 1rem;
 }
 
-.auth-card-container {
-  background-color: #ffffff;    /* bg-white */
-  padding: 2.0rem;              /* p-10 (40px) */
-  border-radius: 1rem;          /* rounded-2xl */
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-  border: 1px solid #d1d5db;    /* border border-gray-300 */
-}
-
-/* Kiểu dáng cho Tiêu đề lớn (Title) */
-.auth-title {   
-  font-size: 2.0rem; /* text-3xl */
-  font-weight: 700;    /* font-bold */
-  color: #111827;     /* gray-900 */
-  margin-bottom: 0.25rem;
-}
-
-/* Kiểu dáng cho đoạn mô tả chi tiết (Details) */
-.auth-subtitle {
-  font-size: 0.875rem; /* text-sm */
-  line-height: 1.5;    /* leading-relaxed */
-  color: #6b7280;     /* gray-500 */
-  max-width: 90%;      /* Giới hạn độ rộng để chữ dễ đọc hơn */
-  margin: 0 auto;      /* Căn giữa */
-}
-
-/* Container bọc phần header */
-.auth-header {
-  text-align: center;
-  margin-bottom: 2rem; /* mb-6 */
-}
-
-.auth-button-primary {
+/* Wrapper giới hạn chiều rộng cho các màn Forgot/Verify/Reset */
+.auth-card-wrapper {
   width: 100%;
-  padding: 0.875rem;
-  border-radius: 0.75rem; /* rounded-xl */
-  background-color: #2563eb; /* bg-blue-600 */
-  color: #ffffff;
-  font-size: 1.125rem; /* text-lg */
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  display: block;
-  margin-top: 1.5rem;
+  max-width: 28rem;
 }
 
+/* Wrapper rộng hơn cho màn nhập OTP */
+.auth-card-wrapper-wide {
+  max-width: 30rem;
+}
+
+/* Hàng logo và tên thương hiệu */
+.auth-logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* Kích thước ảnh logo */
+.auth-logo-image {
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: contain;
+}
+
+/* Chữ STOCKIFY ở các màn card auth */
+.auth-logo-text {
+  margin: 0;
+  color: #0c1a6d;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* Tên thương hiệu ở panel ảnh của SignIn/SignUp */
+.auth-brand-title {
+  margin: 0 0 1rem;
+  color: #f9fafb;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* Card trắng bọc nội dung form */
+.auth-card-container {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+/* Header mặc định, dùng cho title/subtitle trong card */
+.auth-header {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Header canh trái, dùng cho form SignIn/SignUp */
+.auth-header-left {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* Tiêu đề chính của auth form */
+.auth-title {
+  margin: 0 0 0.25rem;
+  color: #111827;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Mô tả ngắn dưới tiêu đề */
+.auth-subtitle {
+  max-width: 90%;
+  margin: 0 auto;
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Subtitle trong form canh trái không cần giới hạn chiều rộng */
+.auth-header-left .auth-subtitle {
+  max-width: none;
+  margin: 0.25rem 0 0;
+  font-size: 1rem;
+}
+
+/* Khoảng cách mặc định giữa các field */
+.auth-field {
+  margin: 1rem 0;
+}
+
+/* Khoảng cách rộng hơn cho các field trong card reset flow */
+.auth-field-spacious {
+  margin: 0.875rem 0;
+}
+
+/* Label của input */
+.auth-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Input thường */
+.auth-input {
+  width: 100%;
+  height: 3rem;
+  box-sizing: border-box;
+  border: 1.5px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 1rem;
+  line-height: normal;
+  outline: none;
+  padding: 0 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Trạng thái focus của input */
+.auth-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+}
+
+/* Input có nút hiện/ẩn mật khẩu bên phải */
+.auth-input-with-toggle {
+  padding-right: 2.75rem;
+}
+
+/* Trạng thái input bị lỗi validate */
+.auth-input-error {
+  border-color: #ef4444;
+}
+
+/* Wrapper cho input có icon bên trái */
+.auth-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1.5px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  padding: 0 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Focus khi input bên trong wrapper được chọn */
+.auth-input-wrapper:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+}
+
+/* Icon trong input wrapper */
+.auth-input-icon {
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+  color: #9ca3af;
+}
+
+/* Input thật bên trong wrapper có icon */
+.auth-input-control {
+  width: 100%;
+  height: 2.75rem;
+  border: none;
+  background: transparent;
+  color: #374151;
+  font-size: 1rem;
+  outline: none;
+}
+
+/* Nút hiện/ẩn mật khẩu */
+.auth-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  transform: translateY(-50%);
+}
+
+/* Nút hành động chính của auth form */
+.auth-button-primary {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 1.125rem;
+  font-weight: 600;
+  padding: 0.875rem;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+/* Nút trong card nhỏ hơn để form không bị scroll */
+.auth-card-page .auth-button-primary {
+  margin-top: 1rem;
+  padding: 0.75rem;
+}
+
+/* Hover của nút chính */
 .auth-button-primary:hover {
-  background-color: #1d4ed8; /* bg-blue-700 */
+  background-color: #1d4ed8;
   box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
 }
 
+/* Hiệu ứng khi nhấn nút chính */
 .auth-button-primary:active {
-  transform: scale(0.98); /* Hiệu ứng nhấn nút */
+  transform: scale(0.98);
 }
 
-/* Container cho phần quay lại */
-.auth-back-container {
+/* Link phụ trong auth form */
+.auth-link {
+  color: #3b82f6;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Hover của link phụ */
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+/* Dòng text dưới form, ví dụ chuyển Sign in/Sign up */
+.auth-footer-text {
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
   text-align: center;
-  margin-top: 1.5rem;
 }
 
-/* Nút quay lại (Back to Login) */
+/* Text báo lỗi */
+.auth-error {
+  margin: 0.375rem 0 0;
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+/* Text báo lỗi canh giữa */
+.auth-error-center {
+  text-align: center;
+}
+
+/* Text báo thành công */
+.auth-success {
+  margin-top: 1rem;
+  color: #16a34a;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Container cho link quay lại hoặc resend */
+.auth-back-container {
+  margin-top: 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Link quay lại màn Sign in */
 .auth-back-link {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: #eb2525;
+  cursor: pointer;
   font-size: 0.875rem;
   font-weight: 500;
-  cursor: pointer;
   text-decoration: none;
   transition: color 0.2s;
 }
 
+/* Hover của link quay lại */
 .auth-back-link:hover {
   color: #1d4ed8;
   text-decoration: underline;
+}
+
+/* Nhóm 6 ô nhập OTP */
+.auth-otp-group {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin: 1.25rem 0;
+}
+
+/* Một ô nhập OTP */
+.auth-otp-input {
+  width: 3rem;
+  height: 3.25rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 0.5rem;
+  color: #111827;
+  font-size: 1.25rem;
+  font-weight: 600;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Trạng thái focus của ô OTP */
+.auth-otp-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 640px) {
+  .auth-card-container {
+    padding: 1.25rem;
+  }
+
+  .auth-logo-image {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .auth-logo-text {
+    font-size: 2rem;
+  }
+
+  .auth-otp-group {
+    gap: 0.5rem;
+  }
+
+  .auth-otp-input {
+    width: 2.35rem;
+    height: 3rem;
+  }
 }

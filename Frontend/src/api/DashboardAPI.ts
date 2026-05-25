@@ -9,12 +9,12 @@ export type ManagerDashboardParams = {
 };
 
 const dashboardApi = {
-  getManager(warehouseId: string | number, params?: ManagerDashboardParams) {
+  getManager(warehouseId: number, params?: ManagerDashboardParams) {
     const url = `/warehouses/${warehouseId}/dashboard/manager`;
     return axiosClient.get<ManagerDashboardData>(url, { params });
   },
 
-  getStaff(warehouseId: string | number) {
+  getStaff(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/dashboard/staff`;
     return axiosClient.get<StaffDashboardData>(url);
   },

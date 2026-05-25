@@ -241,12 +241,12 @@ public class DashboardService : IDashboardService
             Date = n.Date,
             DateCreated = n.Date.ToString("yyyy-MM-dd HH:mm"),
             Status = n.Status,
-            Operator = n.User.FullName,
+            Operator = n.User?.FullName ?? "Unknown user",
             UserId = n.UserId,
             Type = "DELIVERY",
             Action = $"Dispatched delivery to: {n.Destination}",
             ActivityType = "product",
-            Items = n.DeliveryItems.Select(i => new DashboardNoteItem { Product = i.Product.Name, Quantity = i.Quantity }).ToList(),
+            Items = n.DeliveryItems.Select(i => new DashboardNoteItem { Product = i.Product?.Name ?? "Unknown product", Quantity = i.Quantity }).ToList(),
         }));
         notes.AddRange(receipts.Select(n => new DashboardNote
         {
@@ -255,12 +255,12 @@ public class DashboardService : IDashboardService
             Date = n.Date,
             DateCreated = n.Date.ToString("yyyy-MM-dd HH:mm"),
             Status = n.Status,
-            Operator = n.User.FullName,
+            Operator = n.User?.FullName ?? "Unknown user",
             UserId = n.UserId,
             Type = "RECEIPT",
-            Action = $"Received goods from supplier: {n.Supplier.Name}",
+            Action = $"Received goods from supplier: {n.Supplier?.Name ?? "Unknown supplier"}",
             ActivityType = "supplier",
-            Items = n.ReceiptItems.Select(i => new DashboardNoteItem { Product = i.Product.Name, Ordered = i.OrderedQuantity, Received = i.Quantity, Defective = i.DefectiveQuantity }).ToList(),
+            Items = n.ReceiptItems.Select(i => new DashboardNoteItem { Product = i.Product?.Name ?? "Unknown product", Ordered = i.OrderedQuantity, Received = i.Quantity, Defective = i.DefectiveQuantity }).ToList(),
         }));
         notes.AddRange(inventoryChecks.Select(n => new DashboardNote
         {
@@ -269,12 +269,12 @@ public class DashboardService : IDashboardService
             Date = n.Date,
             DateCreated = n.Date.ToString("yyyy-MM-dd HH:mm"),
             Status = n.Status,
-            Operator = n.User.FullName,
+            Operator = n.User?.FullName ?? "Unknown user",
             UserId = n.UserId,
             Type = "INVENTORY_CHECK",
             Action = "Completed stock audit",
             ActivityType = "product",
-            Items = n.InventoryCheckItems.Select(i => new DashboardNoteItem { Product = i.Product.Name, StockQuantity = i.StockQuantity, Reason = i.Reason }).ToList(),
+            Items = n.InventoryCheckItems.Select(i => new DashboardNoteItem { Product = i.Product?.Name ?? "Unknown product", StockQuantity = i.StockQuantity, Reason = i.Reason }).ToList(),
         }));
         return notes;
     }

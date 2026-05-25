@@ -16,7 +16,7 @@ export const Sidebar = () => {
   if (!user) return null;
 
   const menuConfig = {
-    manager: [
+    Manager: [
       { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/app/dashboard_manager' },
       { name: 'Products', icon: <Package size={20} />, path: '/app/products' },
       { name: 'Suppliers', icon: <BookUser size={20} />, path: '/app/suppliers' },
@@ -24,7 +24,7 @@ export const Sidebar = () => {
       { name: 'Shifts', icon: <Calendar size={20} />, path: '/app/shifts' },
       { name: 'Notes', icon: <NotebookPen size={20} />, path: '/app/notes' },
     ],
-    staff: [
+    Staff: [
       { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/app/dashboard_staff' },
       { name: 'Products', icon: <Package size={20} />, path: '/app/products_view' },
       { name: 'Delivery', icon: <Van size={20} />, path: '/app/delivery' },
@@ -55,7 +55,7 @@ export const Sidebar = () => {
           onClick={() => setIsProfileOpen(true)}
           className="user-card w-full hover:bg-gray-100"
         >
-          <div className="avatar">{role === "manager" ? 'M' : 'S'}</div>
+          <div className="avatar">{role === "Manager" ? 'M' : 'S'}</div>
           <div className="user-info">
             <span className="full-name">{user?.fullName}</span>
             <span className="user-role">{role}</span>
@@ -81,8 +81,8 @@ export const Sidebar = () => {
       {/* Logout button - always at bottom */}
       <div className="">
         <button className="logout-button" onClick={handleLogout}>
-          <LogOut size={18} />
-          <span>Signout</span>
+          <LogOut size={20} />
+          <span>Sign out</span>
         </button>
       </div>
 

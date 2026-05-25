@@ -18,27 +18,27 @@ export interface ProductSupplierUpsertPayload {
 }
 
 const productSupplierApi = {
-  getAll(warehouseId: string | number) {
+  getAll(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/product-suppliers`;
     return axiosClient.get<ProductSupplierApiResponse[]>(url);
   },
 
-  getByProductId(warehouseId: string | number, productId: string | number) {
+  getByProductId(warehouseId: number, productId: string | number) {
     const url = `/warehouses/${warehouseId}/product-suppliers/by-product/${productId}`;
     return axiosClient.get<ProductSupplierApiResponse[]>(url);
   },
 
-  getBySupplierId(warehouseId: string | number, supplierId: string | number) {
+  getBySupplierId(warehouseId: number, supplierId: string | number) {
     const url = `/warehouses/${warehouseId}/product-suppliers/by-supplier/${supplierId}`;
     return axiosClient.get<ProductSupplierApiResponse[]>(url);
   },
 
-  upsert(warehouseId: string | number, data: ProductSupplierUpsertPayload) {
+  upsert(warehouseId: number, data: ProductSupplierUpsertPayload) {
     const url = `/warehouses/${warehouseId}/product-suppliers`;
     return axiosClient.post<ProductSupplierApiResponse>(url, data);
   },
 
-  delete(warehouseId: string | number, productId: string | number, supplierId: string | number) {
+  delete(warehouseId: number, productId: string | number, supplierId: string | number) {
     const url = `/warehouses/${warehouseId}/product-suppliers/${productId}/${supplierId}`;
     return axiosClient.delete<void>(url);
   },

@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
-type Role = "user" | "manager" | "staff" | null;
+type Role = "user" | "Manager" | "Staff" | null;
 
 interface WarehouseState {
   role: Role;
@@ -8,8 +8,12 @@ interface WarehouseState {
   warehouseName: string | null;
 }
 
+type WarehouseStateInput = Omit<WarehouseState, "warehouseId"> & {
+  warehouseId: number | null;
+};
+
 interface WarehouseContextType extends WarehouseState {
-  setWarehouse: (data: WarehouseState) => void;
+  setWarehouse: (data: WarehouseStateInput) => void;
   clearWarehouse: () => void;
   loading: boolean;
 }
@@ -22,6 +26,28 @@ const emptyWarehouseState: WarehouseState = {
   warehouseName: null,
 };
 
+const normalizeWarehouseId = (warehouseId: unknown) => {
+  if (warehouseId === null || warehouseId === undefined || warehouseId === "") return null;
+
+  const numericWarehouseId = Number(warehouseId);
+  return Number.isFinite(numericWarehouseId) ? numericWarehouseId : null;
+};
+
+const normalizeRole = (role: unknown): Role => {
+  if (typeof role !== "string") return null;
+  const normalized = role.toLowerCase();
+  if (normalized === "manager") return "Manager";
+  if (normalized === "staff") return "Staff";
+  if (normalized === "user") return "user";
+  return null;
+};
+
+const normalizeWarehouseState = (data: Partial<WarehouseStateInput>): WarehouseState => ({
+  role: normalizeRole(data.role),
+  warehouseName: data.warehouseName ?? null,
+  warehouseId: normalizeWarehouseId(data.warehouseId),
+});
+
 const getInitialWarehouseState = (): WarehouseState => {
   try {
     const stored = localStorage.getItem("warehouse");
@@ -32,11 +58,7 @@ const getInitialWarehouseState = (): WarehouseState => {
 
     const parsed = JSON.parse(stored);
 
-    return {
-      role: parsed.role ?? null,
-      warehouseName: parsed.warehouseName ?? null,
-      warehouseId: parsed.warehouseId ? Number(parsed.warehouseId) : null,
-    };
+    return normalizeWarehouseState(parsed);
   } catch {
     console.error("Invalid warehouse data in localStorage");
     localStorage.removeItem("warehouse");
@@ -46,21 +68,11 @@ const getInitialWarehouseState = (): WarehouseState => {
 
 export const WarehouseProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<WarehouseState>(getInitialWarehouseState);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("warehouse");
-    if (stored) {
-      setState(JSON.parse(stored));
-    }
-    setLoading(false);
-  }, []);
+  const [loading] = useState(false);
   
   // Đảm bảo luôn lưu number
-  const setWarehouse = (data: WarehouseState) => {
-    const normalized: WarehouseState = {
-      ...data, warehouseId: data.warehouseId ? Number(data.warehouseId) : null,
-    }
+  const setWarehouse = (data: WarehouseStateInput) => {
+    const normalized = normalizeWarehouseState(data);
     setState(normalized);
     localStorage.setItem("warehouse", JSON.stringify(normalized));
   };

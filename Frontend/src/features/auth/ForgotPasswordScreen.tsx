@@ -1,112 +1,112 @@
-import { Mail, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router";
-import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import lgImage from "../../assets/logostockify.png";
-import './auth.css';
+import "./auth.css";
 import authApi from "../../api/AuthAPI";
 import { isAxiosError } from "axios";
+
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async ( e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let hasError = false;
-    // Handle forgot password logic here
-    try {
-      await authApi.forgotPassword({ email });
-      localStorage.setItem("reset_email", email);
-    } catch (err: unknown) {
-      
-      hasError = true;
-      if (!isAxiosError(err)) setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
-      else {
-        if (!err.response) {
-        // Trường hợp không có response (mất mạng, server không phản hồi)
-        setError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại mạng!");
-        } else {
-          // Trường hợp Server có trả về lỗi
-          const status = err.response.status;
-          const message = err.response.data?.message;
+    setError("");
 
-          switch (status) {
-            case 500:
-              setError("Lỗi hệ thống phía Server. Vui lòng thử lại sau!");
-              break;
-            default:
-              setError(message || "Đã có lỗi xảy ra. Vui lòng thử lại.");
-          }
-        }
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      setError("Email is required.");
+      return;
+    }
+
+    if (!isValidEmail(trimmedEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    try {
+      await authApi.forgotPassword({ email: trimmedEmail });
+      localStorage.setItem("reset_email", trimmedEmail);
+      navigate("/verifyotp", { state: { email: trimmedEmail } });
+    } catch (err: unknown) {
+      if (!isAxiosError(err)) {
+        setError("Something went wrong. Please try again.");
+        return;
+      }
+
+      if (!err.response) {
+        setError("Unable to connect to the server. Please check your network connection.");
+        return;
+      }
+
+      switch (err.response.status) {
+        case 500:
+          setError("Server error. Please try again later.");
+          break;
+        default:
+          setError("Unable to send reset code. Please try again.");
       }
     }
-    if(!hasError) {
-      navigate("/verifyotp", { state: { email } });
-    }
-
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-
-      {/* WRAPPER */}
-      <div className="w-full max-w-lg">
-
+    <div className="auth-card-page">
+      <div className="auth-card-wrapper">
         {/* LOGO */}
-        <div className="flex items-center justify-center gap-3 mb-8">
+        <div className="auth-logo-row">
           <img
             src={lgImage}
             alt="logo"
-            className="w-16 h-16 object-contain"
+            className="auth-logo-image"
           />
-          <p className="auth-logo-text m-0">STOCKIFY</p>
+          <p className="auth-logo-text">STOCKIFY</p>
         </div>
 
         {/* CARD */}
-        <div className="auth-card-container">
-
+        <form className="auth-card-container" onSubmit={handleSubmit} noValidate>
           {/* TITLE */}
           <div className="auth-header">
             <h2 className="auth-title">
-              Forgot Password
+              Forgot password
             </h2>
             <p className="auth-subtitle">
               Enter your registered email address below. We'll send you a 6-digit verification code to reset your access.
             </p>
           </div>
 
-          <div className="items-start">
-            <span className="text-red-500 text-sm">
-              {error}
-            </span>
-          </div>
+          {/* INPUT */}
+          <div className="auth-field">
+            <label className="auth-label">Email</label>
 
-          {/* INPUT */} 
-          <div className="my-5">
-            <label className="auth-label">
-              Email Address
-            </label>
+            <input
+              type="email"
+              placeholder="name@company.com"
+              className={`auth-input h-12 ${error ? "auth-input-error" : ""}`}
+              value={email}
+              onChange={(e) => {
+                setError("");
+                setEmail(e.target.value);
+              }}
+            />
 
-            <div className="auth-input flex items-center border border-gray-300 rounded-lg px-3 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
-              <Mail className="w-5 h-5 text-gray-400 mr-2" />
-
-              <input
-                type="email"
-                placeholder="name@company.com"
-                className="w-full text-xl outline-none text-gray-700 bg-transparent"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+            {error && (
+              <p className="auth-error">
+                {error}
+              </p>
+            )}
           </div>
 
           {/* BUTTON */}
           <button
-            onClick={handleSubmit}
+            type="submit"
             className="auth-button-primary"
           >
-            Send Reset Code
+            Send reset code
           </button>
 
           {/* BACK */}
@@ -116,12 +116,10 @@ const ForgotPasswordScreen = () => {
               className="auth-back-link"
             >
               <ArrowLeft size={16} />
-              Back to Login
+              Back to Sign in
             </span>
           </div>
-
-        </div>
-
+        </form>
       </div>
     </div>
   );

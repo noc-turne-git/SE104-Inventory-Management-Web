@@ -66,6 +66,16 @@ services:
     ports:
       - "6379:6379"
 
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_API_VERSION=1.40
+    command: --interval 30 --cleanup
+    restart: always
+
 volumes:
   postgres_data:
   backend_uploads:
