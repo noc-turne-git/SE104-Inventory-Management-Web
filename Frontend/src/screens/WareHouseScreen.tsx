@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { ProfileFeature } from '../features/profile/profile';
 import { Icons } from "../features/warehouse/iconWareHouse";
-import { 
-  WarehouseCard, 
-  InvitationCard, 
-  CreateWarehousePlaceholder 
-} from "../features/warehouse/warehouse";
+import { WarehouseCard, InvitationCard, CreateWarehousePlaceholder } from "../features/warehouse/warehouse";
 import { CreateWareHouseModal } from "../features/warehouse/CreateWareHouseModal";
 import { useWarehouse } from "../hooks/useWarehouse";
 import { useWarehouseContext } from "../context/WarehouseContext";
@@ -44,7 +40,7 @@ const WareHouseContent = () => {
       <header className="w-full h-16 sticky top-0 z-30 bg-white border-b border-outline-variant/15 shadow-sm">
         <div className="flex items-center justify-between px-8 w-full max-w-7xl mx-auto h-full">
           <div className="flex items-center gap-8">
-            <span className="text-xl font-extrabold text-[#1E3A8A] font-headline">Stokify</span>
+            <span className="text-xl font-extrabold text-[#1E3A8A] font-headline">Stockify</span>
             <nav className="hidden md:flex items-center gap-6 font-headline text-sm font-semibold">
               <button className="relative group text-[#1E3A8A] px-1 py-4 font-semibold transition-colors hover:text-[#2563EB]">
                 Warehouses
@@ -109,7 +105,7 @@ const WareHouseContent = () => {
                       clearWarehouse();
                     }}>
                     <Icons.LogOut className="w-4 h-4" />
-                    <span>Logout</span>
+                    <span>Sign out</span>
                   </button>
                 </div>
               </>
@@ -117,7 +113,7 @@ const WareHouseContent = () => {
             </div>
             <button onClick={() => setIsProfileOpen(true)}
             className="h-8 w-8 rounded-full bg-[#1E3A8A] flex items-center justify-center text-white text-xs font-bold hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-[#2563EB] active:scale-90 active:shadow-inner border border-white/10">
-              {role === "manager" ? 'M' : 'S'}
+              {role === "Manager" ? 'M' : 'S'}
             </button>
           </div>
           <ProfileFeature 

@@ -1,18 +1,34 @@
 import { ShiftCalendarItem } from './ShiftCalendarItem';
-import { type Shift, type ShiftFormData } from '../../types/shift';
-import { useShifts } from '../../hooks/useShifts';
+import { type Shift } from '../../types/shift';
 
 interface Props {
   shifts: Shift[];
+  weekDates: Date[];
+  onToday: () => void;
+  onNextWeek: () => void;
+  onPreviousWeek: () => void;
   onOpenEditModal: (shift : Shift) => void;
   onDelete: (id: string) => void;
 }
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const ShiftsCalendar = ({shifts, onOpenEditModal, onDelete,}: Props) => {
-    const {weekDates, goToToday, goToNextWeek, goToPreviousWeek} = useShifts();
+const formatDateKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
+const ShiftsCalendar = ({
+  shifts,
+  weekDates,
+  onToday,
+  onNextWeek,
+  onPreviousWeek,
+  onOpenEditModal,
+  onDelete,
+}: Props) => {
     return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       
@@ -24,17 +40,17 @@ const ShiftsCalendar = ({shifts, onOpenEditModal, onDelete,}: Props) => {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={goToToday}
+            onClick={onToday}
             className="px-4 py-2 text-md border border-gray-300 rounded-lg hover:bg-gray-50"
           >
             Today
           </button>
 
           <div className="flex items-center gap-2">
-            <button onClick={goToPreviousWeek} className="p-2 hover:bg-gray-100 rounded-lg">
+            <button onClick={onPreviousWeek} className="p-2 hover:bg-gray-100 rounded-lg">
               {'<'}
             </button>
-            <button onClick={goToNextWeek} className="p-2 hover:bg-gray-100 rounded-lg">
+            <button onClick={onNextWeek} className="p-2 hover:bg-gray-100 rounded-lg">
               {'>'}
             </button>
           </div>
@@ -44,7 +60,7 @@ const ShiftsCalendar = ({shifts, onOpenEditModal, onDelete,}: Props) => {
       {/* Calendar */}
       <div className="grid grid-cols-7 gap-4">
         {weekDates.map((date, index) => {
-          const dateStr = date.toISOString().split('T')[0];
+          const dateStr = formatDateKey(date);
           const dayShifts = shifts.filter(s => s.date === dateStr); // lọc ra những shift của ngày đó
           const isToday = date.toDateString() === new Date().toDateString(); // ngày hôm nay sẽ có UI hơi khác
 

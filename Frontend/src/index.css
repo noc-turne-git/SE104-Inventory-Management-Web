@@ -7,8 +7,8 @@
 
 :root {
   /* Bảng màu chính */
-  --primary: #2560df;
-  --primary-hover: #164ce0;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
   /* --primary-light: rgba(37, 99, 235, 0.1); màu thay đổi sau khi focus input*/
   
   /* Màu trung tính (Neutral) */
@@ -20,4 +20,43 @@
   /* Trạng thái khác */
   --success: #10b981;
   --error: #ef4444;
+}
+
+@layer components {
+  .table-panel {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6;
+  }
+
+  .table-scroll {
+    @apply overflow-x-auto;
+  }
+
+  .table-head {
+    @apply bg-gray-50 border-b border-gray-100;
+  }
+
+  .table-row {
+    @apply hover:bg-gray-100 transition-colors;
+  }
+
+  .table-th {
+    @apply px-4 py-3 text-center text-sm text-gray-600 uppercase whitespace-nowrap;
+    /* whitespace-nowrap giúp header không bị xuống dòng*/
+  }
+
+  .table-td-left {
+    @apply px-3 py-2 text-sm text-gray-600 text-left;
+  }
+
+  .table-td-center {
+    @apply px-3 py-2 text-sm text-gray-600 text-center;
+  }
+
+  .table-money {
+    @apply text-base font-medium text-gray-900;
+  }
+
+  .table-status-badge {
+    @apply whitespace-nowrap px-2.5 py-0.5 rounded-full text-sm font-medium;
+  }
 }

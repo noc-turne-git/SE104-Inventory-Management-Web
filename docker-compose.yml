@@ -1,22 +1,39 @@
 services:
   frontend:
-    build: ./Frontend
+    build:
+      context: ./Frontend
+      dockerfile: dockerfile
     ports:
       - "5173:5173"
     depends_on:
       - backend
 
   backend:
-    build: ./BackendAPI
+    build:
+      context: ./BackendAPI
+      dockerfile: dockerfile
     ports:
       - "5074:5074"
     volumes:
       - backend_uploads:/app/wwwroot/uploads
+    env_file:
+      - .env
     environment:
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=TESTQLK;Username=postgres;Password=postgres
-      - ConnectionStrings__HangfireConnection=Host=db;Port=5432;Database=TESTQLK;Username=postgres;Password=postgres
-      - Hangfire__Enabled=true
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__HangfireConnection=Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - Hangfire__Enabled=${Hangfire__Enabled}
       - Redis__ConnectionString=redis:6379
+      - Jwt__Key=${Jwt__Key}
+      - Jwt__Issuer=${Jwt__Issuer}
+      - Jwt__Audience=${Jwt__Audience}
+      - Email__DisplayName=${Email__DisplayName}
+      - Email__FromAddress=${Email__FromAddress}
+      - Email__SmtpHost=${Email__SmtpHost}
+      - Email__SmtpPort=${Email__SmtpPort}
+      - Email__Username=${Email__Username}
+      - Email__Password=${Email__Password}
+      - Email__UseStartTls=${Email__UseStartTls}
+      - Frontend__VerifyEmailUrl=${Frontend__VerifyEmailUrl}
     depends_on:
       db:
         condition: service_healthy
@@ -26,10 +43,12 @@ services:
   db:
     image: postgres:16-alpine
     container_name: postgres_db
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: TESTQLK
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5432:5432"
@@ -46,6 +65,16 @@ services:
     container_name: redis_server
     ports:
       - "6379:6379"
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_API_VERSION=1.40
+    command: --interval 30 --cleanup
+    restart: always
 
 volumes:
   postgres_data:

@@ -17,17 +17,17 @@ function toIso(value: string | Date): string {
 }
 
 const shiftApi = {
-  getMine(warehouseId: string | number) {
+  getMine(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/shifts/mine`;
     return axiosClient.get<Shift[]>(url);
   },
 
-  getAll(warehouseId: string | number) {
+  getAll(warehouseId: number) {
     const url = `/warehouses/${warehouseId}/shifts`;
     return axiosClient.get<Shift[]>(url);
   },
 
-  create(warehouseId: string | number, data: ShiftUpsertPayload) {
+  create(warehouseId: number, data: ShiftUpsertPayload) {
     const url = `/warehouses/${warehouseId}/shifts`;
     return axiosClient.post(url, {
       startTime: toIso(data.startTime),
@@ -38,7 +38,7 @@ const shiftApi = {
     });
   },
 
-  update(warehouseId: string | number, shiftId: string | number, data: ShiftUpsertPayload) {
+  update(warehouseId: number, shiftId: string | number, data: ShiftUpsertPayload) {
     const url = `/warehouses/${warehouseId}/shifts/${shiftId}`;
     return axiosClient.put(url, {
       startTime: toIso(data.startTime),
@@ -49,7 +49,7 @@ const shiftApi = {
     });
   },
 
-  delete(warehouseId: string | number, shiftId: string | number) {
+  delete(warehouseId: number, shiftId: string | number) {
     const url = `/warehouses/${warehouseId}/shifts/${shiftId}`;
     return axiosClient.delete(url);
   },

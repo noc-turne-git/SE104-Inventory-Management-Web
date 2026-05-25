@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import bgImage from "../../assets/stockify.png";
@@ -7,6 +7,9 @@ import authApi from "../../api/AuthAPI";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import "./auth.css";
+
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const isValidPhone = (phone: string) => /^0\d{9}$/.test(phone);
 
 const SignUpScreen = () => {
   const navigate = useNavigate();
@@ -23,26 +26,75 @@ const SignUpScreen = () => {
 
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [fullNameError, setFullNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [dobError, setDobError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmError, setConfirmError] = useState("");
+  const [formError, setFormError] = useState("");
 
   const handleChange = (key: keyof typeof form, value: string) => {
+    setFormError("");
+    if (key === "fullName") setFullNameError("");
+    if (key === "email") setEmailError("");
+    if (key === "dob") setDobError("");
+    if (key === "phone") setPhoneError("");
+    if (key === "password") setPasswordError("");
+    if (key === "confirmPassword") setConfirmError("");
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFullNameError("");
+    setEmailError("");
+    setDobError("");
+    setPhoneError("");
     setConfirmError("");
     setPasswordError("");
+    setFormError("");
 
     let hasError = false;
 
-    if (form.password.length < 6) {
+    if (!form.fullName.trim()) {
+      setFullNameError("Full name is required.");
+      hasError = true;
+    }
+
+    if (!form.email.trim()) {
+      setEmailError("Email is required.");
+      hasError = true;
+    } else if (!isValidEmail(form.email)) {
+      setEmailError("Please enter a valid email address.");
+      hasError = true;
+    }
+
+    if (!form.dob) {
+      setDobError("Date of birth is required.");
+      hasError = true;
+    }
+
+    if (!form.phone.trim()) {
+      setPhoneError("Phone number is required.");
+      hasError = true;
+    } else if (!isValidPhone(form.phone)) {
+      setPhoneError("Phone number must be 10 digits and start with 0.");
+      hasError = true;
+    }
+
+    if (!form.password) {
+      setPasswordError("Password is required.");
+      hasError = true;
+    } else if (form.password.length < 6) {
       setPasswordError("Password must be at least 6 characters");
       hasError = true;
     }
 
-    if (form.password !== form.confirmPassword) {
+    if (!form.confirmPassword) {
+      setConfirmError("Please confirm your password.");
+      hasError = true;
+    } else if (form.password !== form.confirmPassword) {
       setConfirmError("Passwords do not match");
       hasError = true;
     }
@@ -55,12 +107,12 @@ const SignUpScreen = () => {
       navigate("/signin");
     } catch (err: unknown) {
       if (!isAxiosError(err)) {
-        toast.error("Something went wrong. Please try again.");
+        setFormError("Something went wrong. Please try again.");
         return;
       }
 
       if (!err.response) {
-        toast.error("Unable to connect to the server. Please check your network connection.");
+        setFormError("Unable to connect to the server. Please check your network connection.");
         return;
       }
 
@@ -68,16 +120,16 @@ const SignUpScreen = () => {
 
       switch (status) {
         case 409:
-          toast.error("This email is already registered.");
+          setEmailError("This email is already registered.");
           break;
         case 403:
-          toast.error("Your account is locked or you do not have access.");
+          setFormError("Your account is locked or you do not have access.");
           break;
         case 500:
-          toast.error("Server error. Please try again later.");
+          setFormError("Server error. Please try again later.");
           break;
         default:
-          toast.error("Something went wrong. Please try again.");
+          setFormError("Something went wrong. Please try again.");
       }
     }
   };
@@ -105,11 +157,11 @@ const SignUpScreen = () => {
             </div>
 
             {/* TEXT */}
-            <h1 className="text-7xl font-bold mb-4">Stockify</h1>
+            <h1 className="auth-brand-title">Stockify</h1>
           </div>
 
           {/* SUBTEXT */}
-          <p className="text-lg text-gray-200 max-w-md">
+          <p className="text-lg text-gray-50 max-w-md">
             Elevate your warehouse operations. Manage inventory, staff and logistics efficiently.
           </p>
         </div>
@@ -117,66 +169,87 @@ const SignUpScreen = () => {
 
       {/* RIGHT FORM */}
       <div className="flex w-full lg:w-1/2 lg:ml-auto items-center justify-center bg-gray-50 min-h-screen px-6 py-10">
-        <form className="w-full max-w-md" onSubmit={handleSignUp}>
+        <form className="w-full max-w-md" onSubmit={handleSignUp} noValidate>
           {/* TITLE */}
-          <div className="mb-4">
-            <h2 className="text-3xl font-bold">Create Account</h2>
-            <p className="text-gray-500 text-md mt-1">Join Stockify system</p>
+          <div className="auth-header auth-header-left">
+            <h2 className="auth-title">Create account</h2>
+            <p className="auth-subtitle">Join Stockify system</p>
           </div>
 
           {/* FULL NAME */}
-          <div className="my-4">
+          <div className="auth-field">
             <label className="auth-label">Full Name*</label>
             <input
-              required
-              className="auth-input h-12"
+              className={`auth-input h-12 ${fullNameError ? "auth-input-error" : ""}`}
               placeholder="John Doe"
               value={form.fullName}
               onChange={(e) => handleChange("fullName", e.target.value)}
             />
+
+            {fullNameError && (
+              <p className="auth-error">
+                {fullNameError}
+              </p>
+            )}
           </div>
 
           {/* EMAIL */}
-          <div className="my-4">
+          <div className="auth-field">
             <label className="auth-label">Email*</label>
             <input
               type="email"
-              required
-              className="auth-input h-12"
+              className={`auth-input h-12 ${emailError ? "auth-input-error" : ""}`}
               placeholder="john@example.com"
               value={form.email}
               onChange={(e) => handleChange("email", e.target.value)}
             />
+
+            {emailError && (
+              <p className="auth-error">
+                {emailError}
+              </p>
+            )}
           </div>
 
           {/* DOB + PHONE */}
-          <div className="grid grid-cols-2 gap-4 my-4">
+          <div className="grid grid-cols-2 gap-4 auth-field">
             <div>
               <label className="auth-label">Date of Birth*</label>
               <input
                 type="date"
-                required
-                className="auth-input h-12"
+                className={`auth-input h-12 ${dobError ? "auth-input-error" : ""}`}
                 value={form.dob}
                 onChange={(e) => handleChange("dob", e.target.value)}
               />
+
+              {dobError && (
+                <p className="auth-error">
+                  {dobError}
+                </p>
+              )}
             </div>
 
             <div>
               <label className="auth-label">Phone*</label>
               <input
                 type="tel"
-                required
-                className="auth-input h-12"
+                inputMode="numeric"
+                className={`auth-input h-12 ${phoneError ? "auth-input-error" : ""}`}
                 placeholder="0123456789"
                 value={form.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
               />
+
+              {phoneError && (
+                <p className="auth-error">
+                  {phoneError}
+                </p>
+              )}
             </div>
           </div>
 
           {/* ADDRESS */}
-          <div className="my-4">
+          <div className="auth-field">
             <label className="auth-label">Address</label>
             <input
               className="auth-input h-12"
@@ -187,15 +260,14 @@ const SignUpScreen = () => {
           </div>
 
           {/* PASSWORD */}
-          <div className="my-4">
+          <div className="auth-field">
             <label className="auth-label">Password*</label>
 
             <div className="relative">
               <input
                 type={showPass ? "text" : "password"}
-                required
                 className={`auth-input auth-input-with-toggle h-12 ${
-                  passwordError ? "border-red-500" : ""
+                  passwordError ? "auth-input-error" : ""
                 }`}
                 value={form.password}
                 onChange={(e) => handleChange("password", e.target.value)}
@@ -205,29 +277,28 @@ const SignUpScreen = () => {
                 type="button"
                 aria-label={showPass ? "Hide password" : "Show password"}
                 onClick={() => setShowPass(!showPass)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                className="auth-password-toggle"
               >
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
 
             {passwordError && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="auth-error">
                 {passwordError}
               </p>
             )}
           </div>
 
           {/* CONFIRM */}
-          <div className="my-4">
+          <div className="auth-field">
             <label className="auth-label">Confirm Password*</label>
 
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
-                required
                 className={`auth-input auth-input-with-toggle h-12 ${
-                  confirmError ? "border-red-500" : ""
+                  confirmError ? "auth-input-error" : ""
                 }`}
                 value={form.confirmPassword}
                 onChange={(e) =>
@@ -239,33 +310,39 @@ const SignUpScreen = () => {
                 type="button"
                 aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                className="auth-password-toggle"
               >
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
 
             {confirmError && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="auth-error">
                 {confirmError}
               </p>
             )}
           </div>
 
+          {formError && (
+            <p className="auth-error">
+              {formError}
+            </p>
+          )}
+
           {/* BUTTON */}
           <button
             type="submit"
-            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition"
+            className="auth-button-primary"
           >
             Sign up
           </button>
 
           {/* LOGIN */}
-          <p className="text-center text-sm text-gray-500 mt-2">
+          <p className="auth-footer-text">
             Already have an account?{" "}
             <span
               onClick={() => navigate("/signin")}
-              className="text-md text-blue-500 font-semibold cursor-pointer hover:underline"
+              className="auth-link"
             >
               Sign in
             </span>

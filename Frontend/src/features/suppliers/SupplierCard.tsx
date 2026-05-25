@@ -14,10 +14,10 @@ const SupplierCard = ({ supplier, onDelete, onEdit }: Props) => {
       {/* HEADER */}
       <div className="flex justify-between items-start mb-3">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-medium text-gray-900">
             {supplier.name}
           </h2>
-          <p className="text-md text-gray-500">
+          <p className="text-gray-500">
             Contact: {supplier.contact}
           </p>
         </div>

@@ -38,7 +38,7 @@ import './index.css';
 // Component Layout chứa Sidebar - Chỉ dùng cho các route bên trong hệ thống
 const AppLayout = () => {
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
       <Sidebar /> 
       <main className="flex-1 overflow-y-auto p-4">
         {/* Outlet sẽ render các con của Route /app/* */}
@@ -56,8 +56,8 @@ function App() {
   // Redirect user về dashboard tương ứng theo role khi vào /app
   const DefaultRoute = () => { 
     const { role } = useWarehouseContext();
-    if (role === "manager") return <Navigate to="dashboard_manager" replace />; 
-    if (role === "staff") return <Navigate to="dashboard_staff" replace />; 
+    if (role === "Manager") return <Navigate to="dashboard_manager" replace />; 
+    if (role === "Staff") return <Navigate to="dashboard_staff" replace />; 
     return <Navigate to="/warehouse" replace />; 
   };
   
@@ -164,7 +164,7 @@ function App() {
               <Route path="/app" element={<RequireRoleRoute />}>
                 <Route element={<AppLayout />}>
                   {/* Manager Routes */}
-                  <Route element={<RoleRoute allow={["manager"]} />}>
+                  <Route element={<RoleRoute allow={["Manager"]} />}>
                     <Route path="dashboard_manager" element={<DashboardManagerScreen />} />
                     <Route path="products" element={<ProductScreen />} />
                     <Route path="staffs" element={<StaffScreen />} />
@@ -173,7 +173,7 @@ function App() {
                     <Route path="shifts" element={<ShiftScreen />} />
                   </Route>
                   {/* Staff Routes */}
-                  <Route element={<RoleRoute allow={["staff"]} />}>
+                  <Route element={<RoleRoute allow={["Staff"]} />}>
                     <Route path="dashboard_staff" element={<DashboardStaffScreen />} />
                     <Route path="products_view" element={<ProductViewScreen />} />
                     <Route path="delivery" element={<DeliveryScreen />} />

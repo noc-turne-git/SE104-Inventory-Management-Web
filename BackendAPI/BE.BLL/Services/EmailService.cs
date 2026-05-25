@@ -10,15 +10,18 @@ using System.Security.Cryptography;
 
 public class EmailService : IEmailService
 {
+    private readonly IConfiguration _configuration;
     private readonly IOTPRepository _OTPRepository;
     private readonly ITokenService _tokenService;
     private readonly IRepository<VerifyEmailToken> _verifyEmailTokenRepository;
 
     public EmailService(
+        IConfiguration configuration,
         IOTPRepository OTPRepository,
         ITokenService tokenService,
         IRepository<VerifyEmailToken> verifyEmailTokenRepository)
     {
+        _configuration = configuration;
         _OTPRepository = OTPRepository;
         _tokenService = tokenService;
         _verifyEmailTokenRepository = verifyEmailTokenRepository;
@@ -70,7 +73,7 @@ public class EmailService : IEmailService
     {
         string token = _tokenService.GenerateRandomStringToken();
 
-        string frontendUrl = "http://localhost:5173/verify-email";
+        string frontendUrl = _configuration["Frontend:VerifyEmailUrl"] ?? "http://localhost:5173/verify-email";
         string confirmationLink = $"{frontendUrl}?token={token}&email={toEmail}";
 
         var emailMessage = new EmailMessageDTO
@@ -130,15 +133,26 @@ public class EmailService : IEmailService
 
     public async Task SendEmailAsync(EmailMessageDTO emailMessage)
     {
+        var displayName = _configuration["Email:DisplayName"] ?? "Stockify";
+        var fromAddress = _configuration["Email:FromAddress"] ?? throw new InvalidOperationException("Email:FromAddress is missing.");
+        var smtpHost = _configuration["Email:SmtpHost"] ?? throw new InvalidOperationException("Email:SmtpHost is missing.");
+        var smtpPort = _configuration.GetValue<int?>("Email:SmtpPort") ?? 587;
+        var username = _configuration["Email:Username"] ?? throw new InvalidOperationException("Email:Username is missing.");
+        var password = _configuration["Email:Password"] ?? throw new InvalidOperationException("Email:Password is missing.");
+        var useStartTls = _configuration.GetValue<bool?>("Email:UseStartTls") ?? true;
+
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Stockify", "stockify.support@gmail.com"));
+        message.From.Add(new MailboxAddress(displayName, fromAddress));
         message.To.Add(new MailboxAddress("", emailMessage.ToEmail));
         message.Subject = emailMessage.Subject;
         message.Body = new TextPart("html") { Text = emailMessage.Body };
 
         using var client = new SmtpClient();
-        await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-        await client.AuthenticateAsync("stockify.support@gmail.com", "pkzh tkgk qapt xrpr");
+        await client.ConnectAsync(
+            smtpHost,
+            smtpPort,
+            useStartTls ? MailKit.Security.SecureSocketOptions.StartTls : MailKit.Security.SecureSocketOptions.Auto);
+        await client.AuthenticateAsync(username, password);
         await client.SendAsync(message);
         await client.DisconnectAsync(true);
     }

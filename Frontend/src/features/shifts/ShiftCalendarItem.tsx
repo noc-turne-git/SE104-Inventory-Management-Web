@@ -1,7 +1,6 @@
     import React from 'react';
-    import { Clock, Copy, Edit, Trash2 } from 'lucide-react';
-    import { type Shift, type ShiftFormData } from '../../types/shift';
-    import { Pencil, Trash } from 'lucide-react';
+    import { Clock, Pencil, Trash } from 'lucide-react';
+    import { type Shift } from '../../types/shift';
 
     interface Props {
         shift: Shift;
