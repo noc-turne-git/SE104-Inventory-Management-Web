@@ -92,7 +92,7 @@ const ReceiptScreen = () => {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Goods Receipt Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Goods Receipt Management</h1>
           <p className="text-gray-600 mt-1">Manage incoming goods receipt notes and quality checks</p>
         </div>
         <OpenModalButton label="Add Goods Receipt" onClick={handleOpenAddModal} />

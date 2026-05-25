@@ -23,6 +23,7 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
   return (
     <motion.div 
       whileHover={{ y: -4 }}
+      onClick={() => onManage(warehouse.warehouseId)}
       className="flex flex-col bg-[#ffffff] rounded-2xl overflow-hidden shadow-[0px_8px_24px_rgba(0,0,0,0.04)] border border-[#e5e7eb] group"
     >
       <div className="relative h-56 w-full overflow-hidden">
@@ -67,7 +68,7 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
         )}
       </div>
       <div className="p-8">
-        <h3 className="text-4xl font-font-headline font-bold text-[#000000] mb-4">{warehouse.name}</h3>
+        <h3 className="text-4xl font-headline font-bold text-[#000000] mb-4">{warehouse.name}</h3>
         <div className="space-y-4 mb-8">
           <div className="flex items-center text-[#666666] gap-3 text-sm font-medium">
             <Icons.MapPin className="w-4 h-4 text-[#666666]" />
@@ -75,17 +76,12 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
           </div>
           <div className="flex items-center text-[#666666] gap-3 text-sm font-medium">
             <Icons.Package className="w-4 h-4 text-[#666666]" />
-            <span>{warehouse.productCount ?? 0 .toLocaleString()} Products</span>
+            <span>{(warehouse.productCount ?? 0).toLocaleString()} Products</span>
           </div>
         </div>
         <div className="pt-6 border-t border-[#e5e7eb] flex items-center justify-between">
-          <span className="text-[11px] text-[#666666]/60 font-bold uppercase tracking-widest">Updated {warehouse.lastUpdate}</span>
-          <button 
-            onClick={() => onManage(warehouse.warehouseId)}
-            className="text-primary font-black text-sm flex items-center gap-1 group/btn hover:translate-x-1 transition-transform"
-          >
-            Manage
-            <Icons.ChevronRight className="w-4 h-4" />
+          <button className="text-primary font-black text-sm flex items-center gap-1 group/btn hover:translate-x-1 transition-transform">
+            Manage<Icons.ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -112,7 +108,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, onAc
       </div>
       <div className="grow">
         <div className="flex items-center gap-2 mb-1">
-          <span className="te</div>xt-xs font-bold text-[#0040a1] uppercase tracking-widest font-headline">{invitation.ownerId}</span>
+          <span className="text-xs font-bold text-[#0040a1] uppercase tracking-widest font-headline">{invitation.ownerId}</span>
           <span className="w-1 h-1 rounded-full bg-[#e5e7eb]" />
           <span className="text-xs text-[#666666]">Sent {invitation.sendTime}</span>
         </div>
@@ -143,7 +139,7 @@ export const CreateWarehousePlaceholder: React.FC<{ onClick: () => void }> = ({ 
   return (
     <button 
       onClick={onClick}
-      className="flex flex-col items-center justify-center bg-[#f8f9fa]/50 border-2 border-dashed border-[#e5e7eb] rounded-2xl p-12 group hover:bg-white hover:border-[#000000] transition-all duration-500 min-h-112.5"
+      className="flex flex-col items-center justify-center bg-[#f8f9fa]/50 border-2 border-dashed border-[#e5e7eb] rounded-2xl p-12 group hover:bg-white hover:border-[#000000] transition-all duration-500 min-h-[28.125rem]"
     >
       <div className="w-20 h-20 rounded-full bg-[#ffffff] flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:bg-blue-50 transition-all duration-500">
         <Icons.Plus className="w-10 h-10 text-[#000000]" />

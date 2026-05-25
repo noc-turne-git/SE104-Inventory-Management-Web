@@ -25,7 +25,7 @@ export function useDeliveries() {
     const newDelivery: Delivery = {
       ...data,
       id: Date.now().toString(),
-      operator: user?.userName || "",
+      operator: user?.fullName || "",
       type: 'DELIVERY',
       noteNumber: `DLV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,
       warehouseId: '',

@@ -56,6 +56,8 @@ const ReceiptItem = ({ordered, received, defective, product} : ItemProps) => {
 }
 
 export const ReceiptNote = ({receipt, onOpenEditModal, onDelete} : Props) => {
+  const rejectedReason = receipt.reason?.trim() || 'No reason provided';
+
   return (
     <div key={receipt.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
@@ -86,10 +88,11 @@ export const ReceiptNote = ({receipt, onOpenEditModal, onDelete} : Props) => {
         <p className="font-medium text-lg text-gray-900">{receipt.supplier}</p>
       </div>
 
-      {receipt.status === 'rejected' && receipt.reason && (
-        <div className="mb-4 rounded-lg border border-red-100 bg-red-50 p-3">
-          <p className="text-sm font-bold text-red-600 uppercase mb-1">Rejected Reason:</p>
-          <p className="text-md text-red-700">{receipt.reason}</p>
+      {receipt.status === 'rejected' && (
+        <div className="mb-4 w-fit rounded-md border border-red-200 bg-red-50 px-3 py-2">
+          <p className="text-sm font-semibold text-red-700">
+            Reason: {rejectedReason}
+          </p>
         </div>
       )}
 

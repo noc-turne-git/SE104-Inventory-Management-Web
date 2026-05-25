@@ -20,11 +20,11 @@ const RevenueChart = ({ revenueByYear, selectedYear, onYearChange }: RevenueChar
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-2xl font-semibold text-gray-900">Revenue Overview</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Revenue Overview</h3>
           <select 
             value={selectedYear}
             onChange={(e) => onYearChange(parseInt(e.target.value))}
-            className="text-lg border border-gray-300 rounded-xl px-2 p-1"
+            className="text-base border border-gray-300 rounded-xl px-2 p-1"
           >
             {years.map((year) => (
               <option key={year} value={year}>Year {year}</option>

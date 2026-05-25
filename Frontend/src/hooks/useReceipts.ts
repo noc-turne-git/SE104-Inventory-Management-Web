@@ -25,7 +25,7 @@ export function useReceipts() {
       ...data,
       id: Date.now().toString(),
       type: 'RECEIPT',
-      operator: user?.userName || "",
+      operator: user?.fullName || "",
       // Format: REC-YYYYMMDD-Random
       noteNumber: `REC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,
       warehouseId: '',

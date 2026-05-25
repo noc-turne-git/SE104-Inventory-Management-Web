@@ -44,6 +44,8 @@ const DeliveryItem = ({ product, quantity }: ItemProps) => {
 }
 
 export const DeliveryNote = ({ delivery, onOpenEditModal, onDelete }: Props) => {
+  const rejectedReason = delivery.reason?.trim() || 'No reason provided';
+
   return (
     <div key={delivery.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
@@ -77,10 +79,11 @@ export const DeliveryNote = ({ delivery, onOpenEditModal, onDelete }: Props) => 
         <p className="font-medium text-gray-900">{delivery.destination}</p>
       </div>
 
-      {delivery.status === 'rejected' && delivery.reason && (
-        <div className="mb-4 rounded-lg border border-red-100 bg-red-50 p-3">
-          <p className="text-sm font-bold text-red-600 uppercase mb-1">Rejected Reason:</p>
-          <p className="text-md text-red-700">{delivery.reason}</p>
+      {delivery.status === 'rejected' && (
+        <div className="mb-4 w-fit rounded-md border border-red-200 bg-red-50 px-3 py-2">
+          <p className="text-sm font-semibold text-red-700">
+            Reason: {rejectedReason}
+          </p>
         </div>
       )}
 

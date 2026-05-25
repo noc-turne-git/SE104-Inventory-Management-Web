@@ -40,7 +40,7 @@ export const useDashboard = (managerParams?: ManagerDashboardParams) => {
 
     setLoading(true);
     try {
-      if (role === 'manager') {
+      if (role === 'owner' || role === 'manager') {
         const res = await dashboardApi.getManager(warehouseId, managerParams);
         setManager(res.data);
         setStaff(emptyStaff);

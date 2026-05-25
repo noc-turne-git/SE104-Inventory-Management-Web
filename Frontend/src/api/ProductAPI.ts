@@ -8,7 +8,7 @@ const toProductFormData = (data: Product, productId: number = 0) => {
   form.append('imageUrl', data.image ?? '');
   if (data.imageFile) form.append('imageFile', data.imageFile);
   form.append('name', data.name ?? '');
-  form.append('category', data.category ?? '');''
+  form.append('category', data.category ?? '');
   form.append('description', data.description ?? '');
   form.append('sellPrice', String(data.sellPrice ?? 0));
   form.append('stockQuantity', String(data.stockQuantity ?? 0));

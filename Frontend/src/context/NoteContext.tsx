@@ -1,27 +1,25 @@
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { type WarehouseNote, type Delivery, type Receipt, type InventoryCheck } from '../types/note';
-import { toast } from 'sonner';
-import { useWarehouseContext } from './WarehouseContext';
 import { isAxiosError } from 'axios';
+import { toast } from 'sonner';
 import warehouseNotesApi from '../api/WarehouseNotesAPI';
-import productApi from '../api/ProductAPI';
-import supplierApi from '../api/SupplierAPI';
+import { getErrorMessage } from '../services/notes/noteErrors';
+import { getProductNameToId, getSupplierNameToId } from '../services/notes/noteLookups';
+import { asArray, toDelivery, toInventoryCheck, toReceipt } from '../services/notes/noteMappers';
+import { type Delivery, type InventoryCheck, type Receipt, type WarehouseNote } from '../types/note';
+import { useWarehouseContext } from './WarehouseContext';
 
 interface NoteContextType {
   allNotes: WarehouseNote[];
-
   addNote: (newNote: WarehouseNote) => Promise<boolean>;
   updateNote: (id: string, data: Partial<WarehouseNote>) => Promise<boolean>;
-  updateStatus: (id: string, status: WarehouseNote['status'], reason? : string) => Promise<boolean>;
+  updateStatus: (id: string, status: WarehouseNote['status'], reason?: string) => Promise<boolean>;
   deleteNote: (id: string) => Promise<boolean>;
-  // Helper để lấy nhanh từng loại phiếu khi cần
   getDeliveries: () => Delivery[];
   getReceipts: () => Receipt[];
   getInventoryChecks: () => InventoryCheck[];
 }
 
 const NoteContext = createContext<NoteContextType | undefined>(undefined);
-
 const initialData: WarehouseNote[] = [];
 
 export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -111,9 +109,9 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isStaff ? warehouseNotesApi.getMyInventoryChecks(warehouseId) : warehouseNotesApi.getAllInventoryChecks(warehouseId),
       ]);
 
-      const deliveries = (Array.isArray(deliveriesRes.data) ? deliveriesRes.data : []).map(toDelivery);
-      const receipts = (Array.isArray(receiptsRes.data) ? receiptsRes.data : []).map(toReceipt);
-      const inventoryChecks = (Array.isArray(inventoryRes.data) ? inventoryRes.data : []).map(toInventoryCheck);
+      const deliveries = asArray(deliveriesRes.data).map((note) => toDelivery(note, warehouseId));
+      const receipts = asArray(receiptsRes.data).map((note) => toReceipt(note, warehouseId));
+      const inventoryChecks = asArray(inventoryRes.data).map((note) => toInventoryCheck(note, warehouseId));
 
       setAllNotes([...deliveries, ...receipts, ...inventoryChecks]);
     } catch (err: unknown) {
@@ -123,37 +121,14 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     void fetchApiNotes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [warehouseId, role]);
-
-  const getProductNameToId = async () => {
-    if (!warehouseId) return new Map<string, number>();
-    const res = await productApi.getAll(warehouseId);
-    const map = new Map<string, number>();
-    for (const p of Array.isArray(res.data) ? res.data : []) {
-      const key = String(p.name ?? '').trim().toLowerCase();
-      if (!key) continue;
-      map.set(key, Number(p.productId ?? p.id ?? 0));
-    }
-    return map;
-  };
-
-  const getSupplierNameToId = async () => {
-    if (!warehouseId) return new Map<string, number>();
-    const res = await supplierApi.getAll(warehouseId);
-    const map = new Map<string, number>();
-    for (const s of Array.isArray(res.data) ? res.data : []) {
-      const key = String(s.name ?? '').trim().toLowerCase();
-      if (!key) continue;
-      map.set(key, Number(s.supplierId ?? s.id ?? 0));
-    }
-    return map;
-  };
 
   const getCurrentWarehouseNotes = () => {
     if (!warehouseId) return [];
-    return allNotes.filter((n) => Number(n.warehouseId) === Number(warehouseId));
+    return allNotes.filter((note) => Number(note.warehouseId) === Number(warehouseId));
   };
-  
+
   const addNote = async (newNote: WarehouseNote) => {
     if (!warehouseId) {
       toast.error('No warehouse selected.');
@@ -162,12 +137,13 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (newNote.type === 'DELIVERY') {
       try {
-        const productMap = await getProductNameToId();
+        const productMap = await getProductNameToId(warehouseId);
         const items = newNote.items.map((item) => {
           const id = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!id) throw new Error(`Product not found: ${item.product}`);
           return { productId: id, quantity: item.quantity };
         });
+
         await warehouseNotesApi.createDelivery(warehouseId, {
           destination: newNote.destination,
           status: newNote.status,
@@ -190,6 +166,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           toast.error(`Supplier not found: ${newNote.supplier}`);
           return false;
         }
+
         const items = newNote.items.map((item) => {
           const id = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!id) throw new Error(`Product not found: ${item.product}`);
@@ -200,6 +177,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             defective: item.defective,
           };
         });
+
         await warehouseNotesApi.createReceipt(warehouseId, {
           supplierId,
           status: newNote.status,
@@ -216,7 +194,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (newNote.type === 'INVENTORY_CHECK') {
       try {
-        const productMap = await getProductNameToId();
+        const productMap = await getProductNameToId(warehouseId);
         const items = newNote.items.map((item) => {
           const id = productMap.get(item.product.trim().toLowerCase());
           if (!id) throw new Error(`Product not found: ${item.product}`);
@@ -236,10 +214,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     }
 
-    const noteWithWarehouse = { ...newNote, warehouseId: String(warehouseId) };
-    setAllNotes((prev) => [noteWithWarehouse, ...prev]);
-    toast.success(`Successfully created ${newNote.type} note.`);
-    return true;
+    return false;
   };
 
   const updateNote = async (id: string, data: Partial<WarehouseNote>) => {
@@ -248,7 +223,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return false;
     }
 
-    const current = allNotes.find((n) => n.id === id);
+    const current = allNotes.find((note) => note.id === id);
     if (!current) {
       toast.error('Note not found.');
       return false;
@@ -257,12 +232,13 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (current.type === 'DELIVERY') {
       try {
         const next = { ...current, ...data } as Delivery;
-        const productMap = await getProductNameToId();
+        const productMap = await getProductNameToId(warehouseId);
         const items = next.items.map((item) => {
           const pid = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!pid) throw new Error(`Product not found: ${item.product}`);
           return { productId: pid, quantity: item.quantity };
         });
+
         await warehouseNotesApi.updateDelivery(warehouseId, id, {
           destination: next.destination,
           status: next.status,
@@ -286,6 +262,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           toast.error(`Supplier not found: ${next.supplier}`);
           return false;
         }
+
         const items = next.items.map((item) => {
           const pid = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!pid) throw new Error(`Product not found: ${item.product}`);
@@ -296,6 +273,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             defective: item.defective,
           };
         });
+
         await warehouseNotesApi.updateReceipt(warehouseId, id, {
           supplierId,
           status: next.status,
@@ -313,12 +291,12 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (current.type === 'INVENTORY_CHECK') {
       try {
         const next = { ...current, ...data } as InventoryCheck;
-        const productMap = await getProductNameToId();
+        const productMap = await getProductNameToId(warehouseId);
         const items = next.items.map((item) => {
-          const pid = productMap.get(item.product.trim().toLowerCase());
-          if (!pid) throw new Error(`Product not found: ${item.product}`);
+          const productId = productMap.get(item.product.trim().toLowerCase());
+          if (!productId) throw new Error(`Product not found: ${item.product}`);
           return {
-            productId: pid,
+            productId,
             stockQuantity: item.stockQuantity,
             reason: item.reason ?? '',
           };
@@ -333,7 +311,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     }
 
-    setAllNotes((prev) => prev.map((n) => (n.id === id ? ({ ...n, ...data } as WarehouseNote) : n)));
+    setAllNotes((prev) => prev.map((note) => (note.id === id ? ({ ...note, ...data } as WarehouseNote) : note)));
     toast.info('Note has been updated successfully.');
     return true;
   };
@@ -351,7 +329,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         await warehouseNotesApi.reject(warehouseId, id, reason);
       } else {
         setAllNotes((prev) =>
-          prev.map((n) => (n.id === id ? (status === 'rejected' ? { ...n, status, reason } : { ...n, status }) : n)),
+          prev.map((note) => (note.id === id ? { ...note, status } : note)),
         );
         return true;
       }
@@ -363,7 +341,8 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         pending: { msg: 'Note is pending approval.', icon: '⏳' },
         'in process': { msg: 'Note is being processed.', icon: '⚙️' },
       };
-      toast(`${statusMap[status].icon} ${statusMap[status].msg}`);
+      const statusToast = statusMap[status];
+      toast(statusToast.msg, { icon: statusToast.icon });
       return true;
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, 'Failed to update note status'));
@@ -397,38 +376,40 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     }
 
-    setAllNotes((prev) => prev.filter((n) => n.id !== id));
+    setAllNotes((prev) => prev.filter((item) => item.id !== id));
     toast.error('Note has been deleted.');
     return true;
   };
 
-  // Các hàm lọc dữ liệu (Getters)
   const getDeliveries = () =>
-    getCurrentWarehouseNotes().filter(n => n.type === 'DELIVERY') as Delivery[];
+    getCurrentWarehouseNotes().filter((note) => note.type === 'DELIVERY') as Delivery[];
 
   const getReceipts = () =>
-    getCurrentWarehouseNotes().filter(n => n.type === 'RECEIPT') as Receipt[];
+    getCurrentWarehouseNotes().filter((note) => note.type === 'RECEIPT') as Receipt[];
 
   const getInventoryChecks = () =>
-    getCurrentWarehouseNotes().filter(n => n.type === 'INVENTORY_CHECK') as InventoryCheck[];
+    getCurrentWarehouseNotes().filter((note) => note.type === 'INVENTORY_CHECK') as InventoryCheck[];
 
   return (
-    <NoteContext.Provider value={{ 
-      allNotes, 
-      addNote, 
-      updateNote, 
-      updateStatus, 
-      deleteNote,
-      getDeliveries,
-      getReceipts,
-      getInventoryChecks
-    }}>
+    <NoteContext.Provider
+      value={{
+        allNotes,
+        addNote,
+        updateNote,
+        updateStatus,
+        deleteNote,
+        getDeliveries,
+        getReceipts,
+        getInventoryChecks,
+      }}
+    >
       {children}
     </NoteContext.Provider>
   );
 };
 
-// Custom hook để sử dụng trong các Component
+// Custom hook for using note context in components.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useNotes = () => {
   const context = useContext(NoteContext);
   if (!context) {

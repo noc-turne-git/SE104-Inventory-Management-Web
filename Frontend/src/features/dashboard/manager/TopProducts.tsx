@@ -60,10 +60,10 @@ const TopProducts = ({
       <div className="p-6 flex-1">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-2xl font-semibold text-gray-900">Top Selling Products</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Top Selling Products</h3>
             <div className="flex gap-3 mt-2">
               <select 
-                className="text-lg border border-gray-300 rounded-xl px-2 p-1" 
+                className="text-base border border-gray-300 rounded-xl px-2 p-1" 
                 value={selectedYear} 
                 onChange={(e) => {
                   onYearChange(Number(e.target.value));
@@ -73,7 +73,7 @@ const TopProducts = ({
                 {years.map(year => <option key={year} value={year}>Year {year}</option>)}
               </select>
               <select 
-                className="text-lg border border-gray-300 rounded-xl px-2 p-1" 
+                className="text-base border border-gray-300 rounded-xl px-2 p-1" 
                 value={selectedMonth} 
                 onChange={(e) => {
                   onMonthChange(Number(e.target.value));
@@ -92,10 +92,10 @@ const TopProducts = ({
             currentItems.map((p, i) => (
               <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                 <div className="flex-1">
-                  <p className="text-lg font-medium text-gray-900">{p.product}</p>
-                  <p className="text-md text-gray-500">{p.sales} units sold</p>
+                  <p className="text-base font-medium text-gray-900">{p.product}</p>
+                  <p className="text-sm text-gray-500">{p.sales} units sold</p>
                 </div>
-                <div className="text-lg text-right mr-4 font-semibold text-gray-900">{formatCurrency(p.revenue)}</div>
+                <div className="text-base text-right mr-4 font-semibold text-gray-900">{p.revenue}</div>
                 {p.trend === 'up' ? <ArrowUpRight className="text-green-500" /> : <ArrowDownRight className="text-red-500" />}
               </div>
             ))
@@ -109,7 +109,7 @@ const TopProducts = ({
       </div>
 
       <div className="sticky bottom-0 mt-auto px-6 py-4 bg-gray-100 border-t border-gray-100 flex justify-between items-center">
-        <p className="text-md text-gray-500">
+        <p className="text-sm text-gray-500">
           Showing {totalEntries === 0 ? 0 : indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalEntries)} of {totalEntries} entries
         </p>
 
@@ -117,7 +117,7 @@ const TopProducts = ({
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className={`px-3 py-1 text-md font-medium transition-colors ${
+            className={`px-1 py-1 text-sm font-medium transition-colors ${
               currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600'
             }`}
           >
@@ -141,7 +141,7 @@ const TopProducts = ({
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages || totalPages === 0}
-            className={`px-3 py-1 text-md font-medium transition-colors ${
+            className={`px-1 py-1 text-sm font-medium transition-colors ${
               currentPage === totalPages || totalPages === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600'
             }`}
           >

@@ -16,7 +16,7 @@ const warehouseApi = {
     return axiosClient.get(url);
   },
   
-  getById(id: string) {
+  getById(id: string | number) {
     const url = `/warehouses/${id}`;
     return axiosClient.get(url);
   },

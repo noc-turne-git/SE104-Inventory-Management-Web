@@ -89,8 +89,8 @@ export const Sidebar = () => {
       {/* Logout button - always at bottom */}
       <div className="">
         <button className="logout-button" onClick={handleLogout}>
-          <LogOut size={18} />
-          <span>Signout</span>
+          <LogOut size={20} />
+          <span>Sign out</span>
         </button>
       </div>
 
