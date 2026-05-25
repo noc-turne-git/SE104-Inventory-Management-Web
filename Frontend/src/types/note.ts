@@ -5,7 +5,7 @@ export type statusNote = 'in process' | 'pending' | 'approved' | 'rejected';
 
 interface BaseNote {
   id: string;
-  warehouseId: string; // thêm warehouseId
+  warehouseId: number;
   noteNumber: string;
   dateCreated: string;
   status: statusNote;
@@ -40,14 +40,14 @@ export type WarehouseNote = Delivery | InventoryCheck | Receipt;
 
 
 //Form Data
-export type InventoryCheckFormData = Omit<InventoryCheck, 'id' | 'noteNumber' | 'operator' | 'type'> & {
+export type InventoryCheckFormData = Omit<InventoryCheck, 'id' | 'warehouseId' | 'noteNumber' | 'operator' | 'type'> & {
     
 }
 
-export type ReceiptFormData = Omit<Receipt, 'id' | 'noteNumber' | 'operator' | 'type'> & {
+export type ReceiptFormData = Omit<Receipt, 'id' | 'warehouseId' | 'noteNumber' | 'operator' | 'type'> & {
 
 };
 
-export type DeliveryFormData = Omit<Delivery, 'id' | 'noteNumber' | 'operator' | 'type'> & {
+export type DeliveryFormData = Omit<Delivery, 'id' | 'warehouseId' | 'noteNumber' | 'operator' | 'type'> & {
 
 }

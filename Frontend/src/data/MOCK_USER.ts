@@ -8,7 +8,7 @@
       dob: '1990-05-15',
       phone: '0123456789',
       address: '123 Manager St, Tech City',
-      role: 'manager'
+      role: 'Manager'
     },
     {
       id: 'u2',
@@ -17,6 +17,6 @@
       dob: '1995-10-20',
       phone: '0987654321',
       address: '456 Staff Ave, Innovation Hub',
-      role: 'staff'
+      role: 'Staff'
     }
   ];

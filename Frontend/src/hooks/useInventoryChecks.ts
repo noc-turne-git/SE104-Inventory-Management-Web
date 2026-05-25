@@ -1,10 +1,12 @@
 import { useAuth } from '../context/AuthContext';
+import { useWarehouseContext } from '../context/WarehouseContext';
 import { useNotes } from '../context/NoteContext';
 import { type InventoryCheck, type InventoryCheckFormData } from '../types/note';
 
 export function useInventoryChecks() {
   const { addNote, updateNote, deleteNote, updateStatus, getInventoryChecks } = useNotes();
   const { user } = useAuth();
+  const { warehouseId } = useWarehouseContext();
 
   const inventoryChecks = getInventoryChecks();
 
@@ -24,7 +26,7 @@ export function useInventoryChecks() {
     const newInventoryCheck: InventoryCheck = {
       ...data,
       id: Date.now().toString(),
-      warehouseId: '',
+      warehouseId: warehouseId ?? 0,
       type: 'INVENTORY_CHECK',
       operator: user?.fullName || '',
       noteNumber: `IC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 1000)}`,

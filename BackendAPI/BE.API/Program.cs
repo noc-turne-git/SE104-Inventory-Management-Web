@@ -19,9 +19,24 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
+using DotNetEnv;
 
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); //giữ nguyên tên claim.
+var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+var envFileName = string.Equals(environmentName, "Test", StringComparison.OrdinalIgnoreCase)
+    ? ".env.test"
+    : ".env";
+var localEnvPath = Path.Combine(Directory.GetCurrentDirectory(), envFileName);
+var rootEnvPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", envFileName));
+if (File.Exists(localEnvPath))
+{
+    Env.Load(localEnvPath);
+}
+else if (File.Exists(rootEnvPath))
+{
+    Env.Load(rootEnvPath);
+}
 var builder = WebApplication.CreateBuilder(args); //thêm service, đọc config, cấu hình ứng dụng
 
 var webRootPath = builder.Environment.WebRootPath
@@ -36,9 +51,17 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevCors", policy =>
     {
-        policy.AllowAnyOrigin()   // Cho phép tất cả các nguồn gọi tới
-              .AllowAnyMethod()   // Cho phép tất cả các phương thức GET, POST, PUT, DELETE...
-              .AllowAnyHeader();  // Cho phép tất cả các Header
+        var allowedOrigins = builder.Configuration["Cors:AllowedOrigins"]
+            ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            ?? new[]
+            {
+                "http://localhost:5173",
+                "http://3.106.211.154:5173"
+            };
+
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
@@ -90,13 +113,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    // Kiểm tra xem có đang chạy trong Docker không
-    // (Docker thường tự tạo biến môi trường DOTNET_RUNNING_IN_CONTAINER)
-    bool isDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
-
-    // Nếu trong Docker thì dùng "redis", nếu ở ngoài thì dùng "localhost"
-    options.Configuration = isDocker ? "redis:6379" : "localhost:6379";
-    
+    options.Configuration = builder.Configuration["Redis:ConnectionString"]
+        ?? throw new InvalidOperationException("Redis:ConnectionString was not found.");
     options.InstanceName = "Warehouse_";
 });
 
@@ -181,3 +199,5 @@ if (hangfireEnabled)
         app.UseHangfireDashboard();
 }
 app.Run();
+
+

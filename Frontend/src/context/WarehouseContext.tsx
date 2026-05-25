@@ -8,8 +8,12 @@ interface WarehouseState {
   warehouseName: string | null;
 }
 
+type WarehouseStateInput = Omit<WarehouseState, "warehouseId"> & {
+  warehouseId: number | null;
+};
+
 interface WarehouseContextType extends WarehouseState {
-  setWarehouse: (data: WarehouseState) => void;
+  setWarehouse: (data: WarehouseStateInput) => void;
   clearWarehouse: () => void;
   loading: boolean;
 }
@@ -22,10 +26,26 @@ const emptyWarehouseState: WarehouseState = {
   warehouseName: null,
 };
 
-const normalizeWarehouseState = (data: Partial<WarehouseState>): WarehouseState => ({
-  role: data.role ?? null,
+const normalizeWarehouseId = (warehouseId: unknown) => {
+  if (warehouseId === null || warehouseId === undefined || warehouseId === "") return null;
+
+  const numericWarehouseId = Number(warehouseId);
+  return Number.isFinite(numericWarehouseId) ? numericWarehouseId : null;
+};
+
+const normalizeRole = (role: unknown): Role => {
+  if (typeof role !== "string") return null;
+  const normalized = role.toLowerCase();
+  if (normalized === "manager") return "Manager";
+  if (normalized === "staff") return "Staff";
+  if (normalized === "user") return "user";
+  return null;
+};
+
+const normalizeWarehouseState = (data: Partial<WarehouseStateInput>): WarehouseState => ({
+  role: normalizeRole(data.role),
   warehouseName: data.warehouseName ?? null,
-  warehouseId: data.warehouseId ? Number(data.warehouseId) : null,
+  warehouseId: normalizeWarehouseId(data.warehouseId),
 });
 
 const getInitialWarehouseState = (): WarehouseState => {
@@ -51,7 +71,7 @@ export const WarehouseProvider = ({ children }: { children: React.ReactNode }) =
   const [loading] = useState(false);
   
   // Đảm bảo luôn lưu number
-  const setWarehouse = (data: WarehouseState) => {
+  const setWarehouse = (data: WarehouseStateInput) => {
     const normalized = normalizeWarehouseState(data);
     setState(normalized);
     localStorage.setItem("warehouse", JSON.stringify(normalized));

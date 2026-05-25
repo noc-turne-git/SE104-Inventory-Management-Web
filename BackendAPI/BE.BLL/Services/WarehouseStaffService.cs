@@ -36,7 +36,10 @@ public class WarehouseStaffService : IWarehouseStaffService
         {
             UserId = userId,
             WarehouseId = model.WarehouseId,
-            RoleId = roleEntity.RoleId
+            RoleId = roleEntity.RoleId,
+            AccountStatus = "Active",
+            Salary = 0,
+            HireDate = DateTime.UtcNow
         };
 
         var warehouseStaff=await _warehouseStaffRepository.AddAsync(entity, cancellationToken);

@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signout = () => {
     setUser(null);
     clearWarehouse();
-    localStorage.removeItem('user');
+    localStorage.clear();
     navigate('/home', {replace: true});
   };
 

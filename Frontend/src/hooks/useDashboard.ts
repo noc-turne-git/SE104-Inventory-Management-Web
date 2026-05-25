@@ -44,7 +44,7 @@ export const useDashboard = (managerParams?: ManagerDashboardParams) => {
         const res = await dashboardApi.getManager(warehouseId, managerParams);
         setManager(res.data);
         setStaff(emptyStaff);
-      } else if (role === 'staff') {
+      } else if (role === 'Staff') {
         const res = await dashboardApi.getStaff(warehouseId);
         setStaff(res.data);
         setManager(emptyManager);

@@ -14,7 +14,6 @@ interface Props {
 }
 
 const DEFAULT_FORM: InventoryCheckFormData = {
-  warehouseId: '',
   dateCreated: new Date().toISOString().split('T')[0],
   status: 'pending',
   items: [

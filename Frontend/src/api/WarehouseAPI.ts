@@ -16,7 +16,7 @@ const warehouseApi = {
     return axiosClient.get(url);
   },
   
-  getById(id: string | number) {
+  getById(id: number) {
     const url = `/warehouses/${id}`;
     return axiosClient.get(url);
   },
@@ -28,7 +28,7 @@ const warehouseApi = {
     });
   },
 
-  update(id: string | number, data: FormCreateWarehouse) {
+  update(id: number, data: FormCreateWarehouse) {
     const url = `/warehouses/${id}`;
     return axiosClient.put(url, toWarehouseFormData(data), {
       headers: { 'Content-Type': 'multipart/form-data' },

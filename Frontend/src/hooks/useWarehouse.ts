@@ -14,6 +14,7 @@ const resolveImageUrl = (url?: string) => {
   return `http://localhost:5074${url}`;
 };
 
+<<<<<<< HEAD
 const normalizeWarehouseRole = (role?: string): Warehouse["role"] => {
   const normalized = role?.toLowerCase();
   if (normalized === "owner" || normalized === "manager" || normalized === "staff") return normalized;
@@ -32,6 +33,64 @@ const mapApiWarehouse = (data: any): Warehouse => ({
   productCount: data?.productCount ?? 0,
   lastUpdate: data?.lastUpdate ?? "",
 });
+=======
+type ApiRecord = Record<string, unknown>;
+type WarehouseRole = NonNullable<Warehouse["role"]>;
+
+const asRecord = (data: unknown): ApiRecord =>
+  data !== null && typeof data === "object" ? data as ApiRecord : {};
+
+const asString = (value: unknown, fallback = "") => {
+  if (typeof value === "string") return value;
+  if (value === null || value === undefined) return fallback;
+  return String(value);
+};
+
+const normalizeRole = (value: unknown, fallback: WarehouseRole = "Staff"): WarehouseRole => {
+  const role = asString(value).toLowerCase();
+  if (role === "manager") return "Manager";
+  if (role === "staff") return "Staff";
+  return fallback;
+};
+
+const readWarehouseId = (data: unknown) => {
+  const record = asRecord(data);
+  const id = Number(record.warehouseId ?? record.WarehouseId);
+  return Number.isFinite(id) ? id : 0;
+};
+
+const mapApiWarehouse = (data: unknown): Warehouse => {
+  const record = asRecord(data);
+
+  return {
+    warehouseId: readWarehouseId(record),
+    role: normalizeRole(record.role ?? record.Role),
+    name: asString(record.name ?? record.Name),
+    location: asString(record.location ?? record.Location ?? record.address),
+    address: asString(record.address ?? record.location ?? record.Location),
+    imageUrl: resolveImageUrl(asString(record.imageUrl ?? record.ImageUrl ?? record.urlimage)),
+    status: asString(record.status ?? record.Status, "Stable Operations") as Warehouse["status"],
+    productCount: record.productCount as Warehouse["productCount"] ?? record.ProductCount as Warehouse["productCount"] ?? 0,
+    lastUpdate: asString(record.lastUpdate ?? record.LastUpdate),
+  };
+};
+
+const mapApiInvitation = (data: unknown): Invitation => {
+  const record = asRecord(data);
+
+  return {
+    id: asString(record.id ?? record.Id ?? record.invitationId ?? record.InvitationId),
+    userId: asString(record.userId ?? record.UserId),
+    ownerId: asString(record.ownerId ?? record.OwnerId ?? record.ownerName ?? record.OwnerName),
+    sendTime: asString(record.sendTime ?? record.SendTime ?? record.createdAt ?? record.CreatedAt),
+    warehouseId: readWarehouseId(record),
+    warehouseName: asString(record.warehouseName ?? record.WarehouseName ?? record.name ?? record.Name),
+    address: asString(record.address ?? record.Address ?? record.location ?? record.Location),
+    requestedRole: normalizeRole(record.requestedRole ?? record.RequestedRole ?? record.role ?? record.Role),
+    imageUrl: resolveImageUrl(asString(record.imageUrl ?? record.ImageUrl ?? record.urlimage)),
+  };
+};
+>>>>>>> ff143421cecdff580b32960c1bbdaafc3d3cccde
 
 export const useWarehouse = () => {
   const { setWarehouse } = useWarehouseContext();
@@ -63,7 +122,8 @@ export const useWarehouse = () => {
     setLoading(true);
     try {
       const response = await invitationApi.getAll(); // Gọi API để lấy danh sách invitations
-      setInvitations(response.data || []); // Cập nhật state với dữ liệu mới
+      const items = Array.isArray(response.data) ? response.data : [];
+      setInvitations(items.map(mapApiInvitation)); // Cập nhật state với dữ liệu mới
     } catch {
       toast.error("Failed to fetch invitations");
     } finally {
@@ -109,7 +169,7 @@ export const useWarehouse = () => {
   const createWarehouse = async (name: string, address: string, imageFile?: File | null) => {
     
     // const newWarehouse: Warehouse = {
-    //   warehouseId: Date.now().toString(),
+    //   warehouseId: Date.now(),
     //   name,
     //   address,
     //   lastUpdate: 'Updated 1 minutes ago',
@@ -126,12 +186,25 @@ export const useWarehouse = () => {
     };
     try {
       const response = await warehouseApi.create(form);
+<<<<<<< HEAD
       const getWarehouseResponse = await warehouseApi.getById(response.data.warehouseId);
       const createdWarehouse = { ...mapApiWarehouse(getWarehouseResponse.data), role: "owner" as const };
       
       setWarehouse({
         role: createdWarehouse.role ?? "owner",
         warehouseId: Number(createdWarehouse.warehouseId),
+=======
+      const createdWarehouseId = readWarehouseId(response.data);
+      const getWarehouseResponse = await warehouseApi.getById(createdWarehouseId);
+      const createdWarehouse = {
+        ...mapApiWarehouse(getWarehouseResponse.data),
+        role: "Manager" as const,
+      };
+      
+      setWarehouse({
+        role: "Manager",
+        warehouseId: createdWarehouse.warehouseId,
+>>>>>>> ff143421cecdff580b32960c1bbdaafc3d3cccde
         warehouseName: createdWarehouse.name,
       });
 
@@ -154,8 +227,13 @@ export const useWarehouse = () => {
         const wh = await warehouseApi.getById(invitedWh.warehouseId);
         const mappedWarehouse = mapApiWarehouse(wh.data);
         setWarehouse({
+<<<<<<< HEAD
           role: mappedWarehouse.role ?? "staff",
           warehouseId: Number(mappedWarehouse.warehouseId),
+=======
+          role: "Staff",
+          warehouseId: mappedWarehouse.warehouseId,
+>>>>>>> ff143421cecdff580b32960c1bbdaafc3d3cccde
           warehouseName: mappedWarehouse.name,
         });
 
@@ -271,10 +349,10 @@ export const useWarehouse = () => {
     }
   };
 
-  const manageWarehouse = (id: string | number) => {
+  const manageWarehouse = (id: number) => {
    // console.log(`Navigating to warehouse: ${id}`);
     // Window.location.href = ... hoặc useHistory/useNavigate
-    const wh = warehouses.find(w => String(w.warehouseId) === String(id));
+    const wh = warehouses.find(w => w.warehouseId === id);
     if (wh) {
       setWarehouse({
         role: wh.role ?? null,

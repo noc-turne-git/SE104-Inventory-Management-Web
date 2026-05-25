@@ -114,7 +114,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, onAc
         </div>
         <h3 className="text-xl font-headline font-bold text-[#000000] mb-1">{invitation.warehouseName}</h3>
         <p className="text-sm text-[#666666]">
-          Requested your role as <span className="font-semibold text-[#000000] capitalize">{invitation.Role}</span>
+          Requested your role as <span className="font-semibold text-[#000000] capitalize">{invitation.requestedRole}</span>
         </p>
       </div>
       <div className="flex md:flex-col gap-2 w-full md:w-auto">

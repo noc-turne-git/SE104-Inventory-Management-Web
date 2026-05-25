@@ -21,14 +21,18 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./BackendAPI
-          file: ./BackendAPI/Dockerfile
+          file: ./BackendAPI/dockerfile
           push: true
           tags: huongztomato/se104-backend:latest
+          no-cache: true
 
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
           context: ./Frontend
-          file: ./Frontend/Dockerfile
+          file: ./Frontend/dockerfile
+          build-args: |
+            VITE_API_URL=http://3.106.211.154:5074/api
           push: true
           tags: huongztomato/se104-frontend:latest
+          no-cache: true
