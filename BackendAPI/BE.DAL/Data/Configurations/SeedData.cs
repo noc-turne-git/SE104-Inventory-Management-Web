@@ -67,8 +67,8 @@ internal static class SeedData
         {
             var rows = new List<WarehouseStaff>
             {
-                WarehouseStaff(1, 1, 1, 85000000, 2024, 1, 10),
-                WarehouseStaff(2, 1, 1, 85000000, 2024, 1, 10),
+                WarehouseStaff(1, 1, 1, 0, 2024, 1, 10),
+                WarehouseStaff(2, 1, 1, 0, 2024, 1, 10),
                 WarehouseStaff(1, 2, 2, 65000000, 2024, 2, 1),
                 WarehouseStaff(1, 3, 2, 62000000, 2024, 3, 1),
                 WarehouseStaff(2, 4, 2, 60000000, 2024, 4, 1)
@@ -122,6 +122,32 @@ internal static class SeedData
                     EndTime = date.AddHours(16),
                     Duty = duties[(i + 2) % duties.Length],
                     Note = "Low volume operation"
+                });
+            }
+
+            var weekStart = Utc(2026, 5, 25);
+            for (var i = 0; i < 7; i++)
+            {
+                shifts.Add(new Shift
+                {
+                    ShiftId = 27 + i,
+                    WarehouseId = 1,
+                    UserId = 5,
+                    StartTime = weekStart.AddDays(i).AddHours(8),
+                    EndTime = weekStart.AddDays(i).AddHours(16),
+                    Duty = duties[i % duties.Length],
+                    Note = "This week schedule for staffA1"
+                });
+
+                shifts.Add(new Shift
+                {
+                    ShiftId = 34 + i,
+                    WarehouseId = 2,
+                    UserId = 13,
+                    StartTime = weekStart.AddDays(i).AddHours(13),
+                    EndTime = weekStart.AddDays(i).AddHours(21),
+                    Duty = duties[(i + 1) % duties.Length],
+                    Note = "This week schedule for staffB1"
                 });
             }
 
@@ -192,6 +218,24 @@ internal static class SeedData
                 notes.Add(note);
             }
 
+            for (var i = 0; i < 10; i++)
+            {
+                var noteId = 70 + i;
+                var note = new DeliveryNote
+                {
+                    NoteId = noteId,
+                    WarehouseId = 1,
+                    UserId = PickUser(WarehouseAUsers, i + 26),
+                    Date = Utc(2026, 5, 6 + i, 8 + (i % 8)),
+                    type = "DeliveryNote",
+                    Destination = $"Retail Store A-{noteId:D2}",
+                    Status = PickStatus(noteId)
+                };
+                ((Note)note).Date = note.Date;
+                ((Note)note).Status = note.Status;
+                notes.Add(note);
+            }
+
             return notes.ToArray();
         }
     }
@@ -245,6 +289,29 @@ internal static class SeedData
                     StockQuantity = stockQuantity,
                     DefectiveQuantity = defectiveQuantity,
                     Status = PickStatus(i + 1)
+                };
+                ((Note)note).Date = note.Date;
+                ((Note)note).Status = note.Status;
+                notes.Add(note);
+            }
+
+            for (var i = 0; i < 10; i++)
+            {
+                var noteId = 91 + i;
+                var stockQuantity = 75 + (i * 6);
+                var defectiveQuantity = i % 4 == 0 ? 1 : 0;
+                var note = new GoodsReceipt
+                {
+                    NoteId = noteId,
+                    WarehouseId = 1,
+                    UserId = PickUser(WarehouseAUsers, i + 26),
+                    Date = Utc(2026, 5, 15 + i, 9 + (i % 7)),
+                    type = "GoodsReceipt",
+                    qualityCheckStatus = defectiveQuantity > 0 ? "NEEDS_REVIEW" : "PASSED",
+                    SupplierId = 1 + (i % 5),
+                    StockQuantity = stockQuantity,
+                    DefectiveQuantity = defectiveQuantity,
+                    Status = PickStatus(noteId)
                 };
                 ((Note)note).Date = note.Date;
                 ((Note)note).Status = note.Status;
@@ -384,6 +451,15 @@ internal static class SeedData
         new DamageItem { DamageItemId = 1, NoteId = 90, ProductId = 6, Quantity = 1, Reason = "Broken packaging" }
     ];
 
+    public static Invitation[] Invitations =>
+    [
+        Invitation(1, 1, 3, 1, RoleCode.STAFF, Utc(2026, 1, 1), StatusCode.PENDING),
+        Invitation(2, 2, 1, 2, RoleCode.MANAGER, Utc(2026, 1, 2), StatusCode.APPROVED),
+        Invitation(3, 2, 3, 2, RoleCode.STAFF, Utc(2026, 1, 3), StatusCode.REJECTED),
+        Invitation(4, 1, 5, 1, RoleCode.STAFF, Utc(2026, 5, 25), StatusCode.PENDING),
+        Invitation(5, 2, 13, 1, RoleCode.STAFF, Utc(2026, 5, 25), StatusCode.PENDING)
+    ];
+
     private static User User(int id, string name, string email, string phone, int birthYear, int day) => new()
     {
         UserId = id,
@@ -459,6 +535,24 @@ internal static class SeedData
         Penalty = penalty
     };
 
+    private static Invitation Invitation(
+        int id,
+        int warehouseId,
+        int invitedUserId,
+        int inviterUserId,
+        string role,
+        DateTime createdAt,
+        string status) => new()
+    {
+        InvitationId = id,
+        WarehouseId = warehouseId,
+        InvitedUserId = invitedUserId,
+        InviterUserId = inviterUserId,
+        Role = role,
+        CreatedAt = createdAt,
+        Status = status
+    };
+
     private static int PickUser(int[] users, int index) => users[(index - 1) % users.Length];
 
     private static string PickStatus(int index) => index % 7 == 0
@@ -475,6 +569,11 @@ internal static class SeedData
             return datesB[index - 26].AddHours(9);
         }
 
+        if (index > 17)
+        {
+            return Utc(2026, 5, 1 + (index - 18), 8 + (index % 8));
+        }
+
         var month = 1 + ((index - 1) % 12);
         var year = index <= 13 ? 2025 : 2026;
         var day = 3 + ((index * 5) % 24);
@@ -487,6 +586,11 @@ internal static class SeedData
         {
             var datesB = new[] { Utc(2025, 8, 5), Utc(2025, 12, 3), Utc(2026, 1, 22), Utc(2026, 3, 27), Utc(2026, 5, 9) };
             return datesB[index - 26].AddHours(10);
+        }
+
+        if (index >= 16)
+        {
+            return Utc(2026, 5, 3 + (index - 16), 9 + (index % 7));
         }
 
         var month = 1 + ((index + 1) % 12);
