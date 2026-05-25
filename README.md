@@ -1,113 +1,107 @@
-# SE104 Inventory Management Web
+# SE104 - Inventory Management Web
 
-## 1. Gioi thieu du an
+## 1. Giới thiệu dự án
 
-**SE104 Inventory Management Web (Stockify)** la he thong quan ly kho hang gom:
+**SE104 Inventory Management Web (Stockify)** là hệ thống quản lý kho hàng gồm:
 - **Frontend**: React + TypeScript + Vite.
 - **Backend**: ASP.NET Core Web API (.NET 9), EF Core, JWT.
-- **Database**: PostgreSQL.
-- **Cache**: Redis.
+- **Cơ sở dữ liệu**: PostgreSQL.
+- **Bộ nhớ đệm**: Redis.
 
-He thong ho tro cac nghiep vu chinh:
-- Quan ly kho, san pham, nha cung cap.
-- Quan ly nhan su kho, ca lam, vi pham.
-- Quan ly phieu nhap/xuat/kiem ke.
-- Dashboard thong ke theo vai tro manager/staff.
-- Xac thuc JWT, OTP, forgot/reset password.
+Hệ thống hỗ trợ các nghiệp vụ chính:
+- Quản lý kho, sản phẩm, nhà cung cấp.
+- Quản lý nhân sự kho, ca làm, vi phạm.
+- Quản lý phiếu nhập/xuất/kiểm kê.
+- Dashboard thống kê theo vai trò quản lý/nhân viên.
+- Xác thực JWT, OTP, quên/đặt lại mật khẩu.
 
-## 2. Cong nghe va cau truc
+## 2. Công nghệ và cấu trúc
 
-### Cong nghe chinh
+### Công nghệ chính
 - Frontend: `React 19`, `TypeScript`, `Vite`, `TailwindCSS`, `Axios`.
 - Backend: `ASP.NET Core 9`, `Entity Framework Core`, `Npgsql`, `Hangfire`, `MailKit`.
-- Infrastructure: `PostgreSQL`, `Redis`, `Docker Compose`.
+- Hạ tầng: `PostgreSQL`, `Redis`, `Docker Compose`.
 
-### Cau truc thu muc
+### Cấu trúc thư mục
 ```text
 .
-|- Frontend/             # Ung dung giao dien React + Vite
+|- Frontend/             # Ứng dụng giao diện React + Vite
 |- BackendAPI/           # API .NET + BLL + DAL + Infrastructure
-|- BackendAPI.Tests/     # Test project
-|- docs/                 # SRS, architecture
-|- docker-compose.yml    # Chay full stack bang Docker
-|- .env.example          # Mau bien moi truong
+|- BackendAPI.Tests/     # Dự án kiểm thử
+|- docs/                 # Tài liệu SRS, kiến trúc
+|- docker-compose.yml    # Chạy toàn bộ hệ thống bằng Docker
+|- .env.example          # Mẫu biến môi trường
 ```
 
-## 3. Quy trinh phat trien (Agile Scrum)
+## 3. Quy trình phát triển (Agile Scrum)
 
-Du an duoc phat trien theo huong **Agile Scrum**:
-- Lam viec theo sprint ngan, chia backlog theo user story.
-- Moi tinh nang di qua quy trinh: `Design -> Develop -> Integrate -> Test -> Fix -> Done`.
-- Quan ly ma nguon theo GitHub (branch + pull request + merge).
-- Tich hop CI/CD va Docker de dam bao build/chay nhat quan.
+Dự án được phát triển theo hướng **Agile Scrum**:
+- Làm việc theo sprint ngắn, chia backlog theo user story.
+- Mỗi tính năng đi qua quy trình: `Design -> Develop -> Integrate -> Test -> Fix -> Done`.
+- Quản lý mã nguồn trên GitHub (branch + pull request + merge).
+- Tích hợp CI/CD và Docker để bảo đảm build/chạy nhất quán.
 
-Vai tro dong gop chinh theo lich su commit:
-- **Bich Ngan**: `noc-turne-git`.
-- **Quynh Huong**: `Qhuongg`, `huongdtq06-cloud`.
-- **Bao Chau**: `peanut-32`, `Red Force` (cung email).
-- **Thu Huong**: `Thu-Huong-k24`.
+Vai trò đóng góp chính theo lịch sử commit:
+- **Bích Ngân**: `noc-turne-git`.
+- **Quỳnh Hương**: `Qhuongg`, `huongdtq06-cloud`.
+- **Bảo Châu**: `peanut-32`, `Red Force` (cùng email).
+- **Thu Hương**: `Thu-Huong-k24`.
 
-## 4. Huong dan chay local
+## 4. Hướng dẫn chạy local
 
-### 4.1 Yeu cau moi truong
-- `Node.js` (khuyen nghi >= 20)
+### 4.1 Yêu cầu môi trường
+- `Node.js` (khuyến nghị >= 20)
 - `npm`
 - `.NET SDK 9`
-- `Docker Desktop` (neu chay bang Docker)
+- `Docker Desktop` (nếu chạy bằng Docker)
 
-### 4.2 Cau hinh bien moi truong
-1. Tao file `.env` tu mau:
+### 4.2 Cấu hình biến môi trường
+1. Tạo file `.env` từ mẫu:
 ```bash
 cp .env.example .env
 ```
-2. Cap nhat cac bien quan trong trong `.env`:
+2. Cập nhật các biến quan trọng trong `.env`:
 - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`
 - `Jwt__Key`, `Email__Username`, `Email__Password`
 - `VITE_API_URL`
 - `Cors__AllowedOrigins`
 
-### 4.3 Cach 1 - Chay bang Docker Compose (de nghi)
-Tai thu muc goc:
+### 4.3 Cách 1 - Chạy bằng Docker Compose (đề nghị)
+Tại thư mục gốc:
 ```bash
 docker compose up --build
 ```
 
-Service mac dinh:
+Dịch vụ mặc định:
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:5074`
 - PostgreSQL: `localhost:5432`
 - Redis: `localhost:6379`
 
-### 4.4 Cach 2 - Chay thu cong (khong Docker)
+### 4.4 Cách 2 - Chạy thủ công (không Docker)
 
-1. Chay backend:
+1. Chạy backend:
 ```bash
 cd BackendAPI
 dotnet restore
 dotnet run
 ```
-Backend mac dinh: `http://localhost:5074`.
+Backend mặc định: `http://localhost:5074`.
 
-2. Chay frontend:
+2. Chạy frontend:
 ```bash
 cd Frontend
 npm install
 npm run dev
 ```
-Frontend mac dinh: `http://localhost:5173`.
+Frontend mặc định: `http://localhost:5173`.
 
-Luu y:
-- Frontend doc API URL tu `VITE_API_URL`.
-- Backend tu dong apply EF Core migrations khi startup.
+Lưu ý:
+- Frontend đọc API URL từ `VITE_API_URL`.
+- Backend tự động áp dụng EF Core migrations khi khởi động.
 
-## 5. San pham da deploy (Public IP)
+## 5. Sản phẩm đã deploy (Public IP)
 
-He thong da duoc cau hinh de deploy voi public IP:
+Hệ thống đã được cấu hình để deploy với public IP:
 - **Frontend**: `http://3.106.211.154:5173`
 - **Backend API**: `http://3.106.211.154:5074/api`
-
-Mot so bien moi truong lien quan da duoc khai bao trong `.env.example`:
-- `VITE_API_URL=http://3.106.211.154:5074/api`
-- `Frontend__VerifyEmailUrl=http://3.106.211.154:5173/verify-email`
-- `Cors__AllowedOrigins=http://3.106.211.154:5173,http://localhost:5173`
-
