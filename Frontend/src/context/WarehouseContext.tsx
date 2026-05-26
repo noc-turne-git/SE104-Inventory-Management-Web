@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-type Role = "user" | "owner" | "manager" | "staff" | null;
+type Role = "user" | "Manager" | "Staff" | null;
 
 interface WarehouseState {
   role: Role;
@@ -36,9 +36,8 @@ const normalizeWarehouseId = (warehouseId: unknown) => {
 const normalizeRole = (role: unknown): Role => {
   if (typeof role !== "string") return null;
   const normalized = role.toLowerCase();
-  if (normalized === "owner") return "owner";
-  if (normalized === "manager") return "manager";
-  if (normalized === "staff") return "staff";
+  if (normalized === "manager") return "Manager";
+  if (normalized === "staff") return "Staff";
   if (normalized === "user") return "user";
   return null;
 };

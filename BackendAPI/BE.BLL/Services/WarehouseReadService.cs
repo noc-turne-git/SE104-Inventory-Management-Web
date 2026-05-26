@@ -27,11 +27,7 @@ public class WarehouseReadService : IWarehouseReadService
             .GroupBy(ws => ws.WarehouseId)
             .ToDictionary(
                 group => group.Key,
-                group => group.Any(ws => ws.RoleId == 1)
-                    ? "owner"
-                    : group.Any(ws => ws.RoleId == 2)
-                        ? "manager"
-                        : "staff");
+                group => group.Any(ws => ws.RoleId == 3) ? "staff" : "manager");
         
         // EF Core DbContext is not thread-safe; avoid running multiple queries concurrently on the same scope.
         var productCounts = new Dictionary<int, int>(warehouses.Count);

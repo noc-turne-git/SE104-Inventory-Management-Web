@@ -23,6 +23,8 @@ const getStatusColor = (status: string): string => {
       return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
     case 'rejected':
       return 'bg-red-100 text-red-700 border border-red-200';
+    case 'new':
+      return 'bg-purple-100 text-purple-700 border border-purple-200';
     default:
       return 'bg-gray-100 text-gray-700 border border-gray-200';
   }
@@ -44,8 +46,6 @@ const DeliveryItem = ({ product, quantity }: ItemProps) => {
 }
 
 export const DeliveryNote = ({ delivery, onOpenEditModal, onDelete }: Props) => {
-  const rejectedReason = delivery.reason?.trim() || 'No reason provided';
-
   return (
     <div key={delivery.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
@@ -78,14 +78,6 @@ export const DeliveryNote = ({ delivery, onOpenEditModal, onDelete }: Props) => 
         <p className="text-sm font-bold text-gray-400 uppercase mb-1">Destination:</p>
         <p className="font-medium text-gray-900">{delivery.destination}</p>
       </div>
-
-      {delivery.status === 'rejected' && (
-        <div className="mb-4 w-fit rounded-md border border-red-200 bg-red-50 px-3 py-2">
-          <p className="text-sm font-semibold text-red-700">
-            Reason: {rejectedReason}
-          </p>
-        </div>
-      )}
 
       <div className="mb-4">
         <p className="text-sm font-bold text-gray-400 uppercase mb-3">Package Items:</p>
