@@ -9,7 +9,7 @@ export type WarehouseStatusType = typeof WarehouseStatus[keyof typeof WarehouseS
 
 export interface Warehouse {
   warehouseId: number;
-  role?: "owner" | "manager" | "staff";
+  role?: "Manager" | "Staff";
   name: string;
   address?: string;
   location?: string;
@@ -28,7 +28,7 @@ export interface Invitation {
   warehouseId: number;
   warehouseName: string;
   address: string;
-  requestedRole: "owner" | "manager" | "staff";
+  requestedRole: "Manager" | "Staff";
   imageUrl?: string;
 }
 

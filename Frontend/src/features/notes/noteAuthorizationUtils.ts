@@ -8,6 +8,7 @@ export const noteTabs: { label: string; value: NoteTab }[] = [
   { label: 'APPROVED', value: 'approved' },
   { label: 'REJECTED', value: 'rejected' },
   { label: 'IN PROCESS', value: 'in process' },
+  { label: 'NEW', value: 'new' },
 ];
 
 export const getStatusColor = (status: string): string => {
@@ -20,6 +21,8 @@ export const getStatusColor = (status: string): string => {
       return 'bg-yellow-100 text-yellow-700 border border-yellow-200';
     case 'rejected':
       return 'bg-red-100 text-red-700 border border-red-200';
+    case 'new':
+      return 'bg-purple-100 text-purple-700 border border-purple-200';
     default:
       return 'bg-gray-100 text-gray-700 border border-gray-200';
   }

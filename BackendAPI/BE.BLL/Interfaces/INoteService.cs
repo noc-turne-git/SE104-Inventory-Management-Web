@@ -18,14 +18,6 @@ public enum NoteDecisionResult
     NotPending //Chỉ note pending mới approve/reject được.
 }
 
-public enum NoteDeleteResult
-{
-    Deleted,
-    NotFound,
-    Forbidden,
-    Approved
-}
-
 public interface INoteService
 {
     Task<IEnumerable<Note>> GetMineAsync(int warehouseId, int userId, CancellationToken cancellationToken = default);
@@ -42,7 +34,6 @@ public interface INoteService
     Task<NoteEditResult> UpdateInventoryCheckAsync(int warehouseId, int noteId, int userId, InventoryCheckUpsertDTO model, CancellationToken cancellationToken = default);
 
     Task<NoteDecisionResult> ApproveAsync(int warehouseId, int noteId, CancellationToken cancellationToken = default);
-    Task<NoteDecisionResult> RejectAsync(int warehouseId, int noteId, string reason, CancellationToken cancellationToken = default);
-    Task<NoteDeleteResult> DeleteOwnDeliveryOrReceiptAsync(int warehouseId, int noteId, int userId, CancellationToken cancellationToken = default);
+    Task<NoteDecisionResult> RejectAsync(int warehouseId, int noteId, CancellationToken cancellationToken = default);
 }
 

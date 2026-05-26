@@ -2,28 +2,24 @@ import { Plus, Trash2 } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import { CancelButton, ConfirmButton } from '../../components/common/button/ModalButton';
 import { type Receipt, type ReceiptFormData } from '../../types/note';
-import { type Product } from '../../types/product';
-import { type Supplier } from '../../types/supplier';
 import { useState, useEffect } from 'react';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ReceiptFormData) => Promise<boolean | void> | boolean | void;
+  onSubmit: (data: ReceiptFormData) => void;
   initialData: Receipt | null;
-  products: Product[];
-  suppliers: Supplier[];
 }
 
 const DEFAULT_FORM: ReceiptFormData = {
   dateCreated: new Date().toISOString().split('T')[0],
   supplier: '',
   items: [{ product: '', ordered: 0, received: 0, defective: 0 }],
-  status: 'pending',
+  status: 'new',
   //operator: '',
 };
 
-const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData, products, suppliers }: Props) => {
+const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData }: Props) => {
   const [formData, setFormData] = useState<ReceiptFormData>(DEFAULT_FORM);
 
   useEffect(() => {
@@ -34,37 +30,15 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData, products, suppli
     }
   }, [initialData, isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await onSubmit(formData);
-    if (ok !== false) {
-      onClose();
-    }
+    onSubmit(formData);
+    onClose();
   };
 
   const handleItemChange = (index: number, field: string, value: string | number) => {
     const newItems = [...formData.items];
     newItems[index] = { ...newItems[index], [field]: value };
-    setFormData({ ...formData, items: newItems });
-  };
-
-  const handleSupplierChange = (supplierId: string) => {
-    const selected = suppliers.find((supplier) => String(supplier.id) === supplierId);
-    setFormData({
-      ...formData,
-      supplierId: selected?.id,
-      supplier: selected?.name ?? '',
-    });
-  };
-
-  const handleProductChange = (index: number, productId: string) => {
-    const selected = products.find((product) => String(product.id) === productId);
-    const newItems = [...formData.items];
-    newItems[index] = {
-      ...newItems[index],
-      productId: selected ? Number(selected.id) : undefined,
-      product: selected?.name ?? '',
-    };
     setFormData({ ...formData, items: newItems });
   };
 
@@ -89,47 +63,51 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData, products, suppli
     >
       <form onSubmit={handleSubmit} className="space-y-8">
         
-        {/* Hàng thông tin chung */}
-        <div className='bg-gray-50 p-4 rounded-xl border border-gray-100'>
-          <div className="mb-4">
+        {/* Hàng thông tin chung: Chia 2 cột */}
+        <div className='grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100'>
+          <div>
             <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Supplier *</label>
+            <input
+              className='modal-input w-full'
+              placeholder='Supplier name'
+              value={formData.supplier}
+              onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
+              required
+            />
+          </div>
+          {/* <div>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>operator *</label>
+            <input
+              className='modal-input w-full'
+              placeholder='Name'
+              value={formData.operator}
+              onChange={(e) => setFormData({ ...formData, operator: e.target.value })}
+              required
+            />
+          </div> */}
+          <div>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>
+            <input
+              type="date"
+              className='modal-input w-full'
+              value={formData.dateCreated}
+              onChange={(e) => setFormData({ ...formData, dateCreated: e.target.value })}
+              required
+            />
+          </div>
+          <div>
+            <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Status *</label>
             <select
               className='modal-input w-full'
-              value={formData.supplierId ?? suppliers.find((supplier) => supplier.name.toLowerCase() === formData.supplier?.toLowerCase().trim())?.id ?? ''}
-              onChange={(e) => handleSupplierChange(e.target.value)}
-              required
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
             >
-              <option value="">Select supplier</option>
-              {suppliers.map((supplier) => (
-                <option key={supplier.id} value={supplier.id}>
-                  {supplier.name}
-                </option>
-              ))}
+              <option value="new">New</option>
+              <option value="in process">In Process</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
             </select>
-          </div>
-
-          <div className='grid grid-cols-2 gap-4'>
-            <div>
-              <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Date *</label>
-              <input
-                type="date"
-                className='modal-input w-full'
-                value={formData.dateCreated}
-                onChange={(e) => setFormData({ ...formData, dateCreated: e.target.value })}
-                required
-              />
-            </div>
-            <div>
-              <label className='block text-sm font-semibold text-gray-500 uppercase mb-1'>Status *</label>
-              <select
-                className='modal-input w-full'
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-              >
-                <option value="in process">In Process</option>
-                <option value="pending">Pending</option>
-              </select>
-            </div>
           </div>
         </div>
 
@@ -165,19 +143,13 @@ const ReceiptModal = ({ isOpen, onClose, onSubmit, initialData, products, suppli
                 className="grid grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl shadow-blue-100 shadow-sm transition-all group"
               >
                 <div className="col-span-5">
-                  <select
+                  <input
                     className="modal-input !border-none w-full focus:bg-white"
-                    value={item.productId ?? products.find((product) => product.name.toLowerCase() === item.product?.toLowerCase().trim())?.id ?? ''}
-                    onChange={(e) => handleProductChange(index, e.target.value)}
+                    placeholder="Search or enter product..."
+                    value={item.product}
+                    onChange={(e) => handleItemChange(index, 'product', e.target.value)}
                     required
-                  >
-                    <option value="">Select product</option>
-                    {products.map((product) => (
-                      <option key={product.id} value={product.id}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
                 <div className="col-span-2">
                   <input

@@ -1,7 +1,7 @@
 // --- Base Interface cho các thuộc tính dùng chung ---
 
 //dùng interface thì ko đc
-export type statusNote = 'in process' | 'pending' | 'approved' | 'rejected';
+export type statusNote = 'new' | 'in process' | 'pending' | 'approved' | 'rejected';
 
 interface BaseNote {
   id: string;
@@ -17,7 +17,7 @@ interface BaseNote {
 export interface Delivery extends BaseNote {
   type: 'DELIVERY';
   destination: string;
-  items: { product: string; productId?: number; quantity: number }[];
+  items: { product: string; quantity: number }[];
 }
 
 // 2. Inventory Check
@@ -30,8 +30,7 @@ export interface InventoryCheck extends BaseNote {
 export interface Receipt extends BaseNote {
   type: 'RECEIPT';
   supplier: string;
-  supplierId?: number;
-  items: { product: string; productId?: number; ordered: number; received: number; defective: number }[];
+  items: { product: string; ordered: number; received: number; defective: number }[];
 }
 
 // --- Union Type: Đây là chìa khóa để dùng chung trong Component ---

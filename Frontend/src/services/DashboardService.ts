@@ -46,7 +46,7 @@ const getApprovedDeliveries = (deliveries: Delivery[]) => {
 export const DashboardService = {
   getManagerStats: (products: Product[], notes: WarehouseNote[], deliveries: Delivery[]): DashboardStat[] => {
     const lowStockCount = DashboardService.getLowStockAlerts(products).length;
-    const pendingNotes = notes.filter((note) => note.status === 'pending').length;
+    const pendingNotes = notes.filter((note) => note.status === 'pending' || note.status === 'new').length;
     const currentYear = new Date().getFullYear();
     const revenue = DashboardService.getYearlyFinancialStats(currentYear, deliveries, products);
     const monthlyRevenue = revenue.data.reduce((total, item) => total + item.revenue, 0);

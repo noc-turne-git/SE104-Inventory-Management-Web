@@ -291,7 +291,7 @@ export const MOCK_DELIVERY: Delivery[] = [
     noteNumber: "DN-20260508-001",
     type: 'DELIVERY',
     dateCreated: "2026-05-08 14:00",
-    status: "pending",
+    status: "new",
     destination: "Vĩnh Hải, Nha Trang",
     items: [{ product: "Basic White T-Shirt", quantity: 12 }],
     operator: "Emily Davis"
@@ -301,7 +301,7 @@ export const MOCK_DELIVERY: Delivery[] = [
     noteNumber: "DN-20260510-001",
     type: 'DELIVERY',
     dateCreated: "2026-05-10 10:30",
-    status: "pending",
+    status: "new",
     destination: "Dĩ An, Bình Dương",
     items: [{ product: "Leather Baseball Cap", quantity: 2 }],
     operator: "David Miller"

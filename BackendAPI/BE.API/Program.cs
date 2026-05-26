@@ -23,12 +23,8 @@ using DotNetEnv;
 
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); //giữ nguyên tên claim.
-var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-var envFileName = string.Equals(environmentName, "Test", StringComparison.OrdinalIgnoreCase)
-    ? ".env.test"
-    : ".env";
-var localEnvPath = Path.Combine(Directory.GetCurrentDirectory(), envFileName);
-var rootEnvPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", envFileName));
+var localEnvPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+var rootEnvPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", ".env"));
 if (File.Exists(localEnvPath))
 {
     Env.Load(localEnvPath);
