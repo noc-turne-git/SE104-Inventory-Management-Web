@@ -1,12 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { isAxiosError } from 'axios';
 import OpenModalButton from '../../components/common/button/ModalButton';
 import SearchBar, { FilterBar } from '../../components/common/searchBar';
 import { type Delivery, type DeliveryFormData } from '../../types/note'; 
 import DeliveryModal from '../../features/delivery/DeliveryModal';
 import { useDeliveries } from '../../hooks/useDeliveries';
 import { DeliveryNote } from '../../features/delivery/DeliveryNote';
+import { type Product } from '../../types/product';
+import productApi from '../../api/ProductAPI';
+import { useWarehouseContext } from '../../context/WarehouseContext';
+import { useProducts } from '../../hooks/useProducts';
+import { toast } from 'sonner';
+
+const mapApiProductToProduct = (data: any): Product => ({
+  id: String(data?.productId ?? data?.id ?? ''),
+  image: data?.imageUrl ?? data?.image ?? '',
+  name: data?.name ?? '',
+  sku: data?.sku ?? '',
+  category: data?.category ?? '',
+  description: data?.description ?? '',
+  sellPrice: Number(data?.sellPrice ?? 0),
+  stockQuantity: Number(data?.stockQuantity ?? 0),
+  defectiveQuantity: Number(data?.defectiveQuantity ?? 0),
+  damagedQuantity: Number(data?.damagedQuantity ?? 0),
+  status: (data?.status ?? 'undefined') as Product['status'],
+});
 
 const DeliveryScreen = () => {
+  const { warehouseId } = useWarehouseContext();
   const { 
     deliveries, 
     addDelivery, 
@@ -14,13 +35,35 @@ const DeliveryScreen = () => {
     deleteDelivery, 
     filterDeliveries 
   } = useDeliveries();
+  const { products, replaceProducts } = useProducts([]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Delivery | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  const statusOptions = ['all', 'new', 'in process', 'pending', 'approved', 'rejected'];
+  const statusOptions = ['all', 'in process', 'pending', 'approved', 'rejected'];
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      if (!warehouseId) {
+        replaceProducts([]);
+        return;
+      }
+
+      try {
+        const res = await productApi.getAll(warehouseId);
+        replaceProducts((Array.isArray(res.data) ? res.data : []).map(mapApiProductToProduct));
+      } catch (err: unknown) {
+        replaceProducts([]);
+        if (!isAxiosError(err)) toast.error('Failed to fetch products');
+        else if (!err.response) toast.error('Cannot connect to server. Please check your network.');
+        else toast.error(err.response.data?.message || 'Failed to fetch products');
+      }
+    };
+
+    void loadProducts();
+  }, [warehouseId, replaceProducts]);
 
   const handleSubmit = async (formData: DeliveryFormData) => {
     let ok = false;
@@ -32,6 +75,7 @@ const DeliveryScreen = () => {
     if (ok) {
       handleCloseModal();
     }
+    return ok;
   };
 
   const handleOpenAddModal = () => {
@@ -97,6 +141,7 @@ const DeliveryScreen = () => {
         onClose={handleCloseModal}
         initialData={editingItem}
         onSubmit={handleSubmit}
+        products={products}
       />
     </div>
   );

@@ -1,12 +1,15 @@
 namespace BackendAPI.BE.BLL.Services;
 using AutoMapper;
 using BackendAPI.BE.API.DTO;    
+using BackendAPI.BE.DAL.Data;
 using BackendAPI.BE.DAL.Entities;
 using BackendAPI.BE.DAL.Interfaces;
 using BackendAPI.BE.BLL.Interfaces;
 using BackendAPI.BE.DAL.Constants;
+using Microsoft.EntityFrameworkCore;
 public class WarehouseService : IWarehouseService
 {
+    private readonly AppDbContext _context;
     private readonly IRepository<Warehouse> _warehouseRepository;
     private readonly IRepository<WarehouseStaff> _warehouseStaffRepository;
     private readonly IUserRepository _userRepository;
@@ -16,11 +19,12 @@ public class WarehouseService : IWarehouseService
     private readonly IWarehouseStaffService _warehouseStaffService;
     //private readonly IRepository<InviteToken> _inviteTokenRepository;
 
-    public WarehouseService(IRepository<Warehouse> warehouseRepository, IRepository<WarehouseStaff> warehouseStaffRepository
+    public WarehouseService(AppDbContext context, IRepository<Warehouse> warehouseRepository, IRepository<WarehouseStaff> warehouseStaffRepository
     , IUserRepository userRepository, IMapper mapper, IEmailService emailService
     /*, IRepository<InviteToken> inviteTokenRepository*/, IRepository<Invitation> invitationRepository
     ,IWarehouseStaffService warehouseStaffService)
     {
+        _context = context;
         _warehouseRepository = warehouseRepository;
         _warehouseStaffRepository = warehouseStaffRepository;
         _userRepository = userRepository;
@@ -74,6 +78,74 @@ public class WarehouseService : IWarehouseService
             urlimage = warehouse.urlimage,
             lastUpdate = warehouse.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss")
         };
+    }
+
+    public async Task<bool> DeleteWarehouseAsync(int warehouseId, CancellationToken cancellationToken = default)
+    {
+        var exists = await _context.Warehouses.AnyAsync(w => w.WarehouseId == warehouseId, cancellationToken);
+        if (!exists) return false;
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+        var noteIds = await _context.Notes
+            .Where(n => n.WarehouseId == warehouseId)
+            .Select(n => n.NoteId)
+            .ToListAsync(cancellationToken);
+
+        var productIds = await _context.Products
+            .Where(p => p.WarehouseId == warehouseId)
+            .Select(p => p.ProductId)
+            .ToListAsync(cancellationToken);
+
+        var supplierIds = await _context.Suppliers
+            .Where(s => s.WarehouseId == warehouseId)
+            .Select(s => s.SupplierId)
+            .ToListAsync(cancellationToken);
+
+        await _context.damageItems
+            .Where(item => noteIds.Contains(item.NoteId) || productIds.Contains(item.ProductId))
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.receiptItems
+            .Where(item => noteIds.Contains(item.NoteId) || productIds.Contains(item.ProductId))
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.deliveryItems
+            .Where(item => noteIds.Contains(item.NoteId) || productIds.Contains(item.ProductId))
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.inventoryCheckItems
+            .Where(item => noteIds.Contains(item.NoteId) || productIds.Contains(item.ProductId))
+            .ExecuteDeleteAsync(cancellationToken);
+
+        await _context.ProductSuppliers
+            .Where(ps => productIds.Contains(ps.ProductId) || supplierIds.Contains(ps.SupplierId))
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.Notes
+            .Where(n => n.WarehouseId == warehouseId)
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.InfractionTickets
+            .Where(i => i.WarehouseId == warehouseId)
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.Invitations
+            .Where(i => i.WarehouseId == warehouseId)
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.Shifts
+            .Where(s => s.WarehouseId == warehouseId)
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.WarehouseStaffs
+            .Where(ws => ws.WarehouseId == warehouseId)
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.Products
+            .Where(p => p.WarehouseId == warehouseId)
+            .ExecuteDeleteAsync(cancellationToken);
+        await _context.Suppliers
+            .Where(s => s.WarehouseId == warehouseId)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        var deleted = await _context.Warehouses
+            .Where(w => w.WarehouseId == warehouseId)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        await transaction.CommitAsync(cancellationToken);
+        return deleted > 0;
     }
 
     public async Task<InviteResponseDTO> InviteStaffAsync(InviteStaffDTO model, int inviterUserId)

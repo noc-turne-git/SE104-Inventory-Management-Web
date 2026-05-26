@@ -49,7 +49,7 @@ export const MOCK_RECEIPTS: Receipt[] = [
     items: [
       { product: "USB-C Hub", ordered: 300, received: 290, defective: 10 }
     ],
-    status: "new",
+    status: "pending",
     operator: "Michael Scott"
   },
   {

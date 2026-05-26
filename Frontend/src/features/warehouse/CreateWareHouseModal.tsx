@@ -1,42 +1,59 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Icons } from "./iconWareHouse";
+import type { Warehouse } from "../../types/warehouse";
 
 interface CreateWareHouseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreate: (name: string, address: string, imageFile?: File | null) => void;
+  onUpdate?: (id: string, name: string, address: string, imageFile?: File | null) => void;
+  warehouse?: Warehouse | null;
 }
 
 export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
   isOpen,
   onClose,
   onCreate,
+  onUpdate,
+  warehouse,
 }) => {
   const [name, setName] = React.useState("");
-  const [city, setCity] = React.useState("");
-  const [country, setCountry] = React.useState("");
+  const [location, setLocation] = React.useState("");
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = React.useState("");
+  const isEditing = Boolean(warehouse);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    setName(warehouse?.name ?? "");
+    setLocation(warehouse?.location ?? warehouse?.address ?? "");
+    setImageFile(null);
+    setPreviewUrl(warehouse?.imageUrl ?? "");
+  }, [isOpen, warehouse]);
 
   React.useEffect(() => {
     if (!imageFile) {
-      setPreviewUrl("");
+      setPreviewUrl(warehouse?.imageUrl ?? "");
       return;
     }
 
     const url = URL.createObjectURL(imageFile); //Browser tạo URL tạm cho file local.
     setPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
-  }, [imageFile]);
+  }, [imageFile, warehouse]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && city && country) {
-      onCreate(name, `${city}, ${country}`, imageFile);
+    if (name && location) {
+      if (warehouse && onUpdate) {
+        onUpdate(warehouse.warehouseId, name, location, imageFile);
+      } else {
+        onCreate(name, location, imageFile);
+      }
       setName("");
-      setCity("");
-      setCountry("");
+      setLocation("");
       setImageFile(null);
       onClose();
     }
@@ -60,8 +77,12 @@ export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
             className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden"
           >
             <div className="p-8">
-              <h2 className="text-4xl font-headline font-extrabold text-inverse-surface mb-2">New Warehouse</h2>
-              <p className="text-on-surface-variant mb-8">Initialize a new logistics node within the Stokify network.</p>
+              <h2 className="text-4xl font-headline font-extrabold text-inverse-surface mb-2">
+                {isEditing ? "Edit Warehouse" : "New Warehouse"}
+              </h2>
+              <p className="text-on-surface-variant mb-8">
+                {isEditing ? "Update warehouse information and photo." : "Initialize a new logistics node within the Stokify network."}
+              </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 gap-6">
@@ -77,34 +98,18 @@ export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
                     />
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-bold text-inverse-surface mb-2">City</label>
-                      <div className="relative">
-                        <Icons.MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-                        <input
-                          type="text"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="Chicago"
-                          className="w-full pl-10 pr-4 py-3 bg-[#F8FAFC] border-none rounded-lg focus:ring-2 focus:ring-[#2563EB] outline-none placeholder:text-slate-600 font-headline transition-all"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-inverse-surface mb-2">Country</label>
-                      <div className="relative">
-                        <Icons.MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-                        <input
-                          type="text"
-                          value={country}
-                          onChange={(e) => setCountry(e.target.value)}
-                          placeholder="United States"
-                          className="w-full pl-10 pr-4 py-3 bg-[#F8FAFC] border-none rounded-lg focus:ring-2 focus:ring-[#2563EB] outline-none placeholder:text-slate-600 font-headline transition-all"
-                          required
-                        />
-                      </div>
+                  <div>
+                    <label className="block text-sm font-bold text-inverse-surface mb-2">Location</label>
+                    <div className="relative">
+                      <Icons.MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+                      <input
+                        type="text"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        placeholder="Chicago, United States"
+                        className="w-full pl-10 pr-4 py-3 bg-[#F8FAFC] border-none rounded-lg focus:ring-2 focus:ring-[#2563EB] outline-none placeholder:text-slate-600 font-headline transition-all"
+                        required
+                      />
                     </div>
                   </div>
 
@@ -142,7 +147,7 @@ export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
                     type="submit"
                     className="px-8 py-2.5 bg-[#1E3A8A] text-white text-sm font-bold rounded-lg hover:bg-[#2563EB] transition-all shadow-md active:scale-95 font-headline"
                   >
-                    Create Warehouse
+                    {isEditing ? "Save Changes" : "Create Warehouse"}
                   </button>
                 </div>
               </form>
