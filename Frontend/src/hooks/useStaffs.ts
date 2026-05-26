@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { isAxiosError } from "axios";
 import staffApi from "../api/StaffAPI";
+import invitationApi from "../api/InvitationAPI";
 import infractionApi from "../api/InfractionAPI";
 import { type Staff, type Infractions } from "../types/staff";
 import { toast } from "sonner";
@@ -64,19 +65,15 @@ export const useStaff = (warehouseId?: number | null) => {
       }
 
       try {
-        const res = await staffApi.create(warehouseId, {
+        await invitationApi.create({
+          warehouseId,
           email: data.email,
           role: data.role,
-          accountStatus: data.accountStatus,
-          salary: data.salary,
-          hireDate: data.hireDate,
         });
-
-        setStaffs((prev) => [...prev, normalizeStaff(res.data)]);
-        toast.success("Staff added successfully");
+        toast.success("Invitation sent successfully");
         return true;
       } catch (err: unknown) {
-        toast.error(getStaffErrorMessage(err, "Create failed"));
+        toast.error(getStaffErrorMessage(err, "Send invitation failed"));
         return false;
       }
     },

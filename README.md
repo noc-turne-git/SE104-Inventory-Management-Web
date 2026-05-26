@@ -1,120 +1,107 @@
 # SE104 - Inventory Management Web
 
-Ung dung quan ly kho gom:
-- `Frontend`: React + Vite + TypeScript
-- `BackendAPI`: ASP.NET Core 9 + Entity Framework Core + PostgreSQL + Redis
+## 1. Giới thiệu dự án
 
-## 1. Yeu cau moi truong
+**SE104 Inventory Management Web (Stockify)** là hệ thống quản lý kho hàng gồm:
+- **Frontend**: React + TypeScript + Vite.
+- **Backend**: ASP.NET Core Web API (.NET 9), EF Core, JWT.
+- **Cơ sở dữ liệu**: PostgreSQL.
+- **Bộ nhớ đệm**: Redis.
 
-Cai san cac cong cu sau:
-- Node.js 20+
-- npm 10+
-- .NET SDK 9.0
-- Docker Desktop (neu chay bang Docker Compose)
-- PostgreSQL 16 va Redis 7 (neu chay local khong dung Docker)
+Hệ thống hỗ trợ các nghiệp vụ chính:
+- Quản lý kho, sản phẩm, nhà cung cấp.
+- Quản lý nhân sự kho, ca làm, vi phạm.
+- Quản lý phiếu nhập/xuất/kiểm kê.
+- Dashboard thống kê theo vai trò quản lý/nhân viên.
+- Xác thực JWT, OTP, quên/đặt lại mật khẩu.
 
-## 2. Cau truc thu muc
+## 2. Công nghệ và cấu trúc
 
-- `Frontend`: ma nguon giao dien
-- `BackendAPI`: ma nguon API
-- `docker-compose.yml`: chay full stack bang Docker
+### Công nghệ chính
+- Frontend: `React 19`, `TypeScript`, `Vite`, `TailwindCSS`, `Axios`.
+- Backend: `ASP.NET Core 9`, `Entity Framework Core`, `Npgsql`, `Hangfire`, `MailKit`.
+- Hạ tầng: `PostgreSQL`, `Redis`, `Docker Compose`.
 
-## 3. Cau hinh mac dinh
+### Cấu trúc thư mục
+```text
+.
+|- Frontend/             # Ứng dụng giao diện React + Vite
+|- BackendAPI/           # API .NET + BLL + DAL + Infrastructure
+|- BackendAPI.Tests/     # Dự án kiểm thử
+|- docs/                 # Tài liệu SRS, kiến trúc
+|- docker-compose.yml    # Chạy toàn bộ hệ thống bằng Docker
+|- .env.example          # Mẫu biến môi trường
+```
 
-Mac dinh project dung:
+## 3. Quy trình phát triển (Agile Scrum)
+
+Dự án được phát triển theo hướng **Agile Scrum**:
+- Làm việc theo sprint ngắn, chia backlog theo user story.
+- Mỗi tính năng đi qua quy trình: `Design -> Develop -> Integrate -> Test -> Fix -> Done`.
+- Quản lý mã nguồn trên GitHub (branch + pull request + merge).
+- Tích hợp CI/CD và Docker để bảo đảm build/chạy nhất quán.
+
+Vai trò đóng góp chính theo lịch sử commit:
+- **Bích Ngân**: `noc-turne-git`.
+- **Quỳnh Hương**: `Qhuongg`, `huongdtq06-cloud`.
+- **Bảo Châu**: `peanut-32`, `Red Force` (cùng email).
+- **Thu Hương**: `Thu-Huong-k24`.
+
+## 4. Hướng dẫn chạy local
+
+### 4.1 Yêu cầu môi trường
+- `Node.js` (khuyến nghị >= 20)
+- `npm`
+- `.NET SDK 9`
+- `Docker Desktop` (nếu chạy bằng Docker)
+
+### 4.2 Cấu hình biến môi trường
+1. Tạo file `.env` từ mẫu:
+```bash
+cp .env.example .env
+```
+2. Cập nhật các biến quan trọng trong `.env`:
+- `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`
+- `Jwt__Key`, `Email__Username`, `Email__Password`
+- `VITE_API_URL`
+- `Cors__AllowedOrigins`
+
+### 4.3 Cách 1 - Chạy bằng Docker Compose (đề nghị)
+Tại thư mục gốc:
+```bash
+docker compose up --build
+```
+
+Dịch vụ mặc định:
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:5074`
 - PostgreSQL: `localhost:5432`
 - Redis: `localhost:6379`
 
-Frontend goi API tai:
-- `Frontend/src/api/axiosClient.ts` -> `http://localhost:5074/api`
+### 4.4 Cách 2 - Chạy thủ công (không Docker)
 
-Backend doc cau hinh tu:
-- `BackendAPI/appsettings.json`
-
-## 4. Chay bang Docker Compose (khuyen nghi)
-
-Tai thu muc goc project, chay:
-
-```bash
-docker compose up --build
-```
-
-Sau khi chay thanh cong:
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:5074`
-- PostgreSQL va Redis tu khoi tao theo `docker-compose.yml`
-
-Dung he thong:
-
-```bash
-docker compose down
-```
-
-Xoa luon volume database:
-
-```bash
-docker compose down -v
-```
-
-## 5. Chay local (khong dung Docker)
-
-### Buoc 1: Khoi dong PostgreSQL va Redis
-
-Dam bao co:
-- Database `TESTQLK`
-- User `postgres`
-- Password `postgres`
-
-hoac chinh lai chuoi ket noi trong `BackendAPI/appsettings.json`.
-
-### Buoc 2: Chay Backend
-
+1. Chạy backend:
 ```bash
 cd BackendAPI
 dotnet restore
 dotnet run
 ```
+Backend mặc định: `http://localhost:5074`.
 
-Ghi chu:
-- API chay tai `http://localhost:5074`
-- Migration EF Core duoc tu dong ap dung khi ung dung khoi dong
-
-### Buoc 3: Chay Frontend
-
-Mo terminal moi:
-
+2. Chạy frontend:
 ```bash
 cd Frontend
 npm install
 npm run dev
 ```
+Frontend mặc định: `http://localhost:5173`.
 
-Truy cap: `http://localhost:5173`
+Lưu ý:
+- Frontend đọc API URL từ `VITE_API_URL`.
+- Backend tự động áp dụng EF Core migrations khi khởi động.
 
-## 6. Mot so lenh huu ich
+## 5. Sản phẩm đã deploy (Public IP)
 
-### Frontend
-
-```bash
-cd Frontend
-npm run dev
-npm run build
-npm run preview
-npm run lint
-```
-
-### Backend
-
-```bash
-cd BackendAPI
-dotnet restore
-dotnet build
-dotnet run
-```
-
-## 7. Luu y
-
-- CORS trong backend da mo cho `http://localhost:5173`, `http://localhost:5174`, `http://localhost:4173`.
-- Neu doi port backend, can cap nhat lai `baseURL` trong `Frontend/src/api/axiosClient.ts`.
+Hệ thống đã được cấu hình để deploy với public IP:
+- **Frontend**: `http://3.106.211.154:5173`
+- **Backend API**: `http://3.106.211.154:5074/api`
