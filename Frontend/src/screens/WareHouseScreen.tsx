@@ -17,10 +17,13 @@ const WareHouseContent = () => {
     loading,
     invitations,
     isModalOpen,
+    editingWarehouse,
     openModal,
+    openEditModal,
     closeModal,
     createWarehouse,
-    updateWarehouseImage,
+    updateWarehouse,
+    deleteWarehouse,
     acceptInvitation,
     declineInvitation,
     manageWarehouse,
@@ -113,7 +116,7 @@ const WareHouseContent = () => {
             </div>
             <button onClick={() => setIsProfileOpen(true)}
             className="h-8 w-8 rounded-full bg-[#1E3A8A] flex items-center justify-center text-white text-xs font-bold hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:bg-[#2563EB] active:scale-90 active:shadow-inner border border-white/10">
-              {role === "Manager" ? 'M' : 'S'}
+              {role === "owner" ? 'O' : role === "manager" ? 'M' : 'S'}
             </button>
           </div>
           <ProfileFeature 
@@ -173,7 +176,8 @@ const WareHouseContent = () => {
                 key={wh.warehouseId} 
                 warehouse={wh} 
                 onManage={() => manageWarehouse(wh.warehouseId)}
-                onUpdateImage={updateWarehouseImage}
+                onEdit={openEditModal}
+                onDelete={(warehouse) => deleteWarehouse(warehouse.warehouseId)}
               />
             ))}
             <CreateWarehousePlaceholder onClick={openModal} />
@@ -187,6 +191,8 @@ const WareHouseContent = () => {
         isOpen={isModalOpen} 
         onClose={closeModal} 
         onCreate={createWarehouse}
+        onUpdate={updateWarehouse}
+        warehouse={editingWarehouse}
       />
     </div>
   );

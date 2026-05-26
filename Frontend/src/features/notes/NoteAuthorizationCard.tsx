@@ -101,6 +101,12 @@ const NoteAuthorizationCard = ({
               </span>
             </div>
 
+            {note.status === 'rejected' && note.reason && (
+              <p className="mt-2 w-fit rounded-md border border-red-200 bg-red-50 px-3 py-1 text-sm font-semibold text-red-700">
+                Reason: {note.reason}
+              </p>
+            )}
+
             {note.type === 'DELIVERY' && (
               <p className="mt-1 text-sm text-gray-500">To: {note.destination}</p>
             )}
@@ -127,7 +133,7 @@ const NoteAuthorizationCard = ({
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
-          {note.status !== 'rejected' && note.status !== 'in process' && note.status !== 'new' && (
+          {note.status !== 'rejected' && note.status !== 'in process' && (
             <button
               onClick={onReject}
               className="flex items-center gap-2 px-4 py-2 text-red-600 font-semibold text-base hover:bg-red-50 rounded-lg transition-all"
@@ -136,7 +142,7 @@ const NoteAuthorizationCard = ({
             </button>
           )}
 
-          {note.status !== 'approved' && note.status !== 'in process' && note.status !== 'new' && (
+          {note.status !== 'approved' && note.status !== 'in process' && (
             <button
               onClick={onApprove}
               className="flex items-center gap-2 px-5 py-2 bg-slate-900 text-white font-semibold text-base rounded-lg hover:bg-blue-600 transition-all shadow-sm"

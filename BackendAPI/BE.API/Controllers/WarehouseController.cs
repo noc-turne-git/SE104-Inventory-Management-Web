@@ -5,7 +5,6 @@ using BackendAPI.BE.API.DTO;
 using BackendAPI.BE.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using BackendAPI.BE.DAL.Entities;
 using BackendAPI.BE.BLL.Interfaces;
 using BackendAPI.BE.DAL.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -53,12 +52,31 @@ public class WarehouseController : ControllerBase
     [Authorize(Policy = PermissionCode.WAREHOUSE_MANAGE)]
     public async Task<IActionResult> UpdateWarehouse(int warehouseId, [FromForm] UpdateWarehouseDTO model)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var existing = await _warehouseReads.GetByIdAsync(warehouseId, CancellationToken.None);
+        if (existing == null) return NotFound();
+        if (existing.CreatorId != userId) return Forbid();
+
         if (model.ImageFile != null)
             model.urlimage = await SaveImageAsync(model.ImageFile, "warehouses");
 
         var result = await _warehouseService.UpdateWarehouseAsync(warehouseId, model);
         if (result == null) return NotFound();
         return Ok(result);
+    }
+
+    [HttpDelete("/api/warehouses/{warehouseId:int}")]
+    [Authorize(Policy = PermissionCode.WAREHOUSE_MANAGE)]
+    public async Task<IActionResult> DeleteWarehouse(int warehouseId, CancellationToken cancellationToken)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var existing = await _warehouseReads.GetByIdAsync(warehouseId, cancellationToken);
+        if (existing == null) return NotFound();
+        if (existing.CreatorId != userId) return Forbid();
+
+        var deleted = await _warehouseService.DeleteWarehouseAsync(warehouseId, cancellationToken);
+        if (!deleted) return NotFound();
+        return NoContent();
     }
 
     [HttpPost("invite-staff")]

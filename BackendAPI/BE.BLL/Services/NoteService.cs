@@ -42,6 +42,21 @@ public class NoteService : INoteService
     public Task<IEnumerable<Note>> GetAllAsync(int warehouseId, CancellationToken cancellationToken = default)
         => _notes.GetAsync(n => n.WarehouseId == warehouseId, cancellationToken);
 
+    private static string GetStaffEditableStatus(string? status)
+    {
+        var normalized = (status ?? string.Empty).Trim().Replace(" ", "_").ToUpperInvariant();
+        return normalized == StatusCode.IN_PROCESS ? StatusCode.IN_PROCESS : StatusCode.PENDING;
+    }
+
+    private static bool IsStaffEditableStatus(string status)
+        => status == StatusCode.PENDING || status == StatusCode.IN_PROCESS;
+
+    private static bool CanApprove(string status)
+        => status == StatusCode.PENDING || status == StatusCode.REJECTED;
+
+    private static bool CanReject(string status)
+        => status == StatusCode.PENDING || status == StatusCode.APPROVED;
+
     public async Task<GoodsReceipt> CreateGoodsReceiptAsync(int warehouseId, int userId, GoodsReceiptUpsertDTO model, CancellationToken cancellationToken = default)
     {
         var totalReceived = model.Items.Sum(i => Math.Max(0, i.Received));
@@ -53,7 +68,7 @@ public class NoteService : INoteService
             UserId = userId,
             Date = DateTime.UtcNow,
             type = "GoodsReceipt",
-            Status = StatusCode.PENDING,
+            Status = GetStaffEditableStatus(model.Status),
             SupplierId = model.SupplierId,
             qualityCheckStatus = model.QualityCheckStatus,
             StockQuantity = totalReceived,
@@ -86,7 +101,7 @@ public class NoteService : INoteService
             Date = DateTime.UtcNow,
             type = "DeliveryNote",
             Destination = model.Destination,
-            Status = StatusCode.PENDING
+            Status = GetStaffEditableStatus(model.Status)
         };
 
         await _notes.AddAsync(entity, cancellationToken);
@@ -128,7 +143,7 @@ public class NoteService : INoteService
             UserId = userId,
             Date = DateTime.UtcNow,
             type = "InventoryCheckNote",
-            Status = StatusCode.PENDING
+            Status = GetStaffEditableStatus(model.Status)
         };
 
         await _notes.AddAsync(entity, cancellationToken);
@@ -153,11 +168,12 @@ public class NoteService : INoteService
         var note = await _notes.GetByIdAsync(noteId, cancellationToken);
         if (note == null || note.WarehouseId != warehouseId) return NoteEditResult.NotFound;
         if (note.UserId != userId) return NoteEditResult.Forbidden;
-        if (note.Status != StatusCode.PENDING) return NoteEditResult.NotPending;
+        if (!IsStaffEditableStatus(note.Status)) return NoteEditResult.NotPending;
 
         if (note is not GoodsReceipt entity) return NoteEditResult.NotFound;
 
         entity.SupplierId = model.SupplierId;
+        entity.Status = GetStaffEditableStatus(model.Status);
         entity.qualityCheckStatus = model.QualityCheckStatus;
         entity.StockQuantity = model.Items.Sum(i => Math.Max(0, i.Received));
         entity.DefectiveQuantity = model.Items.Sum(i => Math.Max(0, i.Defective));
@@ -188,12 +204,12 @@ public class NoteService : INoteService
         var note = await _notes.GetByIdAsync(noteId, cancellationToken);
         if (note == null || note.WarehouseId != warehouseId) return NoteEditResult.NotFound;
         if (note.UserId != userId) return NoteEditResult.Forbidden;
-        if (note.Status != StatusCode.PENDING) return NoteEditResult.NotPending;
+        if (!IsStaffEditableStatus(note.Status)) return NoteEditResult.NotPending;
 
         if (note is not DeliveryNote entity) return NoteEditResult.NotFound;
 
         entity.Destination = model.Destination;
-        // keep status unchanged (approve/reject handled separately)
+        entity.Status = GetStaffEditableStatus(model.Status);
 
         var existingItems = await _db.deliveryItems.Where(i => i.NoteId == noteId).ToListAsync(cancellationToken);
         _db.deliveryItems.RemoveRange(existingItems);
@@ -234,9 +250,10 @@ public class NoteService : INoteService
         var note = await _notes.GetByIdAsync(noteId, cancellationToken);
         if (note == null || note.WarehouseId != warehouseId) return NoteEditResult.NotFound;
         if (note.UserId != userId) return NoteEditResult.Forbidden;
-        if (note.Status != StatusCode.PENDING) return NoteEditResult.NotPending;
+        if (!IsStaffEditableStatus(note.Status)) return NoteEditResult.NotPending;
 
         if (note is not InventoryCheckNote entity) return NoteEditResult.NotFound;
+        entity.Status = GetStaffEditableStatus(model.Status);
 
         var existingItems = await _db.inventoryCheckItems.Where(i => i.NoteId == noteId).ToListAsync(cancellationToken);
         _db.inventoryCheckItems.RemoveRange(existingItems);
@@ -262,11 +279,38 @@ public class NoteService : INoteService
     {
         var note = await _notes.GetByIdAsync(noteId, cancellationToken);
         if (note == null || note.WarehouseId != warehouseId) return NoteDecisionResult.NotFound;
-        if (note.Status != StatusCode.PENDING) return NoteDecisionResult.NotPending;
+        if (!CanApprove(note.Status)) return NoteDecisionResult.NotPending;
 
         note.Status = StatusCode.APPROVED;
+        note.Reason = null;
         await _notes.UpdateAsync(note, cancellationToken);
 
+        await ApplyApprovalEffectsAsync(note, warehouseId, noteId, cancellationToken);
+
+        return NoteDecisionResult.Succeeded;
+    }
+
+    public async Task<NoteDecisionResult> RejectAsync(int warehouseId, int noteId, string reason, CancellationToken cancellationToken = default)
+    {
+        var note = await _notes.GetByIdAsync(noteId, cancellationToken);
+        if (note == null || note.WarehouseId != warehouseId) return NoteDecisionResult.NotFound;
+        if (!CanReject(note.Status)) return NoteDecisionResult.NotPending;
+
+        var wasApproved = note.Status == StatusCode.APPROVED;
+        note.Status = StatusCode.REJECTED;
+        note.Reason = reason;
+        await _notes.UpdateAsync(note, cancellationToken);
+
+        if (wasApproved)
+        {
+            await RevertApprovalEffectsAsync(note, warehouseId, noteId, cancellationToken);
+        }
+
+        return NoteDecisionResult.Succeeded;
+    }
+
+    private async Task ApplyApprovalEffectsAsync(Note note, int warehouseId, int noteId, CancellationToken cancellationToken)
+    {
         if (note is GoodsReceipt)
         {
             var items = await _receiptItems.GetAsync(i => i.NoteId == noteId, cancellationToken);
@@ -313,19 +357,57 @@ public class NoteService : INoteService
                 await _products.UpdateAsync(product, cancellationToken);
             }
         }
-
-        return NoteDecisionResult.Succeeded;
     }
 
-    public async Task<NoteDecisionResult> RejectAsync(int warehouseId, int noteId, CancellationToken cancellationToken = default)
+    private async Task RevertApprovalEffectsAsync(Note note, int warehouseId, int noteId, CancellationToken cancellationToken)
+    {
+        if (note is GoodsReceipt)
+        {
+            var items = await _receiptItems.GetAsync(i => i.NoteId == noteId, cancellationToken);
+            foreach (var item in items)
+            {
+                var product = await _products.GetByIdAsync(item.ProductId, cancellationToken);
+                if (product == null || product.WarehouseId != warehouseId) continue;
+                product.StockQuantity = Math.Max(0, product.StockQuantity - item.Quantity);
+                await _products.UpdateAsync(product, cancellationToken);
+            }
+        }
+        else if (note is DeliveryNote)
+        {
+            var items = await _deliveryItems.GetAsync(i => i.NoteId == noteId, cancellationToken);
+            foreach (var item in items)
+            {
+                var product = await _products.GetByIdAsync(item.ProductId, cancellationToken);
+                if (product == null || product.WarehouseId != warehouseId) continue;
+                product.StockQuantity += item.Quantity;
+                await _products.UpdateAsync(product, cancellationToken);
+            }
+        }
+        else if (note is DamageNote)
+        {
+            var items = await _damageItems.GetAsync(i => i.NoteId == noteId, cancellationToken);
+            foreach (var item in items)
+            {
+                var product = await _products.GetByIdAsync(item.ProductId, cancellationToken);
+                if (product == null || product.WarehouseId != warehouseId) continue;
+                product.StockQuantity += item.Quantity;
+                product.DamagedQuantity = Math.Max(0, product.DamagedQuantity - item.Quantity);
+                await _products.UpdateAsync(product, cancellationToken);
+            }
+        }
+    }
+
+    public async Task<NoteDeleteResult> DeleteOwnDeliveryOrReceiptAsync(int warehouseId, int noteId, int userId, CancellationToken cancellationToken = default)
     {
         var note = await _notes.GetByIdAsync(noteId, cancellationToken);
-        if (note == null || note.WarehouseId != warehouseId) return NoteDecisionResult.NotFound;
-        if (note.Status != StatusCode.PENDING) return NoteDecisionResult.NotPending;
+        if (note == null || note.WarehouseId != warehouseId) return NoteDeleteResult.NotFound;
+        if (note.UserId != userId) return NoteDeleteResult.Forbidden;
+        if (string.Equals(note.Status, StatusCode.APPROVED, StringComparison.OrdinalIgnoreCase)) return NoteDeleteResult.Approved;
+        if (note is not DeliveryNote && note is not GoodsReceipt) return NoteDeleteResult.NotFound;
 
-        note.Status = StatusCode.REJECTED;
-        await _notes.UpdateAsync(note, cancellationToken);
-        return NoteDecisionResult.Succeeded;
+        await _notes.DeleteAsync(noteId, cancellationToken);
+        return NoteDeleteResult.Deleted;
     }
+
 }
 

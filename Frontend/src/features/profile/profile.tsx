@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User as UserIcon, Mail, Shield, Save, Calendar, Phone, MapPin, CheckCircle2 } from 'lucide-react';
+import { User as UserIcon, Mail, Shield, Save, Calendar, Phone, MapPin, CheckCircle2, Plus } from 'lucide-react';
 import { Modal } from './ProfileModal';
 import { useAuth } from '../../context/AuthContext';
 import { useWarehouseContext } from '../../context/WarehouseContext';
@@ -83,8 +83,11 @@ export function ProfileFeature({ isOpen, onClose }: ProfileFeatureProps) {
         <div
           className="w-20 h-20 bg-[#4f46e5] rounded-full flex items-center justify-center text-white text-4xl font-semibold shadow-inner"
         >
-          {role === 'Manager' ? 'M' : 'S'}
-        </div>
+          {role === 'owner' ? 'O' : role === 'manager' ? 'M' : 'S'}
+          <div className="absolute inset-0 bg-black/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <Plus className="w-5 h-5 text-white/80" />
+          </div>
+        </div>  
         <div>
           <h2 className="text-2xl font-bold text-[#1e293b]">{formData?.fullName || 'Unknown user'}</h2>
           <p className="text-[#64748b] text-lg capitalize">{role || 'user'}</p>

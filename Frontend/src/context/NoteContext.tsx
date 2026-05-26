@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { isAxiosError } from 'axios';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import warehouseNotesApi from '../api/WarehouseNotesAPI';
 import { getErrorMessage } from '../services/notes/noteErrors';
@@ -24,6 +26,76 @@ const initialData: WarehouseNote[] = [];
 export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [allNotes, setAllNotes] = useState<WarehouseNote[]>(initialData);
   const { warehouseId, role } = useWarehouseContext();
+  const location = useLocation();
+
+  const getErrorMessage = (err: unknown, fallback: string) => {
+    if (!isAxiosError(err)) return fallback;
+    return err.response?.data?.message || fallback;
+  };
+
+  const normalizeStatus = (status: string): WarehouseNote['status'] => {
+    const lowered = status.trim().toLowerCase();
+    if (lowered === 'approved') return 'approved';
+    if (lowered === 'rejected') return 'rejected';
+    if (lowered === 'in process' || lowered === 'in_process') return 'in process';
+    return 'pending';
+  };
+
+  const toDelivery = (raw: any): Delivery => ({
+    id: String(raw.id ?? ''),
+    warehouseId: String(warehouseId ?? ''),
+    noteNumber: raw.noteNumber ?? '',
+    dateCreated: raw.dateCreated ?? '',
+    status: normalizeStatus(raw.status ?? 'pending'),
+    reason: raw.reason,
+    operator: raw.operator ?? '',
+    type: 'DELIVERY',
+    destination: raw.destination ?? '',
+    items: Array.isArray(raw.items)
+      ? raw.items.map((it: any) => ({
+          product: it.product ?? '',
+          quantity: Number(it.quantity ?? 0),
+        }))
+      : [],
+  });
+
+  const toReceipt = (raw: any): Receipt => ({
+    id: String(raw.id ?? ''),
+    warehouseId: String(warehouseId ?? ''),
+    noteNumber: raw.noteNumber ?? '',
+    dateCreated: raw.dateCreated ?? '',
+    status: normalizeStatus(raw.status ?? 'pending'),
+    reason: raw.reason,
+    operator: raw.operator ?? '',
+    type: 'RECEIPT',
+    supplier: raw.supplier ?? '',
+    items: Array.isArray(raw.items)
+      ? raw.items.map((it: any) => ({
+          product: it.product ?? '',
+          ordered: Number(it.ordered ?? 0),
+          received: Number(it.received ?? 0),
+          defective: Number(it.defective ?? 0),
+        }))
+      : [],
+  });
+
+  const toInventoryCheck = (raw: any): InventoryCheck => ({
+    id: String(raw.id ?? ''),
+    warehouseId: String(warehouseId ?? ''),
+    noteNumber: raw.noteNumber ?? '',
+    dateCreated: raw.dateCreated ?? '',
+    status: normalizeStatus(raw.status ?? 'pending'),
+    reason: raw.reason,
+    operator: raw.operator ?? '',
+    type: 'INVENTORY_CHECK',
+    items: Array.isArray(raw.items)
+      ? raw.items.map((it: any) => ({
+          product: it.product ?? '',
+          stockQuantity: Number(it.stockQuantity ?? 0),
+          reason: it.reason ?? '',
+        }))
+      : [],
+  });
 
   const fetchApiNotes = async () => {
     if (!warehouseId) {
@@ -32,7 +104,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     try {
-      const isStaff = role === 'Staff';
+      const isStaff = role === 'staff';
       const [deliveriesRes, receiptsRes, inventoryRes] = await Promise.all([
         isStaff ? warehouseNotesApi.getMyDeliveries(warehouseId) : warehouseNotesApi.getAllDeliveries(warehouseId),
         isStaff ? warehouseNotesApi.getMyReceipts(warehouseId) : warehouseNotesApi.getAllReceipts(warehouseId),
@@ -50,13 +122,23 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   useEffect(() => {
+    const shouldFetchNotes =
+      location.pathname === '/app/notes'
+      || location.pathname === '/app/delivery'
+      || location.pathname === '/app/receipts';
+
+    if (!shouldFetchNotes) {
+      setAllNotes(initialData);
+      return;
+    }
+
     void fetchApiNotes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [warehouseId, role]);
+  }, [warehouseId, role, location.pathname]);
 
   const getCurrentWarehouseNotes = () => {
     if (!warehouseId) return [];
-    return allNotes.filter((note) => note.warehouseId === warehouseId);
+    return allNotes.filter((note) => String(note.warehouseId) === String(warehouseId));
   };
 
   const addNote = async (newNote: WarehouseNote) => {
@@ -69,13 +151,14 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const productMap = await getProductNameToId(warehouseId);
         const items = newNote.items.map((item) => {
-          const id = productMap.get(item.product.trim().toLowerCase());
+          const id = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!id) throw new Error(`Product not found: ${item.product}`);
           return { productId: id, quantity: item.quantity };
         });
 
         await warehouseNotesApi.createDelivery(warehouseId, {
           destination: newNote.destination,
+          status: newNote.status,
           items,
         });
         await fetchApiNotes();
@@ -89,19 +172,15 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (newNote.type === 'RECEIPT') {
       try {
-        const [productMap, supplierMap] = await Promise.all([
-          getProductNameToId(warehouseId),
-          getSupplierNameToId(warehouseId),
-        ]);
-        const supplierId = supplierMap.get(newNote.supplier.trim().toLowerCase());
-
+        const [productMap, supplierMap] = await Promise.all([getProductNameToId(), getSupplierNameToId()]);
+        const supplierId = newNote.supplierId ?? supplierMap.get(newNote.supplier.trim().toLowerCase());
         if (!supplierId) {
           toast.error(`Supplier not found: ${newNote.supplier}`);
           return false;
         }
 
         const items = newNote.items.map((item) => {
-          const id = productMap.get(item.product.trim().toLowerCase());
+          const id = item.productId ?? productMap.get(item.product.trim().toLowerCase());
           if (!id) throw new Error(`Product not found: ${item.product}`);
           return {
             productId: id,
@@ -113,6 +192,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         await warehouseNotesApi.createReceipt(warehouseId, {
           supplierId,
+          status: newNote.status,
           items,
         });
         await fetchApiNotes();
@@ -136,8 +216,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             reason: item.reason ?? '',
           };
         });
-
-        await warehouseNotesApi.createInventoryCheck(warehouseId, { items });
+        await warehouseNotesApi.createInventoryCheck(warehouseId, { status: newNote.status, items });
         await fetchApiNotes();
         toast.success('Successfully created INVENTORY_CHECK note.');
         return true;
@@ -167,13 +246,14 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const next = { ...current, ...data } as Delivery;
         const productMap = await getProductNameToId(warehouseId);
         const items = next.items.map((item) => {
-          const productId = productMap.get(item.product.trim().toLowerCase());
-          if (!productId) throw new Error(`Product not found: ${item.product}`);
-          return { productId, quantity: item.quantity };
+          const pid = item.productId ?? productMap.get(item.product.trim().toLowerCase());
+          if (!pid) throw new Error(`Product not found: ${item.product}`);
+          return { productId: pid, quantity: item.quantity };
         });
 
         await warehouseNotesApi.updateDelivery(warehouseId, id, {
           destination: next.destination,
+          status: next.status,
           items,
         });
         await fetchApiNotes();
@@ -188,22 +268,18 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (current.type === 'RECEIPT') {
       try {
         const next = { ...current, ...data } as Receipt;
-        const [productMap, supplierMap] = await Promise.all([
-          getProductNameToId(warehouseId),
-          getSupplierNameToId(warehouseId),
-        ]);
-        const supplierId = supplierMap.get(next.supplier.trim().toLowerCase());
-
+        const [productMap, supplierMap] = await Promise.all([getProductNameToId(), getSupplierNameToId()]);
+        const supplierId = next.supplierId ?? supplierMap.get(next.supplier.trim().toLowerCase());
         if (!supplierId) {
           toast.error(`Supplier not found: ${next.supplier}`);
           return false;
         }
 
         const items = next.items.map((item) => {
-          const productId = productMap.get(item.product.trim().toLowerCase());
-          if (!productId) throw new Error(`Product not found: ${item.product}`);
+          const pid = item.productId ?? productMap.get(item.product.trim().toLowerCase());
+          if (!pid) throw new Error(`Product not found: ${item.product}`);
           return {
-            productId,
+            productId: pid,
             ordered: item.ordered,
             received: item.received,
             defective: item.defective,
@@ -212,6 +288,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         await warehouseNotesApi.updateReceipt(warehouseId, id, {
           supplierId,
+          status: next.status,
           items,
         });
         await fetchApiNotes();
@@ -236,8 +313,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             reason: item.reason ?? '',
           };
         });
-
-        await warehouseNotesApi.updateInventoryCheck(warehouseId, id, { items });
+        await warehouseNotesApi.updateInventoryCheck(warehouseId, id, { status: next.status, items });
         await fetchApiNotes();
         toast.info('Note has been updated successfully.');
         return true;
@@ -272,13 +348,13 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       await fetchApiNotes();
       const statusMap = {
-        approved: 'Note approved successfully.',
-        rejected: 'Note has been rejected.',
-        pending: 'Note is pending approval.',
-        'in process': 'Note is being processed.',
-        new: 'New note created.',
+        approved: { msg: 'Note approved successfully.', icon: '✅' },
+        rejected: { msg: 'Note has been rejected.', icon: '❌' },
+        pending: { msg: 'Note is pending approval.', icon: '⏳' },
+        'in process': { msg: 'Note is being processed.', icon: '⚙️' },
       };
-      toast(statusMap[status]);
+      const statusToast = statusMap[status];
+      toast(statusToast.msg, { icon: statusToast.icon });
       return true;
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, 'Failed to update note status'));
@@ -287,11 +363,29 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const deleteNote = async (id: string) => {
-    const note = allNotes.find((item) => item.id === id);
+    if (!warehouseId) {
+      toast.error('No warehouse selected.');
+      return false;
+    }
+
+    const note = allNotes.find((n) => n.id === id);
     if (!note) return false;
 
     if (note.type === 'DELIVERY' || note.type === 'RECEIPT') {
-      return updateStatus(id, 'rejected', 'Cancelled by user');
+      if (note.status === 'approved') {
+        toast.error('Approved notes cannot be cancelled.');
+        return false;
+      }
+
+      try {
+        await warehouseNotesApi.deleteNote(warehouseId, id);
+        await fetchApiNotes();
+        toast.success('Note has been cancelled and deleted.');
+        return true;
+      } catch (err: unknown) {
+        toast.error(getErrorMessage(err, 'Failed to cancel note'));
+        return false;
+      }
     }
 
     setAllNotes((prev) => prev.filter((item) => item.id !== id));
