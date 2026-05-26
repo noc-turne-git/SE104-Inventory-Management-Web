@@ -14,18 +14,6 @@ const resolveImageUrl = (url?: string) => {
   return `http://localhost:5074${url}`;
 };
 
-// const mapApiWarehouse = (data: any): Warehouse => ({
-//   ...data,
-//   warehouseId: String(data?.warehouseId ?? ""),
-//   role: normalizeWarehouseRole(data?.role),
-//   name: data?.name ?? "",
-//   location: data?.location ?? data?.address ?? "",
-//   address: data?.address ?? data?.location ?? "",
-//   imageUrl: resolveImageUrl(data?.imageUrl ?? data?.urlimage),
-//   status: data?.status ?? "Stable Operations",
-//   productCount: data?.productCount ?? 0,
-//   lastUpdate: data?.lastUpdate ?? "",
-// });
 type ApiRecord = Record<string, unknown>;
 type WarehouseRole = NonNullable<Warehouse["role"]>;
 
@@ -38,11 +26,10 @@ const asString = (value: unknown, fallback = "") => {
   return String(value);
 };
 
-const normalizeRole = (value: unknown, fallback: WarehouseRole = "staff"): WarehouseRole => {
+const normalizeRole = (value: unknown, fallback: WarehouseRole = "Staff"): WarehouseRole => {
   const role = asString(value).toLowerCase();
-  if (role === "owner") return "owner";
-  if (role === "manager") return "manager";
-  if (role === "staff") return "staff";
+  if (role === "manager") return "Manager";
+  if (role === "staff") return "Staff";
   return fallback;
 };
 
@@ -92,7 +79,6 @@ export const useWarehouse = () => {
   const [warehouses, setWarehouses] = useState  <Warehouse[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingWarehouse, setEditingWarehouse] = useState<Warehouse | null>(null);
 
   const navigate = useNavigate();
 
@@ -143,19 +129,8 @@ export const useWarehouse = () => {
 
 
   // Mở/Đóng Modal
-  const openModal = () => {
-    setEditingWarehouse(null);
-    setIsModalOpen(true);
-  };
-  const openEditModal = (warehouse: Warehouse) => {
-    if (warehouse.role !== "owner") return;
-    setEditingWarehouse(warehouse);
-    setIsModalOpen(true);
-  };
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingWarehouse(null);
-  };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   // Tạo Warehouse mới
   const createWarehouse = async (name: string, address: string, imageFile?: File | null) => {
@@ -182,12 +157,12 @@ export const useWarehouse = () => {
       const getWarehouseResponse = await warehouseApi.getById(createdWarehouseId);
       const createdWarehouse = {
         ...mapApiWarehouse(getWarehouseResponse.data),
-        role: "owner" as const,
-      };      
-
+        role: "Manager" as const,
+      };
+      
       setWarehouse({
-        role: createdWarehouse.role ?? "owner",
-        warehouseId: Number(createdWarehouse.warehouseId),
+        role: "Manager",
+        warehouseId: createdWarehouse.warehouseId,
         warehouseName: createdWarehouse.name,
       });
 
@@ -210,8 +185,8 @@ export const useWarehouse = () => {
         const wh = await warehouseApi.getById(invitedWh.warehouseId);
         const mappedWarehouse = mapApiWarehouse(wh.data);
         setWarehouse({
-          role: mappedWarehouse.role ?? "staff",
-          warehouseId: Number(mappedWarehouse.warehouseId),
+          role: "Staff",
+          warehouseId: mappedWarehouse.warehouseId,
           warehouseName: mappedWarehouse.name,
         });
 
@@ -284,46 +259,26 @@ export const useWarehouse = () => {
   };
 
   // Điều hướng/Quản lý (Logic này thường là dùng router.push)
-  const updateWarehouse = async (id: string | number, name: string, address: string, imageFile?: File | null) => {
-    const current = warehouses.find((w) => String(w.warehouseId) === String(id));
-    if (!current || current.role !== "owner") {
-      toast.error("Only warehouse owner can edit this warehouse");
-      return;
-    }
+  const updateWarehouseImage = async (id: number, imageFile: File) => {
+    const current = warehouses.find((w) => w.warehouseId === id);
+    if (!current) return;
 
     try {
       const response = await warehouseApi.update(id, {
-        name,
-        location: address,
+        name: current.name,
+        location: current.location ?? current.address ?? "",
         urlimage: current.urlimage ?? current.imageUrl ?? "",
-        imageFile: imageFile ?? null,
+        imageFile,
       });
       const updatedWarehouse = mapApiWarehouse(response.data);
       setWarehouses((prev) =>
         prev.map((warehouse) =>
-          String(warehouse.warehouseId) === String(id) ? { ...warehouse, ...updatedWarehouse, role: warehouse.role } : warehouse
+          warehouse.warehouseId === id ? { ...warehouse, ...updatedWarehouse } : warehouse
         )
       );
-      closeModal();
-      toast.success("Warehouse updated successfully");
+      toast.success("Warehouse image updated successfully");
     } catch {
-      toast.error("Failed to update warehouse");
-    }
-  };
-
-  const deleteWarehouse = async (id: string | number) => {
-    const current = warehouses.find((w) => String(w.warehouseId) === String(id));
-    if (!current || current.role !== "owner") {
-      toast.error("Only warehouse owner can delete this warehouse");
-      return;
-    }
-
-    try {
-      await warehouseApi.delete(id);
-      setWarehouses((prev) => prev.filter((warehouse) => String(warehouse.warehouseId) !== String(id)));
-      toast.success(`Warehouse "${current.name}" deleted successfully`);
-    } catch {
-      toast.error("Failed to delete warehouse");
+      toast.error("Failed to update warehouse image");
     }
   };
 
@@ -333,8 +288,8 @@ export const useWarehouse = () => {
     const wh = warehouses.find(w => w.warehouseId === id);
     if (wh) {
       setWarehouse({
-        role: wh.role ?? null,
-        warehouseId: Number(wh.warehouseId),
+        role: normalizeRole(wh.role),
+        warehouseId: wh.warehouseId,
         warehouseName: wh.name,
       });
     }
@@ -346,15 +301,12 @@ export const useWarehouse = () => {
     loading,
     invitations,
     isModalOpen,
-    editingWarehouse,
     openModal,
-    openEditModal,
     closeModal,
     createWarehouse,
-    updateWarehouse,
-    deleteWarehouse,
     acceptInvitation,
     declineInvitation,
+    updateWarehouseImage,
     manageWarehouse,
   };
 };

@@ -7,12 +7,11 @@ import { WarehouseStatus } from "../../types/warehouse";
 
 interface WarehouseCardProps {
   warehouse: Warehouse;
-  onManage: (id: string) => void;
-  onEdit?: (warehouse: Warehouse) => void;
-  onDelete?: (warehouse: Warehouse) => void;
+  onManage: (id: number) => void;
+  onUpdateImage?: (id: number, file: File) => void;
 }
 
-export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManage, onEdit, onDelete }) => {
+export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManage, onUpdateImage }) => {
   const statusColors = {
     [WarehouseStatus.STABLE_OPERATIONS]: "bg-emerald-500",
     [WarehouseStatus.LOW_STOCK]: "bg-amber-500",
@@ -38,33 +37,20 @@ export const WarehouseCard: React.FC<WarehouseCardProps> = ({ warehouse, onManag
             {warehouse.status}
           </span>
         </div>
-        {warehouse.role === "owner" && (
-          <div className="absolute top-4 right-4 flex items-center gap-2">
-            <button
-              type="button"
-              title="Edit warehouse"
-              onClick={(event) => {
-                event.stopPropagation();
-                onEdit?.(warehouse);
+        {onUpdateImage && warehouse.role === "Manager" && (
+          <label className="absolute top-4 right-4 h-9 w-9 rounded bg-white/90 text-[#1E3A8A] flex items-center justify-center shadow-sm cursor-pointer hover:bg-white transition-colors">
+            <Icons.Image className="w-4 h-4" />
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onUpdateImage(warehouse.warehouseId, file);
+                e.currentTarget.value = "";
               }}
-              className="h-9 w-9 rounded bg-white/90 text-[#1E3A8A] flex items-center justify-center shadow-sm hover:bg-white transition-colors"
-            >
-              <Icons.Pencil className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              title="Delete warehouse"
-              onClick={(event) => {
-                event.stopPropagation();
-                if (window.confirm(`Delete warehouse "${warehouse.name}"?`)) {
-                  onDelete?.(warehouse);
-                }
-              }}
-              className="h-9 w-9 rounded bg-white/90 text-rose-600 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
-            >
-              <Icons.Trash2 className="w-4 h-4" />
-            </button>
-          </div>
+            />
+          </label>
         )}
       </div>
       <div className="p-8">

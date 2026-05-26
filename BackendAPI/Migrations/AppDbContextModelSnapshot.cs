@@ -717,216 +717,6 @@ namespace BackendAPI.Migrations
                             NoteId = 30,
                             ProductId = 6,
                             Quantity = 11
-                        },
-                        new
-                        {
-                            DeliveryItemId = 91,
-                            NoteId = 70,
-                            ProductId = 1,
-                            Quantity = 11
-                        },
-                        new
-                        {
-                            DeliveryItemId = 92,
-                            NoteId = 71,
-                            ProductId = 2,
-                            Quantity = 14
-                        },
-                        new
-                        {
-                            DeliveryItemId = 93,
-                            NoteId = 71,
-                            ProductId = 3,
-                            Quantity = 18
-                        },
-                        new
-                        {
-                            DeliveryItemId = 94,
-                            NoteId = 72,
-                            ProductId = 3,
-                            Quantity = 17
-                        },
-                        new
-                        {
-                            DeliveryItemId = 95,
-                            NoteId = 72,
-                            ProductId = 4,
-                            Quantity = 1
-                        },
-                        new
-                        {
-                            DeliveryItemId = 96,
-                            NoteId = 72,
-                            ProductId = 5,
-                            Quantity = 5
-                        },
-                        new
-                        {
-                            DeliveryItemId = 97,
-                            NoteId = 73,
-                            ProductId = 4,
-                            Quantity = 20
-                        },
-                        new
-                        {
-                            DeliveryItemId = 98,
-                            NoteId = 73,
-                            ProductId = 5,
-                            Quantity = 4
-                        },
-                        new
-                        {
-                            DeliveryItemId = 99,
-                            NoteId = 73,
-                            ProductId = 1,
-                            Quantity = 8
-                        },
-                        new
-                        {
-                            DeliveryItemId = 100,
-                            NoteId = 73,
-                            ProductId = 2,
-                            Quantity = 12
-                        },
-                        new
-                        {
-                            DeliveryItemId = 101,
-                            NoteId = 74,
-                            ProductId = 5,
-                            Quantity = 3
-                        },
-                        new
-                        {
-                            DeliveryItemId = 102,
-                            NoteId = 74,
-                            ProductId = 1,
-                            Quantity = 7
-                        },
-                        new
-                        {
-                            DeliveryItemId = 103,
-                            NoteId = 74,
-                            ProductId = 2,
-                            Quantity = 11
-                        },
-                        new
-                        {
-                            DeliveryItemId = 104,
-                            NoteId = 74,
-                            ProductId = 3,
-                            Quantity = 15
-                        },
-                        new
-                        {
-                            DeliveryItemId = 105,
-                            NoteId = 74,
-                            ProductId = 4,
-                            Quantity = 19
-                        },
-                        new
-                        {
-                            DeliveryItemId = 106,
-                            NoteId = 75,
-                            ProductId = 1,
-                            Quantity = 6
-                        },
-                        new
-                        {
-                            DeliveryItemId = 107,
-                            NoteId = 76,
-                            ProductId = 2,
-                            Quantity = 9
-                        },
-                        new
-                        {
-                            DeliveryItemId = 108,
-                            NoteId = 76,
-                            ProductId = 3,
-                            Quantity = 13
-                        },
-                        new
-                        {
-                            DeliveryItemId = 109,
-                            NoteId = 77,
-                            ProductId = 3,
-                            Quantity = 12
-                        },
-                        new
-                        {
-                            DeliveryItemId = 110,
-                            NoteId = 77,
-                            ProductId = 4,
-                            Quantity = 16
-                        },
-                        new
-                        {
-                            DeliveryItemId = 111,
-                            NoteId = 77,
-                            ProductId = 5,
-                            Quantity = 20
-                        },
-                        new
-                        {
-                            DeliveryItemId = 112,
-                            NoteId = 78,
-                            ProductId = 4,
-                            Quantity = 15
-                        },
-                        new
-                        {
-                            DeliveryItemId = 113,
-                            NoteId = 78,
-                            ProductId = 5,
-                            Quantity = 19
-                        },
-                        new
-                        {
-                            DeliveryItemId = 114,
-                            NoteId = 78,
-                            ProductId = 1,
-                            Quantity = 3
-                        },
-                        new
-                        {
-                            DeliveryItemId = 115,
-                            NoteId = 78,
-                            ProductId = 2,
-                            Quantity = 7
-                        },
-                        new
-                        {
-                            DeliveryItemId = 116,
-                            NoteId = 79,
-                            ProductId = 5,
-                            Quantity = 18
-                        },
-                        new
-                        {
-                            DeliveryItemId = 117,
-                            NoteId = 79,
-                            ProductId = 1,
-                            Quantity = 2
-                        },
-                        new
-                        {
-                            DeliveryItemId = 118,
-                            NoteId = 79,
-                            ProductId = 2,
-                            Quantity = 6
-                        },
-                        new
-                        {
-                            DeliveryItemId = 119,
-                            NoteId = 79,
-                            ProductId = 3,
-                            Quantity = 10
-                        },
-                        new
-                        {
-                            DeliveryItemId = 120,
-                            NoteId = 79,
-                            ProductId = 4,
-                            Quantity = 14
                         });
                 });
 
@@ -1335,26 +1125,6 @@ namespace BackendAPI.Migrations
                             Role = "STAFF",
                             Status = "REJECTED",
                             WarehouseId = 2
-                        },
-                        new
-                        {
-                            InvitationId = 4,
-                            CreatedAt = new DateTime(2026, 5, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            InvitedUserId = 5,
-                            InviterUserId = 1,
-                            Role = "STAFF",
-                            Status = "PENDING",
-                            WarehouseId = 1
-                        },
-                        new
-                        {
-                            InvitationId = 5,
-                            CreatedAt = new DateTime(2026, 5, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            InvitedUserId = 13,
-                            InviterUserId = 1,
-                            Role = "STAFF",
-                            Status = "PENDING",
-                            WarehouseId = 2
                         });
                 });
 
@@ -1373,9 +1143,6 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(21)
                         .HasColumnType("character varying(21)");
-
-                    b.Property<string>("Reason")
-                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -2733,276 +2500,6 @@ namespace BackendAPI.Migrations
                             OrderedQuantity = 37,
                             ProductId = 6,
                             Quantity = 36
-                        },
-                        new
-                        {
-                            ReceiptItemId = 91,
-                            DefectiveQuantity = 0,
-                            NoteId = 91,
-                            OrderedQuantity = 10,
-                            ProductId = 2,
-                            Quantity = 10
-                        },
-                        new
-                        {
-                            ReceiptItemId = 92,
-                            DefectiveQuantity = 0,
-                            NoteId = 91,
-                            OrderedQuantity = 19,
-                            ProductId = 3,
-                            Quantity = 19
-                        },
-                        new
-                        {
-                            ReceiptItemId = 93,
-                            DefectiveQuantity = 0,
-                            NoteId = 92,
-                            OrderedQuantity = 15,
-                            ProductId = 3,
-                            Quantity = 15
-                        },
-                        new
-                        {
-                            ReceiptItemId = 94,
-                            DefectiveQuantity = 0,
-                            NoteId = 92,
-                            OrderedQuantity = 24,
-                            ProductId = 4,
-                            Quantity = 24
-                        },
-                        new
-                        {
-                            ReceiptItemId = 95,
-                            DefectiveQuantity = 0,
-                            NoteId = 92,
-                            OrderedQuantity = 33,
-                            ProductId = 5,
-                            Quantity = 33
-                        },
-                        new
-                        {
-                            ReceiptItemId = 96,
-                            DefectiveQuantity = 0,
-                            NoteId = 93,
-                            OrderedQuantity = 20,
-                            ProductId = 4,
-                            Quantity = 20
-                        },
-                        new
-                        {
-                            ReceiptItemId = 97,
-                            DefectiveQuantity = 0,
-                            NoteId = 93,
-                            OrderedQuantity = 29,
-                            ProductId = 5,
-                            Quantity = 29
-                        },
-                        new
-                        {
-                            ReceiptItemId = 98,
-                            DefectiveQuantity = 1,
-                            NoteId = 93,
-                            OrderedQuantity = 38,
-                            ProductId = 1,
-                            Quantity = 37
-                        },
-                        new
-                        {
-                            ReceiptItemId = 99,
-                            DefectiveQuantity = 0,
-                            NoteId = 93,
-                            OrderedQuantity = 47,
-                            ProductId = 2,
-                            Quantity = 47
-                        },
-                        new
-                        {
-                            ReceiptItemId = 100,
-                            DefectiveQuantity = 0,
-                            NoteId = 94,
-                            OrderedQuantity = 25,
-                            ProductId = 5,
-                            Quantity = 25
-                        },
-                        new
-                        {
-                            ReceiptItemId = 101,
-                            DefectiveQuantity = 1,
-                            NoteId = 94,
-                            OrderedQuantity = 34,
-                            ProductId = 1,
-                            Quantity = 33
-                        },
-                        new
-                        {
-                            ReceiptItemId = 102,
-                            DefectiveQuantity = 0,
-                            NoteId = 94,
-                            OrderedQuantity = 43,
-                            ProductId = 2,
-                            Quantity = 43
-                        },
-                        new
-                        {
-                            ReceiptItemId = 103,
-                            DefectiveQuantity = 0,
-                            NoteId = 94,
-                            OrderedQuantity = 52,
-                            ProductId = 3,
-                            Quantity = 52
-                        },
-                        new
-                        {
-                            ReceiptItemId = 104,
-                            DefectiveQuantity = 0,
-                            NoteId = 94,
-                            OrderedQuantity = 61,
-                            ProductId = 4,
-                            Quantity = 61
-                        },
-                        new
-                        {
-                            ReceiptItemId = 105,
-                            DefectiveQuantity = 1,
-                            NoteId = 95,
-                            OrderedQuantity = 30,
-                            ProductId = 1,
-                            Quantity = 29
-                        },
-                        new
-                        {
-                            ReceiptItemId = 106,
-                            DefectiveQuantity = 0,
-                            NoteId = 96,
-                            OrderedQuantity = 35,
-                            ProductId = 2,
-                            Quantity = 35
-                        },
-                        new
-                        {
-                            ReceiptItemId = 107,
-                            DefectiveQuantity = 0,
-                            NoteId = 96,
-                            OrderedQuantity = 44,
-                            ProductId = 3,
-                            Quantity = 44
-                        },
-                        new
-                        {
-                            ReceiptItemId = 108,
-                            DefectiveQuantity = 0,
-                            NoteId = 97,
-                            OrderedQuantity = 40,
-                            ProductId = 3,
-                            Quantity = 40
-                        },
-                        new
-                        {
-                            ReceiptItemId = 109,
-                            DefectiveQuantity = 0,
-                            NoteId = 97,
-                            OrderedQuantity = 49,
-                            ProductId = 4,
-                            Quantity = 49
-                        },
-                        new
-                        {
-                            ReceiptItemId = 110,
-                            DefectiveQuantity = 2,
-                            NoteId = 97,
-                            OrderedQuantity = 58,
-                            ProductId = 5,
-                            Quantity = 56
-                        },
-                        new
-                        {
-                            ReceiptItemId = 111,
-                            DefectiveQuantity = 0,
-                            NoteId = 98,
-                            OrderedQuantity = 45,
-                            ProductId = 4,
-                            Quantity = 45
-                        },
-                        new
-                        {
-                            ReceiptItemId = 112,
-                            DefectiveQuantity = 2,
-                            NoteId = 98,
-                            OrderedQuantity = 54,
-                            ProductId = 5,
-                            Quantity = 52
-                        },
-                        new
-                        {
-                            ReceiptItemId = 113,
-                            DefectiveQuantity = 1,
-                            NoteId = 98,
-                            OrderedQuantity = 63,
-                            ProductId = 1,
-                            Quantity = 62
-                        },
-                        new
-                        {
-                            ReceiptItemId = 114,
-                            DefectiveQuantity = 0,
-                            NoteId = 98,
-                            OrderedQuantity = 72,
-                            ProductId = 2,
-                            Quantity = 72
-                        },
-                        new
-                        {
-                            ReceiptItemId = 115,
-                            DefectiveQuantity = 2,
-                            NoteId = 99,
-                            OrderedQuantity = 50,
-                            ProductId = 5,
-                            Quantity = 48
-                        },
-                        new
-                        {
-                            ReceiptItemId = 116,
-                            DefectiveQuantity = 1,
-                            NoteId = 99,
-                            OrderedQuantity = 59,
-                            ProductId = 1,
-                            Quantity = 58
-                        },
-                        new
-                        {
-                            ReceiptItemId = 117,
-                            DefectiveQuantity = 0,
-                            NoteId = 99,
-                            OrderedQuantity = 68,
-                            ProductId = 2,
-                            Quantity = 68
-                        },
-                        new
-                        {
-                            ReceiptItemId = 118,
-                            DefectiveQuantity = 0,
-                            NoteId = 99,
-                            OrderedQuantity = 77,
-                            ProductId = 3,
-                            Quantity = 77
-                        },
-                        new
-                        {
-                            ReceiptItemId = 119,
-                            DefectiveQuantity = 0,
-                            NoteId = 99,
-                            OrderedQuantity = 86,
-                            ProductId = 4,
-                            Quantity = 86
-                        },
-                        new
-                        {
-                            ReceiptItemId = 120,
-                            DefectiveQuantity = 1,
-                            NoteId = 100,
-                            OrderedQuantity = 55,
-                            ProductId = 1,
-                            Quantity = 54
                         });
                 });
 
@@ -3642,146 +3139,6 @@ namespace BackendAPI.Migrations
                             StartTime = new DateTime(2026, 5, 21, 8, 0, 0, 0, DateTimeKind.Utc),
                             UserId = 14,
                             WarehouseId = 2
-                        },
-                        new
-                        {
-                            ShiftId = 27,
-                            Duty = "Receive goods",
-                            EndTime = new DateTime(2026, 5, 25, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffA1",
-                            StartTime = new DateTime(2026, 5, 25, 8, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 5,
-                            WarehouseId = 1
-                        },
-                        new
-                        {
-                            ShiftId = 34,
-                            Duty = "Pick and pack orders",
-                            EndTime = new DateTime(2026, 5, 25, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffB1",
-                            StartTime = new DateTime(2026, 5, 25, 13, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 13,
-                            WarehouseId = 2
-                        },
-                        new
-                        {
-                            ShiftId = 28,
-                            Duty = "Pick and pack orders",
-                            EndTime = new DateTime(2026, 5, 26, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffA1",
-                            StartTime = new DateTime(2026, 5, 26, 8, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 5,
-                            WarehouseId = 1
-                        },
-                        new
-                        {
-                            ShiftId = 35,
-                            Duty = "Inventory check",
-                            EndTime = new DateTime(2026, 5, 26, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffB1",
-                            StartTime = new DateTime(2026, 5, 26, 13, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 13,
-                            WarehouseId = 2
-                        },
-                        new
-                        {
-                            ShiftId = 29,
-                            Duty = "Inventory check",
-                            EndTime = new DateTime(2026, 5, 27, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffA1",
-                            StartTime = new DateTime(2026, 5, 27, 8, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 5,
-                            WarehouseId = 1
-                        },
-                        new
-                        {
-                            ShiftId = 36,
-                            Duty = "Dispatch goods",
-                            EndTime = new DateTime(2026, 5, 27, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffB1",
-                            StartTime = new DateTime(2026, 5, 27, 13, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 13,
-                            WarehouseId = 2
-                        },
-                        new
-                        {
-                            ShiftId = 30,
-                            Duty = "Dispatch goods",
-                            EndTime = new DateTime(2026, 5, 28, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffA1",
-                            StartTime = new DateTime(2026, 5, 28, 8, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 5,
-                            WarehouseId = 1
-                        },
-                        new
-                        {
-                            ShiftId = 37,
-                            Duty = "Shelf replenishment",
-                            EndTime = new DateTime(2026, 5, 28, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffB1",
-                            StartTime = new DateTime(2026, 5, 28, 13, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 13,
-                            WarehouseId = 2
-                        },
-                        new
-                        {
-                            ShiftId = 31,
-                            Duty = "Shelf replenishment",
-                            EndTime = new DateTime(2026, 5, 29, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffA1",
-                            StartTime = new DateTime(2026, 5, 29, 8, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 5,
-                            WarehouseId = 1
-                        },
-                        new
-                        {
-                            ShiftId = 38,
-                            Duty = "Receive goods",
-                            EndTime = new DateTime(2026, 5, 29, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffB1",
-                            StartTime = new DateTime(2026, 5, 29, 13, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 13,
-                            WarehouseId = 2
-                        },
-                        new
-                        {
-                            ShiftId = 32,
-                            Duty = "Receive goods",
-                            EndTime = new DateTime(2026, 5, 30, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffA1",
-                            StartTime = new DateTime(2026, 5, 30, 8, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 5,
-                            WarehouseId = 1
-                        },
-                        new
-                        {
-                            ShiftId = 39,
-                            Duty = "Pick and pack orders",
-                            EndTime = new DateTime(2026, 5, 30, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffB1",
-                            StartTime = new DateTime(2026, 5, 30, 13, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 13,
-                            WarehouseId = 2
-                        },
-                        new
-                        {
-                            ShiftId = 33,
-                            Duty = "Pick and pack orders",
-                            EndTime = new DateTime(2026, 5, 31, 16, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffA1",
-                            StartTime = new DateTime(2026, 5, 31, 8, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 5,
-                            WarehouseId = 1
-                        },
-                        new
-                        {
-                            ShiftId = 40,
-                            Duty = "Inventory check",
-                            EndTime = new DateTime(2026, 5, 31, 21, 0, 0, 0, DateTimeKind.Utc),
-                            Note = "This week schedule for staffB1",
-                            StartTime = new DateTime(2026, 5, 31, 13, 0, 0, 0, DateTimeKind.Utc),
-                            UserId = 13,
-                            WarehouseId = 2
                         });
                 });
 
@@ -4266,7 +3623,7 @@ namespace BackendAPI.Migrations
                             AccountStatus = "Active",
                             HireDate = new DateTime(2024, 1, 10, 0, 0, 0, 0, DateTimeKind.Utc),
                             RoleId = 1,
-                            Salary = 0m
+                            Salary = 85000000m
                         },
                         new
                         {
@@ -4275,7 +3632,7 @@ namespace BackendAPI.Migrations
                             AccountStatus = "Active",
                             HireDate = new DateTime(2024, 1, 10, 0, 0, 0, 0, DateTimeKind.Utc),
                             RoleId = 1,
-                            Salary = 0m
+                            Salary = 85000000m
                         },
                         new
                         {
@@ -4603,7 +3960,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 18,
-                            Date = new DateTime(2026, 5, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 6, 21, 10, 0, 0, 0, DateTimeKind.Utc),
                             Status = "APPROVED",
                             UserId = 10,
                             WarehouseId = 1,
@@ -4613,7 +3970,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 19,
-                            Date = new DateTime(2026, 5, 2, 11, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 7, 26, 11, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 11,
                             WarehouseId = 1,
@@ -4623,7 +3980,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 20,
-                            Date = new DateTime(2026, 5, 3, 12, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 8, 7, 12, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 12,
                             WarehouseId = 1,
@@ -4633,7 +3990,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 21,
-                            Date = new DateTime(2026, 5, 4, 13, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 9, 12, 13, 0, 0, 0, DateTimeKind.Utc),
                             Status = "REJECTED",
                             UserId = 2,
                             WarehouseId = 1,
@@ -4643,7 +4000,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 22,
-                            Date = new DateTime(2026, 5, 5, 14, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 10, 17, 14, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 3,
                             WarehouseId = 1,
@@ -4653,7 +4010,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 23,
-                            Date = new DateTime(2026, 5, 6, 15, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 11, 22, 15, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 5,
                             WarehouseId = 1,
@@ -4663,7 +4020,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 24,
-                            Date = new DateTime(2026, 5, 7, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 12, 3, 8, 0, 0, 0, DateTimeKind.Utc),
                             Status = "APPROVED",
                             UserId = 6,
                             WarehouseId = 1,
@@ -4673,7 +4030,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 25,
-                            Date = new DateTime(2026, 5, 8, 9, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 1, 8, 9, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 7,
                             WarehouseId = 1,
@@ -4729,106 +4086,6 @@ namespace BackendAPI.Migrations
                             WarehouseId = 2,
                             type = "DeliveryNote",
                             Destination = "Retail Store B-05"
-                        },
-                        new
-                        {
-                            NoteId = 70,
-                            Date = new DateTime(2026, 5, 6, 8, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "REJECTED",
-                            UserId = 8,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-70"
-                        },
-                        new
-                        {
-                            NoteId = 71,
-                            Date = new DateTime(2026, 5, 7, 9, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 9,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-71"
-                        },
-                        new
-                        {
-                            NoteId = 72,
-                            Date = new DateTime(2026, 5, 8, 10, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "APPROVED",
-                            UserId = 10,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-72"
-                        },
-                        new
-                        {
-                            NoteId = 73,
-                            Date = new DateTime(2026, 5, 9, 11, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 11,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-73"
-                        },
-                        new
-                        {
-                            NoteId = 74,
-                            Date = new DateTime(2026, 5, 10, 12, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 12,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-74"
-                        },
-                        new
-                        {
-                            NoteId = 75,
-                            Date = new DateTime(2026, 5, 11, 13, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "APPROVED",
-                            UserId = 2,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-75"
-                        },
-                        new
-                        {
-                            NoteId = 76,
-                            Date = new DateTime(2026, 5, 12, 14, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 3,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-76"
-                        },
-                        new
-                        {
-                            NoteId = 77,
-                            Date = new DateTime(2026, 5, 13, 15, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "REJECTED",
-                            UserId = 5,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-77"
-                        },
-                        new
-                        {
-                            NoteId = 78,
-                            Date = new DateTime(2026, 5, 14, 8, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "APPROVED",
-                            UserId = 6,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-78"
-                        },
-                        new
-                        {
-                            NoteId = 79,
-                            Date = new DateTime(2026, 5, 15, 9, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 7,
-                            WarehouseId = 1,
-                            type = "DeliveryNote",
-                            Destination = "Retail Store A-79"
                         });
                 });
 
@@ -5052,7 +4309,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 46,
-                            Date = new DateTime(2026, 5, 3, 11, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 6, 14, 11, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 8,
                             WarehouseId = 1,
@@ -5065,7 +4322,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 47,
-                            Date = new DateTime(2026, 5, 4, 12, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 7, 21, 12, 0, 0, 0, DateTimeKind.Utc),
                             Status = "APPROVED",
                             UserId = 9,
                             WarehouseId = 1,
@@ -5078,7 +4335,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 48,
-                            Date = new DateTime(2026, 5, 5, 13, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 8, 3, 13, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 10,
                             WarehouseId = 1,
@@ -5091,7 +4348,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 49,
-                            Date = new DateTime(2026, 5, 6, 14, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 9, 10, 14, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 11,
                             WarehouseId = 1,
@@ -5104,7 +4361,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 50,
-                            Date = new DateTime(2026, 5, 7, 15, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 10, 17, 15, 0, 0, 0, DateTimeKind.Utc),
                             Status = "REJECTED",
                             UserId = 12,
                             WarehouseId = 1,
@@ -5117,7 +4374,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 51,
-                            Date = new DateTime(2026, 5, 8, 9, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 11, 24, 9, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 2,
                             WarehouseId = 1,
@@ -5130,7 +4387,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 52,
-                            Date = new DateTime(2026, 5, 9, 10, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 12, 6, 10, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 3,
                             WarehouseId = 1,
@@ -5143,7 +4400,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 53,
-                            Date = new DateTime(2026, 5, 10, 11, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 1, 13, 11, 0, 0, 0, DateTimeKind.Utc),
                             Status = "APPROVED",
                             UserId = 5,
                             WarehouseId = 1,
@@ -5156,7 +4413,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 54,
-                            Date = new DateTime(2026, 5, 11, 12, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 2, 20, 12, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 6,
                             WarehouseId = 1,
@@ -5169,7 +4426,7 @@ namespace BackendAPI.Migrations
                         new
                         {
                             NoteId = 55,
-                            Date = new DateTime(2026, 5, 12, 13, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2026, 3, 2, 13, 0, 0, 0, DateTimeKind.Utc),
                             Status = "PENDING",
                             UserId = 7,
                             WarehouseId = 1,
@@ -5243,136 +4500,6 @@ namespace BackendAPI.Migrations
                             StockQuantity = 90,
                             SupplierId = 7,
                             qualityCheckStatus = "NEEDS_REVIEW"
-                        },
-                        new
-                        {
-                            NoteId = 91,
-                            Date = new DateTime(2026, 5, 15, 9, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "REJECTED",
-                            UserId = 8,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 1,
-                            StockQuantity = 75,
-                            SupplierId = 1,
-                            qualityCheckStatus = "NEEDS_REVIEW"
-                        },
-                        new
-                        {
-                            NoteId = 92,
-                            Date = new DateTime(2026, 5, 16, 10, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 9,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 0,
-                            StockQuantity = 81,
-                            SupplierId = 2,
-                            qualityCheckStatus = "PASSED"
-                        },
-                        new
-                        {
-                            NoteId = 93,
-                            Date = new DateTime(2026, 5, 17, 11, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "APPROVED",
-                            UserId = 10,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 0,
-                            StockQuantity = 87,
-                            SupplierId = 3,
-                            qualityCheckStatus = "PASSED"
-                        },
-                        new
-                        {
-                            NoteId = 94,
-                            Date = new DateTime(2026, 5, 18, 12, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 11,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 0,
-                            StockQuantity = 93,
-                            SupplierId = 4,
-                            qualityCheckStatus = "PASSED"
-                        },
-                        new
-                        {
-                            NoteId = 95,
-                            Date = new DateTime(2026, 5, 19, 13, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 12,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 1,
-                            StockQuantity = 99,
-                            SupplierId = 5,
-                            qualityCheckStatus = "NEEDS_REVIEW"
-                        },
-                        new
-                        {
-                            NoteId = 96,
-                            Date = new DateTime(2026, 5, 20, 14, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "APPROVED",
-                            UserId = 2,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 0,
-                            StockQuantity = 105,
-                            SupplierId = 1,
-                            qualityCheckStatus = "PASSED"
-                        },
-                        new
-                        {
-                            NoteId = 97,
-                            Date = new DateTime(2026, 5, 21, 15, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 3,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 0,
-                            StockQuantity = 111,
-                            SupplierId = 2,
-                            qualityCheckStatus = "PASSED"
-                        },
-                        new
-                        {
-                            NoteId = 98,
-                            Date = new DateTime(2026, 5, 22, 9, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "REJECTED",
-                            UserId = 5,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 0,
-                            StockQuantity = 117,
-                            SupplierId = 3,
-                            qualityCheckStatus = "PASSED"
-                        },
-                        new
-                        {
-                            NoteId = 99,
-                            Date = new DateTime(2026, 5, 23, 10, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "APPROVED",
-                            UserId = 6,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 1,
-                            StockQuantity = 123,
-                            SupplierId = 4,
-                            qualityCheckStatus = "NEEDS_REVIEW"
-                        },
-                        new
-                        {
-                            NoteId = 100,
-                            Date = new DateTime(2026, 5, 24, 11, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "PENDING",
-                            UserId = 7,
-                            WarehouseId = 1,
-                            type = "GoodsReceipt",
-                            DefectiveQuantity = 0,
-                            StockQuantity = 129,
-                            SupplierId = 5,
-                            qualityCheckStatus = "PASSED"
                         });
                 });
 
