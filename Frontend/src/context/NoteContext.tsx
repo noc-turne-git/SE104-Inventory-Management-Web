@@ -172,7 +172,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (newNote.type === 'RECEIPT') {
       try {
-        const [productMap, supplierMap] = await Promise.all([getProductNameToId(), getSupplierNameToId()]);
+        const [productMap, supplierMap] = await Promise.all([getProductNameToId(warehouseId), getSupplierNameToId(warehouseId)]);
         const supplierId = newNote.supplierId ?? supplierMap.get(newNote.supplier.trim().toLowerCase());
         if (!supplierId) {
           toast.error(`Supplier not found: ${newNote.supplier}`);
@@ -268,7 +268,7 @@ export const NoteProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (current.type === 'RECEIPT') {
       try {
         const next = { ...current, ...data } as Receipt;
-        const [productMap, supplierMap] = await Promise.all([getProductNameToId(), getSupplierNameToId()]);
+        const [productMap, supplierMap] = await Promise.all([getProductNameToId(warehouseId), getSupplierNameToId(warehouseId)]);
         const supplierId = next.supplierId ?? supplierMap.get(next.supplier.trim().toLowerCase());
         if (!supplierId) {
           toast.error(`Supplier not found: ${next.supplier}`);

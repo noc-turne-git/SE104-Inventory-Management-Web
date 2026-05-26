@@ -75,7 +75,7 @@ public class EmailService : IEmailService
 
         string frontendUrl = _configuration["Frontend:VerifyEmailUrl"] ?? "http://localhost:5173/verify-email";
         string confirmationLink = $"{frontendUrl}?token={token}&email={toEmail}";
-
+    
         var emailMessage = new EmailMessageDTO
         {
             ToEmail = toEmail,

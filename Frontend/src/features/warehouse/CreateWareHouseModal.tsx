@@ -6,8 +6,8 @@ import type { Warehouse } from "../../types/warehouse";
 interface CreateWareHouseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (name: string, address: string, imageFile?: File | null) => void;
-  onUpdate?: (id: string, name: string, address: string, imageFile?: File | null) => void;
+  onCreate: (name: string, address: string, imageFile?: File | null) => void | Promise<void>;
+  onUpdate?: (id: string | number, name: string, address: string, imageFile?: File | null) => void | Promise<void>;
   warehouse?: Warehouse | null;
 }
 
@@ -22,6 +22,7 @@ export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
   const [location, setLocation] = React.useState("");
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = React.useState("");
+  const [submitting, setSubmitting] = React.useState(false);
   const isEditing = Boolean(warehouse);
 
   React.useEffect(() => {
@@ -44,18 +45,21 @@ export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
     return () => URL.revokeObjectURL(url);
   }, [imageFile, warehouse]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+
     if (name && location) {
-      if (warehouse && onUpdate) {
-        onUpdate(warehouse.warehouseId, name, location, imageFile);
-      } else {
-        onCreate(name, location, imageFile);
+      setSubmitting(true);
+      try {
+        if (warehouse && onUpdate) {
+          await onUpdate(warehouse.warehouseId, name, location, imageFile);
+        } else {
+          await onCreate(name, location, imageFile);
+        }
+      } finally {
+        setSubmitting(false);
       }
-      setName("");
-      setLocation("");
-      setImageFile(null);
-      onClose();
     }
   };
 
@@ -145,9 +149,10 @@ export const CreateWareHouseModal: React.FC<CreateWareHouseModalProps> = ({
                   </button>
                   <button
                     type="submit"
+                    disabled={submitting}
                     className="px-8 py-2.5 bg-[#1E3A8A] text-white text-sm font-bold rounded-lg hover:bg-[#2563EB] transition-all shadow-md active:scale-95 font-headline"
                   >
-                    {isEditing ? "Save Changes" : "Create Warehouse"}
+                    {submitting ? "Saving..." : isEditing ? "Save Changes" : "Create Warehouse"}
                   </button>
                 </div>
               </form>

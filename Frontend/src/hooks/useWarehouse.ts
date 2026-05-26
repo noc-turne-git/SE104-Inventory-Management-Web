@@ -8,10 +8,31 @@ import invitationApi from "../api/InvitationAPI";
 
 import { isAxiosError } from "axios";
 
-const resolveImageUrl = (url?: string) => {
+// const resolveImageUrl = (url?: string) => {
+//   if (!url) return "";
+//   if (/^(https?:|blob:|data:)/i.test(url)) return url;
+//   return `http://localhost:5074${url}`;
+// };
+
+const WAREHOUSE_IMAGE_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:5074/api").replace(/\/api\/?$/i, "").replace(/\/+$/, "");
+
+const resolveImageUrl = (url?: string | null): string => {
+  // Không có URL
   if (!url) return "";
-  if (/^(https?:|blob:|data:)/i.test(url)) return url;
-  return `http://localhost:5074${url}`;
+
+  // Nếu đã là full URL hoặc blob/data
+  if (/^(https?:|blob:|data:)/i.test(url)) {
+    return url;
+  }
+
+  // Xóa dấu / dư ở đầu path
+  const cleanPath = url.replace(/^\/+/, "");
+
+  // Xóa dấu / dư cuối API_URL
+  const cleanBaseUrl = WAREHOUSE_IMAGE_BASE_URL;
+
+  // Ghép URL chuẩn
+  return `${cleanBaseUrl}/${cleanPath}`;
 };
 
 // const mapApiWarehouse = (data: any): Warehouse => ({
@@ -52,8 +73,21 @@ const readWarehouseId = (data: unknown) => {
   return Number.isFinite(id) ? id : 0;
 };
 
+const readWarehouseImage = (record: ApiRecord) =>
+  asString(
+    record.urlimage ??
+      record.Urlimage ??
+      record.urlImage ??
+      record.UrlImage ??
+      record.imageUrl ??
+      record.ImageUrl ??
+      record.image ??
+      record.Image
+  );
+
 const mapApiWarehouse = (data: unknown): Warehouse => {
   const record = asRecord(data);
+  const rawImageUrl = readWarehouseImage(record);
 
   return {
     warehouseId: readWarehouseId(record),
@@ -61,7 +95,8 @@ const mapApiWarehouse = (data: unknown): Warehouse => {
     name: asString(record.name ?? record.Name),
     location: asString(record.location ?? record.Location ?? record.address),
     address: asString(record.address ?? record.location ?? record.Location),
-    imageUrl: resolveImageUrl(asString(record.imageUrl ?? record.ImageUrl ?? record.urlimage)),
+    imageUrl: resolveImageUrl(rawImageUrl),
+    urlimage: rawImageUrl,
     status: asString(record.status ?? record.Status, "Stable Operations") as Warehouse["status"],
     productCount: record.productCount as Warehouse["productCount"] ?? record.ProductCount as Warehouse["productCount"] ?? 0,
     lastUpdate: asString(record.lastUpdate ?? record.LastUpdate),
@@ -80,7 +115,7 @@ const mapApiInvitation = (data: unknown): Invitation => {
     warehouseName: asString(record.warehouseName ?? record.WarehouseName ?? record.name ?? record.Name),
     address: asString(record.address ?? record.Address ?? record.location ?? record.Location),
     requestedRole: normalizeRole(record.requestedRole ?? record.RequestedRole ?? record.role ?? record.Role),
-    imageUrl: resolveImageUrl(asString(record.imageUrl ?? record.ImageUrl ?? record.urlimage)),
+    imageUrl: resolveImageUrl(readWarehouseImage(record)),
   };
 };
 
@@ -301,7 +336,15 @@ export const useWarehouse = () => {
       const updatedWarehouse = mapApiWarehouse(response.data);
       setWarehouses((prev) =>
         prev.map((warehouse) =>
-          String(warehouse.warehouseId) === String(id) ? { ...warehouse, ...updatedWarehouse, role: warehouse.role } : warehouse
+          String(warehouse.warehouseId) === String(id)
+            ? {
+                ...warehouse,
+                ...updatedWarehouse,
+                role: warehouse.role,
+                imageUrl: updatedWarehouse.imageUrl || warehouse.imageUrl,
+                urlimage: updatedWarehouse.urlimage || warehouse.urlimage,
+              }
+            : warehouse
         )
       );
       closeModal();

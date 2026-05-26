@@ -2,6 +2,7 @@ import productApi from '../../api/ProductAPI';
 import supplierApi from '../../api/SupplierAPI';
 import { asArray, asNumber, asRecord, asString } from './noteMappers';
 
+//Lấy productId từ product name
 export const getProductNameToId = async (warehouseId?: number | null) => {
   if (!warehouseId) return new Map<string, number>();
 

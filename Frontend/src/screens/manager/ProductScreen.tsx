@@ -9,12 +9,8 @@ import ProductModal from '../../features/products/ProductModal';
 import ProductRow from '../../features/products/ProductRowStyle';
 import { useProducts } from '../../hooks/useProducts';
 import { type Product, type ProductFormData } from '../../types/product';
+import { resolveImageUrl } from '../../utils/resolveImageUrl';
 
-const resolveImageUrl = (url: string) => {
-  if (!url) return '';
-  if (/^(https?:|blob:|data:)/i.test(url)) return url;
-  return `http://localhost:5074${url}`;
-};
 //convert format của BE/api sang của FE
 const mapApiProductToProduct = (data: any): Product => {
   const status = (data?.status ?? 'undefined') as Product['status']; // cho phép null/defined nhưng nếu dị thì là string 'undefined'

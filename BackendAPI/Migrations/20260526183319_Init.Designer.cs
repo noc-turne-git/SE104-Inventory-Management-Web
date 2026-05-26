@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BackendAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260525075105_SyncModel")]
-    partial class SyncModel
+    [Migration("20260526183319_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1146,6 +1146,9 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(21)
                         .HasColumnType("character varying(21)");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()

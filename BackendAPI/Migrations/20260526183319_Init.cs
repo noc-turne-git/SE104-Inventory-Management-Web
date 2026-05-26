@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BackendAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -394,6 +394,7 @@ namespace BackendAPI.Migrations
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     type = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
+                    Reason = table.Column<string>(type: "text", nullable: true),
                     NoteType = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Destination = table.Column<string>(type: "text", nullable: true),
@@ -748,60 +749,60 @@ namespace BackendAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "Notes",
-                columns: new[] { "NoteId", "Date", "Destination", "NoteType", "Status", "UserId", "WarehouseId", "type" },
+                columns: new[] { "NoteId", "Date", "Destination", "NoteType", "Reason", "Status", "UserId", "WarehouseId", "type" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 1, 8, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-01", "DeliveryNote", "PENDING", 2, 1, "DeliveryNote" },
-                    { 2, new DateTime(2025, 2, 13, 10, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-02", "DeliveryNote", "PENDING", 3, 1, "DeliveryNote" },
-                    { 3, new DateTime(2025, 3, 18, 11, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-03", "DeliveryNote", "APPROVED", 5, 1, "DeliveryNote" },
-                    { 4, new DateTime(2025, 4, 23, 12, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-04", "DeliveryNote", "PENDING", 6, 1, "DeliveryNote" },
-                    { 5, new DateTime(2025, 5, 4, 13, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-05", "DeliveryNote", "PENDING", 7, 1, "DeliveryNote" },
-                    { 6, new DateTime(2025, 6, 9, 14, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-06", "DeliveryNote", "APPROVED", 8, 1, "DeliveryNote" },
-                    { 7, new DateTime(2025, 7, 14, 15, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-07", "DeliveryNote", "REJECTED", 9, 1, "DeliveryNote" },
-                    { 8, new DateTime(2025, 8, 19, 8, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-08", "DeliveryNote", "PENDING", 10, 1, "DeliveryNote" },
-                    { 9, new DateTime(2025, 9, 24, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-09", "DeliveryNote", "APPROVED", 11, 1, "DeliveryNote" },
-                    { 10, new DateTime(2025, 10, 5, 10, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-10", "DeliveryNote", "PENDING", 12, 1, "DeliveryNote" },
-                    { 11, new DateTime(2025, 11, 10, 11, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-11", "DeliveryNote", "PENDING", 2, 1, "DeliveryNote" },
-                    { 12, new DateTime(2025, 12, 15, 12, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-12", "DeliveryNote", "APPROVED", 3, 1, "DeliveryNote" },
-                    { 13, new DateTime(2025, 1, 20, 13, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-13", "DeliveryNote", "PENDING", 5, 1, "DeliveryNote" },
-                    { 14, new DateTime(2026, 2, 25, 14, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-14", "DeliveryNote", "REJECTED", 6, 1, "DeliveryNote" },
-                    { 15, new DateTime(2026, 3, 6, 15, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-15", "DeliveryNote", "APPROVED", 7, 1, "DeliveryNote" },
-                    { 16, new DateTime(2026, 4, 11, 8, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-16", "DeliveryNote", "PENDING", 8, 1, "DeliveryNote" },
-                    { 17, new DateTime(2026, 5, 16, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-17", "DeliveryNote", "PENDING", 9, 1, "DeliveryNote" },
-                    { 18, new DateTime(2026, 6, 21, 10, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-18", "DeliveryNote", "APPROVED", 10, 1, "DeliveryNote" },
-                    { 19, new DateTime(2026, 7, 26, 11, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-19", "DeliveryNote", "PENDING", 11, 1, "DeliveryNote" },
-                    { 20, new DateTime(2026, 8, 7, 12, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-20", "DeliveryNote", "PENDING", 12, 1, "DeliveryNote" },
-                    { 21, new DateTime(2026, 9, 12, 13, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-21", "DeliveryNote", "REJECTED", 2, 1, "DeliveryNote" },
-                    { 22, new DateTime(2026, 10, 17, 14, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-22", "DeliveryNote", "PENDING", 3, 1, "DeliveryNote" },
-                    { 23, new DateTime(2026, 11, 22, 15, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-23", "DeliveryNote", "PENDING", 5, 1, "DeliveryNote" },
-                    { 24, new DateTime(2026, 12, 3, 8, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-24", "DeliveryNote", "APPROVED", 6, 1, "DeliveryNote" },
-                    { 25, new DateTime(2026, 1, 8, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-25", "DeliveryNote", "PENDING", 7, 1, "DeliveryNote" },
-                    { 26, new DateTime(2025, 7, 17, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-01", "DeliveryNote", "PENDING", 13, 2, "DeliveryNote" },
-                    { 27, new DateTime(2025, 11, 8, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-02", "DeliveryNote", "APPROVED", 14, 2, "DeliveryNote" },
-                    { 28, new DateTime(2026, 2, 19, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-03", "DeliveryNote", "REJECTED", 4, 2, "DeliveryNote" },
-                    { 29, new DateTime(2026, 4, 29, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-04", "DeliveryNote", "PENDING", 13, 2, "DeliveryNote" },
-                    { 30, new DateTime(2026, 5, 16, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-05", "DeliveryNote", "APPROVED", 14, 2, "DeliveryNote" }
+                    { 1, new DateTime(2025, 1, 8, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-01", "DeliveryNote", null, "PENDING", 2, 1, "DeliveryNote" },
+                    { 2, new DateTime(2025, 2, 13, 10, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-02", "DeliveryNote", null, "PENDING", 3, 1, "DeliveryNote" },
+                    { 3, new DateTime(2025, 3, 18, 11, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-03", "DeliveryNote", null, "APPROVED", 5, 1, "DeliveryNote" },
+                    { 4, new DateTime(2025, 4, 23, 12, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-04", "DeliveryNote", null, "PENDING", 6, 1, "DeliveryNote" },
+                    { 5, new DateTime(2025, 5, 4, 13, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-05", "DeliveryNote", null, "PENDING", 7, 1, "DeliveryNote" },
+                    { 6, new DateTime(2025, 6, 9, 14, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-06", "DeliveryNote", null, "APPROVED", 8, 1, "DeliveryNote" },
+                    { 7, new DateTime(2025, 7, 14, 15, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-07", "DeliveryNote", null, "REJECTED", 9, 1, "DeliveryNote" },
+                    { 8, new DateTime(2025, 8, 19, 8, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-08", "DeliveryNote", null, "PENDING", 10, 1, "DeliveryNote" },
+                    { 9, new DateTime(2025, 9, 24, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-09", "DeliveryNote", null, "APPROVED", 11, 1, "DeliveryNote" },
+                    { 10, new DateTime(2025, 10, 5, 10, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-10", "DeliveryNote", null, "PENDING", 12, 1, "DeliveryNote" },
+                    { 11, new DateTime(2025, 11, 10, 11, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-11", "DeliveryNote", null, "PENDING", 2, 1, "DeliveryNote" },
+                    { 12, new DateTime(2025, 12, 15, 12, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-12", "DeliveryNote", null, "APPROVED", 3, 1, "DeliveryNote" },
+                    { 13, new DateTime(2025, 1, 20, 13, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-13", "DeliveryNote", null, "PENDING", 5, 1, "DeliveryNote" },
+                    { 14, new DateTime(2026, 2, 25, 14, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-14", "DeliveryNote", null, "REJECTED", 6, 1, "DeliveryNote" },
+                    { 15, new DateTime(2026, 3, 6, 15, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-15", "DeliveryNote", null, "APPROVED", 7, 1, "DeliveryNote" },
+                    { 16, new DateTime(2026, 4, 11, 8, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-16", "DeliveryNote", null, "PENDING", 8, 1, "DeliveryNote" },
+                    { 17, new DateTime(2026, 5, 16, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-17", "DeliveryNote", null, "PENDING", 9, 1, "DeliveryNote" },
+                    { 18, new DateTime(2026, 6, 21, 10, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-18", "DeliveryNote", null, "APPROVED", 10, 1, "DeliveryNote" },
+                    { 19, new DateTime(2026, 7, 26, 11, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-19", "DeliveryNote", null, "PENDING", 11, 1, "DeliveryNote" },
+                    { 20, new DateTime(2026, 8, 7, 12, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-20", "DeliveryNote", null, "PENDING", 12, 1, "DeliveryNote" },
+                    { 21, new DateTime(2026, 9, 12, 13, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-21", "DeliveryNote", null, "REJECTED", 2, 1, "DeliveryNote" },
+                    { 22, new DateTime(2026, 10, 17, 14, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-22", "DeliveryNote", null, "PENDING", 3, 1, "DeliveryNote" },
+                    { 23, new DateTime(2026, 11, 22, 15, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-23", "DeliveryNote", null, "PENDING", 5, 1, "DeliveryNote" },
+                    { 24, new DateTime(2026, 12, 3, 8, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-24", "DeliveryNote", null, "APPROVED", 6, 1, "DeliveryNote" },
+                    { 25, new DateTime(2026, 1, 8, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store A-25", "DeliveryNote", null, "PENDING", 7, 1, "DeliveryNote" },
+                    { 26, new DateTime(2025, 7, 17, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-01", "DeliveryNote", null, "PENDING", 13, 2, "DeliveryNote" },
+                    { 27, new DateTime(2025, 11, 8, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-02", "DeliveryNote", null, "APPROVED", 14, 2, "DeliveryNote" },
+                    { 28, new DateTime(2026, 2, 19, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-03", "DeliveryNote", null, "REJECTED", 4, 2, "DeliveryNote" },
+                    { 29, new DateTime(2026, 4, 29, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-04", "DeliveryNote", null, "PENDING", 13, 2, "DeliveryNote" },
+                    { 30, new DateTime(2026, 5, 16, 9, 0, 0, 0, DateTimeKind.Utc), "Retail Store B-05", "DeliveryNote", null, "APPROVED", 14, 2, "DeliveryNote" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Notes",
-                columns: new[] { "NoteId", "Date", "NoteType", "Status", "UserId", "WarehouseId", "type" },
+                columns: new[] { "NoteId", "Date", "NoteType", "Reason", "Status", "UserId", "WarehouseId", "type" },
                 values: new object[,]
                 {
-                    { 61, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", "PENDING", 2, 1, "InventoryCheckNote" },
-                    { 62, new DateTime(2025, 6, 22, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", "APPROVED", 3, 1, "InventoryCheckNote" },
-                    { 63, new DateTime(2025, 10, 12, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", "PENDING", 5, 1, "InventoryCheckNote" },
-                    { 64, new DateTime(2026, 1, 20, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", "PENDING", 6, 1, "InventoryCheckNote" },
-                    { 65, new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", "APPROVED", 7, 1, "InventoryCheckNote" },
-                    { 66, new DateTime(2026, 5, 10, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", "REJECTED", 8, 1, "InventoryCheckNote" },
-                    { 67, new DateTime(2025, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", "PENDING", 4, 2, "InventoryCheckNote" },
-                    { 68, new DateTime(2026, 3, 14, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", "APPROVED", 13, 2, "InventoryCheckNote" }
+                    { 61, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", null, "PENDING", 2, 1, "InventoryCheckNote" },
+                    { 62, new DateTime(2025, 6, 22, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", null, "APPROVED", 3, 1, "InventoryCheckNote" },
+                    { 63, new DateTime(2025, 10, 12, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", null, "PENDING", 5, 1, "InventoryCheckNote" },
+                    { 64, new DateTime(2026, 1, 20, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", null, "PENDING", 6, 1, "InventoryCheckNote" },
+                    { 65, new DateTime(2026, 4, 7, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", null, "APPROVED", 7, 1, "InventoryCheckNote" },
+                    { 66, new DateTime(2026, 5, 10, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", null, "REJECTED", 8, 1, "InventoryCheckNote" },
+                    { 67, new DateTime(2025, 9, 9, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", null, "PENDING", 4, 2, "InventoryCheckNote" },
+                    { 68, new DateTime(2026, 3, 14, 0, 0, 0, 0, DateTimeKind.Utc), "InventoryCheckNote", null, "APPROVED", 13, 2, "InventoryCheckNote" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Notes",
-                columns: new[] { "NoteId", "Date", "Description", "NoteType", "Status", "UserId", "WarehouseId", "type" },
-                values: new object[] { 90, new DateTime(2026, 1, 9, 0, 0, 0, 0, DateTimeKind.Utc), "Damaged packaging", "DamageNote", "REJECTED", 13, 2, "DamageNote" });
+                columns: new[] { "NoteId", "Date", "Description", "NoteType", "Reason", "Status", "UserId", "WarehouseId", "type" },
+                values: new object[] { 90, new DateTime(2026, 1, 9, 0, 0, 0, 0, DateTimeKind.Utc), "Damaged packaging", "DamageNote", null, "REJECTED", 13, 2, "DamageNote" });
 
             migrationBuilder.InsertData(
                 table: "Products",
@@ -888,39 +889,39 @@ namespace BackendAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "Notes",
-                columns: new[] { "NoteId", "Date", "DefectiveQuantity", "NoteType", "Status", "StockQuantity", "SupplierId", "UserId", "WarehouseId", "qualityCheckStatus", "type" },
+                columns: new[] { "NoteId", "Date", "DefectiveQuantity", "NoteType", "Reason", "Status", "StockQuantity", "SupplierId", "UserId", "WarehouseId", "qualityCheckStatus", "type" },
                 values: new object[,]
                 {
-                    { 31, new DateTime(2025, 3, 9, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 67, 1, 2, 1, "PASSED", "GoodsReceipt" },
-                    { 32, new DateTime(2025, 4, 16, 11, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "APPROVED", 74, 2, 3, 1, "PASSED", "GoodsReceipt" },
-                    { 33, new DateTime(2025, 5, 23, 12, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 81, 3, 5, 1, "PASSED", "GoodsReceipt" },
-                    { 34, new DateTime(2025, 6, 5, 13, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", "PENDING", 88, 4, 6, 1, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 35, new DateTime(2025, 7, 12, 14, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "APPROVED", 95, 5, 7, 1, "PASSED", "GoodsReceipt" },
-                    { 36, new DateTime(2025, 8, 19, 15, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", "REJECTED", 102, 1, 8, 1, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 37, new DateTime(2025, 9, 26, 9, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 109, 2, 9, 1, "PASSED", "GoodsReceipt" },
-                    { 38, new DateTime(2025, 10, 8, 10, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", "APPROVED", 116, 3, 10, 1, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 39, new DateTime(2025, 11, 15, 11, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 123, 4, 11, 1, "PASSED", "GoodsReceipt" },
-                    { 40, new DateTime(2025, 12, 22, 12, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 130, 5, 12, 1, "PASSED", "GoodsReceipt" },
-                    { 41, new DateTime(2025, 1, 4, 13, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "APPROVED", 137, 1, 2, 1, "PASSED", "GoodsReceipt" },
-                    { 42, new DateTime(2025, 2, 11, 14, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", "PENDING", 144, 2, 3, 1, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 43, new DateTime(2026, 3, 18, 15, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "REJECTED", 61, 3, 5, 1, "PASSED", "GoodsReceipt" },
-                    { 44, new DateTime(2026, 4, 25, 9, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "APPROVED", 68, 4, 6, 1, "PASSED", "GoodsReceipt" },
-                    { 45, new DateTime(2026, 5, 7, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 75, 5, 7, 1, "PASSED", "GoodsReceipt" },
-                    { 46, new DateTime(2026, 6, 14, 11, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", "PENDING", 82, 1, 8, 1, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 47, new DateTime(2026, 7, 21, 12, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "APPROVED", 89, 2, 9, 1, "PASSED", "GoodsReceipt" },
-                    { 48, new DateTime(2026, 8, 3, 13, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", "PENDING", 96, 3, 10, 1, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 49, new DateTime(2026, 9, 10, 14, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 103, 4, 11, 1, "PASSED", "GoodsReceipt" },
-                    { 50, new DateTime(2026, 10, 17, 15, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", "REJECTED", 110, 5, 12, 1, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 51, new DateTime(2026, 11, 24, 9, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 117, 1, 2, 1, "PASSED", "GoodsReceipt" },
-                    { 52, new DateTime(2026, 12, 6, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 124, 2, 3, 1, "PASSED", "GoodsReceipt" },
-                    { 53, new DateTime(2026, 1, 13, 11, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "APPROVED", 131, 3, 5, 1, "PASSED", "GoodsReceipt" },
-                    { 54, new DateTime(2026, 2, 20, 12, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", "PENDING", 138, 4, 6, 1, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 55, new DateTime(2026, 3, 2, 13, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "PENDING", 145, 5, 7, 1, "PASSED", "GoodsReceipt" },
-                    { 56, new DateTime(2025, 8, 5, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "APPROVED", 62, 7, 13, 2, "PASSED", "GoodsReceipt" },
-                    { 57, new DateTime(2025, 12, 3, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "REJECTED", 69, 6, 14, 2, "PASSED", "GoodsReceipt" },
-                    { 58, new DateTime(2026, 1, 22, 10, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", "PENDING", 76, 7, 4, 2, "NEEDS_REVIEW", "GoodsReceipt" },
-                    { 59, new DateTime(2026, 3, 27, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", "APPROVED", 83, 6, 13, 2, "PASSED", "GoodsReceipt" },
-                    { 60, new DateTime(2026, 5, 9, 10, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", "PENDING", 90, 7, 14, 2, "NEEDS_REVIEW", "GoodsReceipt" }
+                    { 31, new DateTime(2025, 3, 9, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 67, 1, 2, 1, "PASSED", "GoodsReceipt" },
+                    { 32, new DateTime(2025, 4, 16, 11, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "APPROVED", 74, 2, 3, 1, "PASSED", "GoodsReceipt" },
+                    { 33, new DateTime(2025, 5, 23, 12, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 81, 3, 5, 1, "PASSED", "GoodsReceipt" },
+                    { 34, new DateTime(2025, 6, 5, 13, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", null, "PENDING", 88, 4, 6, 1, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 35, new DateTime(2025, 7, 12, 14, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "APPROVED", 95, 5, 7, 1, "PASSED", "GoodsReceipt" },
+                    { 36, new DateTime(2025, 8, 19, 15, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", null, "REJECTED", 102, 1, 8, 1, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 37, new DateTime(2025, 9, 26, 9, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 109, 2, 9, 1, "PASSED", "GoodsReceipt" },
+                    { 38, new DateTime(2025, 10, 8, 10, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", null, "APPROVED", 116, 3, 10, 1, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 39, new DateTime(2025, 11, 15, 11, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 123, 4, 11, 1, "PASSED", "GoodsReceipt" },
+                    { 40, new DateTime(2025, 12, 22, 12, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 130, 5, 12, 1, "PASSED", "GoodsReceipt" },
+                    { 41, new DateTime(2025, 1, 4, 13, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "APPROVED", 137, 1, 2, 1, "PASSED", "GoodsReceipt" },
+                    { 42, new DateTime(2025, 2, 11, 14, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", null, "PENDING", 144, 2, 3, 1, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 43, new DateTime(2026, 3, 18, 15, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "REJECTED", 61, 3, 5, 1, "PASSED", "GoodsReceipt" },
+                    { 44, new DateTime(2026, 4, 25, 9, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "APPROVED", 68, 4, 6, 1, "PASSED", "GoodsReceipt" },
+                    { 45, new DateTime(2026, 5, 7, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 75, 5, 7, 1, "PASSED", "GoodsReceipt" },
+                    { 46, new DateTime(2026, 6, 14, 11, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", null, "PENDING", 82, 1, 8, 1, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 47, new DateTime(2026, 7, 21, 12, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "APPROVED", 89, 2, 9, 1, "PASSED", "GoodsReceipt" },
+                    { 48, new DateTime(2026, 8, 3, 13, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", null, "PENDING", 96, 3, 10, 1, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 49, new DateTime(2026, 9, 10, 14, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 103, 4, 11, 1, "PASSED", "GoodsReceipt" },
+                    { 50, new DateTime(2026, 10, 17, 15, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", null, "REJECTED", 110, 5, 12, 1, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 51, new DateTime(2026, 11, 24, 9, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 117, 1, 2, 1, "PASSED", "GoodsReceipt" },
+                    { 52, new DateTime(2026, 12, 6, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 124, 2, 3, 1, "PASSED", "GoodsReceipt" },
+                    { 53, new DateTime(2026, 1, 13, 11, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "APPROVED", 131, 3, 5, 1, "PASSED", "GoodsReceipt" },
+                    { 54, new DateTime(2026, 2, 20, 12, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", null, "PENDING", 138, 4, 6, 1, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 55, new DateTime(2026, 3, 2, 13, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "PENDING", 145, 5, 7, 1, "PASSED", "GoodsReceipt" },
+                    { 56, new DateTime(2025, 8, 5, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "APPROVED", 62, 7, 13, 2, "PASSED", "GoodsReceipt" },
+                    { 57, new DateTime(2025, 12, 3, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "REJECTED", 69, 6, 14, 2, "PASSED", "GoodsReceipt" },
+                    { 58, new DateTime(2026, 1, 22, 10, 0, 0, 0, DateTimeKind.Utc), 1, "GoodsReceipt", null, "PENDING", 76, 7, 4, 2, "NEEDS_REVIEW", "GoodsReceipt" },
+                    { 59, new DateTime(2026, 3, 27, 10, 0, 0, 0, DateTimeKind.Utc), 0, "GoodsReceipt", null, "APPROVED", 83, 6, 13, 2, "PASSED", "GoodsReceipt" },
+                    { 60, new DateTime(2026, 5, 9, 10, 0, 0, 0, DateTimeKind.Utc), 3, "GoodsReceipt", null, "PENDING", 90, 7, 14, 2, "NEEDS_REVIEW", "GoodsReceipt" }
                 });
 
             migrationBuilder.InsertData(
