@@ -27,7 +27,7 @@ const StaffRecentActivities: React.FC<StaffRecentActivitiesProps> = ({ activitie
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col min-h-[500px] overflow-hidden">
       <div className="p-6 flex-1">
-        <h3 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+        <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
           <Activity className="w-5 h-5 text-blue-500" /> Recent Activities
         </h3>
         <div className="space-y-4">
@@ -52,12 +52,12 @@ const StaffRecentActivities: React.FC<StaffRecentActivitiesProps> = ({ activitie
                 )}
               </div>
               <div className="flex-1">
-                <p className="text-lg font-semibold text-gray-900 leading-none">
+                <p className="text-base font-medium text-gray-900">
                   {activity.action}
                 </p>
-                <p className="text-md text-gray-500 mt-1">{activity.item}</p>
+                <p className="text-sm text-gray-500 mt-1">{activity.item}</p>
               </div>
-              <span className="text-lg font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded">
+              <span className="text-base text-gray-400 bg-gray-100 px-2 py-1 rounded">
                 {activity.time}
               </span>
             </div>
@@ -70,7 +70,7 @@ const StaffRecentActivities: React.FC<StaffRecentActivitiesProps> = ({ activitie
       </div>
 
       <div className="sticky bottom-0 mt-auto px-6 py-4 bg-gray-100 border-t border-gray-100 flex justify-between items-center">
-        <p className="text-md text-gray-500">
+        <p className="text-sm text-gray-500">
           Showing {totalEntries === 0 ? 0 : indexOfFirstItem + 1} to{' '}
           {Math.min(indexOfLastItem, totalEntries)} of {totalEntries} entries
         </p>
@@ -79,7 +79,7 @@ const StaffRecentActivities: React.FC<StaffRecentActivitiesProps> = ({ activitie
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className={`px-3 py-1 text-md font-medium transition-colors ${
+            className={`px-1 py-1 text-sm font-medium transition-colors ${
               currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600'
             }`}
           >
@@ -90,7 +90,7 @@ const StaffRecentActivities: React.FC<StaffRecentActivitiesProps> = ({ activitie
             <button
               key={i + 1}
               onClick={() => setCurrentPage(i + 1)}
-              className={`w-8 h-8 flex items-center justify-center rounded-md text-md font-bold transition-colors ${
+              className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-bold transition-colors ${
                 currentPage === i + 1
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-600 hover:bg-gray-100'
@@ -103,7 +103,7 @@ const StaffRecentActivities: React.FC<StaffRecentActivitiesProps> = ({ activitie
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages || totalPages === 0}
-            className={`px-3 py-1 text-md font-medium transition-colors ${
+            className={`px-1 py-1 text-sm font-medium transition-colors ${
               currentPage === totalPages || totalPages === 0
                 ? 'text-gray-300 cursor-not-allowed'
                 : 'text-gray-600 hover:text-blue-600'

@@ -19,21 +19,21 @@ const DashboardStaffScreen = () => {
 
       <StatsCards stats={staff.stats} />
 
-      <div className="grid grid-cols-5 gap-6 mb-8">
-        <div className="col-span-3">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
+        <div className="lg:col-span-3">
           <InventoryMovement data={staff.inventoryTrend} />
         </div>
-        <div className="col-span-2">
+        <div className="lg:col-span-2">
           <WeeklySchedule schedules={staff.weeklySchedule} />
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
         <LowStockAlert items={staff.lowStockItems} />
         <NoteTable notes={staff.noteEntries} />
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <Infractions infractions={staff.infractions} />
         <StaffRecentActivities activities={staff.recentActivities} />
       </div>
