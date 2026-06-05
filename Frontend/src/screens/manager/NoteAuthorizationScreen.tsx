@@ -45,8 +45,8 @@ const NoteAuthorizationScreen: React.FC = () => {
         <p className="text-gray-600 mt-1">Review and authorize warehouse documents</p>
       </div>
 
-      <div className="mb-8 flex flex-wrap gap-4 items-start justify-between">
-        <div className="flex bg-white p-1 rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
+      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center">
+        <div className="flex w-full min-w-0 bg-white p-1 rounded-xl shadow-sm border border-gray-200 overflow-x-auto lg:flex-1">
           {noteTabs.map((tab) => (
             <button
               key={tab.value}
@@ -63,7 +63,7 @@ const NoteAuthorizationScreen: React.FC = () => {
           ))}
         </div>
 
-        <div className="min-w-0 w-full md:w-96">
+        <div className="w-full min-w-0 lg:w-80 lg:shrink-0 xl:w-96">
           <SearchBar
             label="Find notes by note number or operator"
             onChange={(e) => setSearchTerm(e.target.value)}
