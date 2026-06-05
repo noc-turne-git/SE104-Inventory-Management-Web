@@ -9,11 +9,11 @@ type InventoryMovementProps = {
 
 const InventoryMovement: React.FC<InventoryMovementProps> = ({ data }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <h3 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-        <Activity className="w-7 h-7 text-blue-500" /> Inventory Movement
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full">
+      <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+        <Activity className="w-5 h-5 text-blue-500" /> Inventory Movement
       </h3>
-      <ResponsiveContainer width="100%" height={550}>
+      <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="date" stroke="#9ca3af" />

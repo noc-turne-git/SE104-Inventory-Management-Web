@@ -22,7 +22,7 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ schedules }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-full">
-      <h3 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+      <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
         <Briefcase className="w-5 h-5 text-purple-500" /> Weekly Schedule
       </h3>
       <div className="space-y-3">
@@ -41,26 +41,26 @@ const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({ schedules }) => {
             >
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
-                  <p className="text-lg font-bold text-gray-900">{shift.date}</p>
+                  <p className="text-base font-bold text-gray-900">{shift.date}</p>
                   {isToday && (
                     <span className="bg-purple-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">
                       Today
                     </span>
                   )}
                 </div>
-                <span className={`text-md font-medium px-2 py-0.5 rounded-full ${
+                <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${
                   isToday ? 'bg-purple-300 text-purple-800' : 'bg-purple-100 text-purple-700'
                 }`}>
                   {shift.shift}
                 </span>
               </div>
               
-              <p className="text-md text-gray-600 mt-1">
+              <p className="text-sm text-gray-600 mt-1">
                 <span className={isToday ? 'font-semibold' : ''}>{shift.position}</span> • {shift.time}
               </p>
 
               {shift.note !== '-' && (
-                <p className={`text-md italic mt-1 ${isToday ? 'text-purple-700' : 'text-gray-400'}`}>
+                <p className={`text-sm italic mt-1 ${isToday ? 'text-purple-700' : 'text-gray-400'}`}>
                   Note: {shift.note}
                 </p>
               )}

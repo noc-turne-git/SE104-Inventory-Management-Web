@@ -41,14 +41,14 @@ const NoteTable: React.FC<NoteTableProps> = ({ notes }) => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col min-h-[500px] overflow-hidden">
       <div className="flex p-6 items-center justify-between">
         <div>
-          <h3 className="text-2xl font-semibold text-gray-900">Note Status</h3>
-          <p className="text-md text-gray-500">Recheck rejected note soon</p>
+          <h3 className="text-xl font-semibold text-gray-900">Note Status</h3>
+          <p className="text-sm text-gray-500">Recheck rejected note soon</p>
         </div>
       </div>
 
       <table className="p-6 w-full text-left">
         <thead>
-          <tr className="text-xl font-medium text-gray-500 uppercase">
+          <tr className="text-sm font-medium text-gray-500 uppercase">
             <th className="px-6 py-2">Note Type</th>
             <th className="px-6 py-2">Created Date</th>
             <th className="px-6 py-2">Status</th>
@@ -72,18 +72,18 @@ const NoteTable: React.FC<NoteTableProps> = ({ notes }) => {
                       {renderIcon(item.type)}
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900 text-lg">{item.type}</p>
-                      <p className="text-md text-gray-500 font-medium">ID: {item.noteNumber}</p>
+                      <p className="font-medium text-gray-900 text-base">{item.type}</p>
+                      <p className="text-sm text-gray-500">ID: {item.noteNumber}</p>
                     </div>
                   </div>
                 </td>
 
-                <td className="px-6 py-5 text-md text-gray-600 font-medium">{item.createdDate}</td>
+                <td className="px-6 py-5 text-sm text-gray-600 font-medium">{item.createdDate}</td>
 
                 <td className="px-6 py-5">
                   <div className="flex flex-col gap-1">
                     <span
-                      className={`w-fit px-3 py-1 rounded-full text-md font-bold tracking-wider ${
+                      className={`w-fit px-3 py-1 rounded-full text-sm font-bold tracking-wider ${
                         item.status === 'COMPLETED'
                           ? 'bg-emerald-100 text-emerald-700'
                           : item.status === 'PENDING'
@@ -94,7 +94,7 @@ const NoteTable: React.FC<NoteTableProps> = ({ notes }) => {
                       {item.status}
                     </span>
                     {item.status === 'REJECTED' && item.reason && (
-                      <p className="text-md text-red-500 italic max-w-[200px]">Reason: {item.reason}</p>
+                      <p className="text-sm text-red-500 italic max-w-[200px]">Reason: {item.reason}</p>
                     )}
                   </div>
                 </td>
@@ -111,7 +111,7 @@ const NoteTable: React.FC<NoteTableProps> = ({ notes }) => {
       </table>
 
       <div className="sticky bottom-0 mt-auto px-6 py-4 bg-gray-100 border-t border-gray-100 flex justify-between items-center">
-        <p className="text-md text-gray-500">
+        <p className="text-sm text-gray-500">
           Showing {totalEntries === 0 ? 0 : indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalEntries)} of{' '}
           {totalEntries} entries
         </p>
@@ -120,7 +120,7 @@ const NoteTable: React.FC<NoteTableProps> = ({ notes }) => {
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className={`px-3 py-1 text-md font-medium transition-colors ${
+            className={`px-1 py-1 text-sm font-medium transition-colors ${
               currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:text-blue-600'
             }`}
           >
@@ -131,7 +131,7 @@ const NoteTable: React.FC<NoteTableProps> = ({ notes }) => {
             <button
               key={i + 1}
               onClick={() => setCurrentPage(i + 1)}
-              className={`w-8 h-8 flex items-center justify-center rounded-md text-md font-bold transition-colors ${
+              className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-bold transition-colors ${
                 currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
@@ -142,7 +142,7 @@ const NoteTable: React.FC<NoteTableProps> = ({ notes }) => {
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages || totalPages === 0}
-            className={`px-3 py-1 text-md font-medium transition-colors ${
+            className={`px-1 py-1 text-sm font-medium transition-colors ${
               currentPage === totalPages || totalPages === 0
                 ? 'text-gray-300 cursor-not-allowed'
                 : 'text-gray-600 hover:text-blue-600'
