@@ -27,7 +27,6 @@ Hệ thống hỗ trợ các nghiệp vụ chính:
 .
 |- Frontend/             # Ứng dụng giao diện React + Vite
 |- BackendAPI/           # API .NET + BLL + DAL + Infrastructure
-|- BackendAPI.Tests/     # Dự án kiểm thử
 |- docs/                 # Tài liệu SRS, kiến trúc
 |- docker-compose.yml    # Chạy toàn bộ hệ thống bằng Docker
 |- .env.example          # Mẫu biến môi trường
@@ -44,7 +43,7 @@ Dự án được phát triển theo hướng **Agile Scrum**:
 Vai trò đóng góp chính theo lịch sử commit:
 - **Bích Ngân**: `noc-turne-git`.
 - **Quỳnh Hương**: `Qhuongg`, `huongdtq06-cloud`.
-- **Bảo Châu**: `peanut-32`, `Red Force` (cùng email).
+- **Bảo Châu**: `peanut-32`, `Red Force` .
 - **Thu Hương**: `Thu-Huong-k24`.
 
 ## 4. Hướng dẫn chạy local
@@ -99,6 +98,27 @@ Frontend mặc định: `http://localhost:5173`.
 Lưu ý:
 - Frontend đọc API URL từ `VITE_API_URL`.
 - Backend tự động áp dụng EF Core migrations khi khởi động.
+
+### 4.5 Tài khoản mẫu để test nhanh
+
+Dữ liệu seed tạo sẵn các tài khoản dưới đây. Tất cả dùng chung mật khẩu: `1`.
+
+| Vai trò | Kho | Email |
+| --- | --- | --- |
+| Owner | Warehouse A, Warehouse B | `owner@test.com` |
+| Manager | Warehouse A | `managerA1@test.com` |
+| Manager | Warehouse A | `managerA2@test.com` |
+| Manager | Warehouse B | `managerB1@test.com` |
+| Staff | Warehouse A | `staffA1@test.com` |
+| Staff | Warehouse A | `staffA2@test.com` |
+| Staff | Warehouse A | `staffA3@test.com` |
+| Staff | Warehouse A | `staffA4@test.com` |
+| Staff | Warehouse A | `staffA5@test.com` |
+| Staff | Warehouse A | `staffA6@test.com` |
+| Staff | Warehouse A | `staffA7@test.com` |
+| Staff | Warehouse A | `staffA8@test.com` |
+| Staff | Warehouse B | `staffB1@test.com` |
+| Staff | Warehouse B | `staffB2@test.com` |
 
 ## 5. Sản phẩm đã deploy (Public IP)
 
