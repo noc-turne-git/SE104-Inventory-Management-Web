@@ -45,29 +45,31 @@ const NoteAuthorizationScreen: React.FC = () => {
         <p className="text-gray-600 mt-1">Review and authorize warehouse documents</p>
       </div>
 
-      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center">
-        <div className="flex w-full min-w-0 bg-white p-1 rounded-xl shadow-sm border border-gray-200 overflow-x-auto lg:flex-1">
-          {noteTabs.map((tab) => (
-            <button
-              key={tab.value}
-              type="button"
-              onClick={() => setActiveTab(tab.value)}
-              className={`px-6 py-2 rounded-lg text-md font-bold transition-all whitespace-nowrap ${
-                activeTab === tab.value
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'text-gray-500 hover:text-gray-900'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+      <div className="mb-8 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+          <div className="flex w-full min-w-0 rounded-xl border border-gray-200 bg-gray-50 p-1 lg:flex-1">
+            {noteTabs.map((tab) => (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => setActiveTab(tab.value)}
+                className={`min-w-0 flex-1 px-2 py-2 rounded-lg text-sm font-bold transition-all whitespace-nowrap xl:px-4 xl:text-base ${
+                  activeTab === tab.value
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-gray-500 hover:text-gray-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-        <div className="w-full min-w-0 lg:w-80 lg:shrink-0 xl:w-96">
-          <SearchBar
-            label="Find notes by note number or operator"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div className="w-full min-w-0 [&>div]:mb-0 lg:w-80 lg:shrink-0 xl:w-96">
+            <SearchBar
+              label="Find notes by note number or operator"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
