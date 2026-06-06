@@ -123,5 +123,5 @@ Dữ liệu seed tạo sẵn các tài khoản dưới đây. Tất cả dùng c
 ## 5. Sản phẩm đã deploy (Public IP)
 
 Hệ thống đã được cấu hình để deploy với public IP:
-- **Frontend**: `http://3.106.211.154:5173`
-- **Backend API**: `http://3.106.211.154:5074/api`
+- **Frontend**: `http://20.189.126.150:5173/`
+- **Backend API**: `http://20.189.126.150:5173/api`
