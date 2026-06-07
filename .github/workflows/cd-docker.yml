@@ -32,7 +32,7 @@ jobs:
           context: ./Frontend
           file: ./Frontend/dockerfile
           build-args: |
-            VITE_API_URL=http://3.106.211.154:5074/api
+            VITE_API_URL=http://20.189.126.150:5074/api
           push: true
           tags: huongztomato/se104-frontend:latest
           no-cache: true
