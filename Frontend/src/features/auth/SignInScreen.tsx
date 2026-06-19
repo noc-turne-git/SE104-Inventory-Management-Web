@@ -87,7 +87,11 @@ const SignInScreen = () => {
           setFormError("Email or password is incorrect.");
           break;
         case 403:
-          setFormError("Your account is locked or you do not have access.");
+          setFormError(
+            err.response.data?.requiresEmailVerification
+              ? "Please verify your email before signing in."
+              : "Your account is locked or you do not have access."
+          );
           break;
         case 500:
           setFormError("Server error. Please try again later.");

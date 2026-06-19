@@ -22,6 +22,13 @@ public class AuthController : ControllerBase
         var result = await _authService.LoginAsync(model);
         if (result == null)
             return Unauthorized(new { Success = false, Message = "Invalid username or password." });
+        if (result.RequiresEmailVerification)
+            return StatusCode(StatusCodes.Status403Forbidden, new
+            {
+                Success = false,
+                Message = result.Message,
+                RequiresEmailVerification = true
+            });
         return Ok(new { Success = true, AccessToken = result.AccessToken, RefreshToken = result.RefreshToken, User = result.User });
     }   
 
@@ -30,8 +37,8 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.SignupAsync(model);
         if (!result)
-            return BadRequest(new { Success = false, Message = "Username or Email already exists." });
-        return Ok(new { Success = result });
+            return Conflict(new { Success = false, Message = "Username or Email already exists." });
+        return Ok(new { Success = result, Message = "Account created. Please check your email to verify your account." });
     }
 
  
