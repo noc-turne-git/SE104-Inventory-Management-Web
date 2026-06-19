@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import bgImage from "../../assets/stockify.png";
 import lgImage from "../../assets/logostockify.png";
 import authApi from "../../api/AuthAPI";
@@ -13,10 +13,12 @@ const isValidPhone = (phone: string) => /^0\d{9}$/.test(phone);
 
 const SignUpScreen = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialEmail = searchParams.get("email") ?? "";
 
   const [form, setForm] = useState({
     fullName: "",
-    email: "",
+    email: initialEmail,
     dob: "",
     phone: "",
     address: "",
