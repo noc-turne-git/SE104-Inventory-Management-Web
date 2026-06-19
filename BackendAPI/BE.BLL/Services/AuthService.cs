@@ -61,18 +61,6 @@ public class AuthService: IAuthService
 
         if (!BCrypt.Verify(model.Password, user.PasswordHash))
             return null; // Invalid password
-
-        if (!user.IsVerified)
-        {
-            return new ResponseLoginDTO
-            {
-                Success = false,
-                RequiresEmailVerification = true,
-                Message = "Please verify your email before signing in.",
-                User = _mapper.Map<UserDTO>(user)
-            };
-        }
-
         var userDTO = _mapper.Map<UserDTO>(user);
         string accessToken = _tokenService.CreateAccessToken(userDTO);
         string refreshToken = _tokenService.GenerateRandomStringToken();
@@ -84,7 +72,7 @@ public class AuthService: IAuthService
         };
         await _refreshTokenRepository.AddAsync(refreshTokenEntity);
 
-        return new ResponseLoginDTO { Success = true, RequiresEmailVerification = false, User = userDTO, AccessToken = accessToken, RefreshToken = refreshToken };
+        return new ResponseLoginDTO { Success = true, User = userDTO, AccessToken = accessToken, RefreshToken = refreshToken };
     }
 
     public async Task<bool> SignupAsync(SignupDTO model)
