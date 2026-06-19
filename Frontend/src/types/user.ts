@@ -32,6 +32,11 @@ export interface verifyOtpFormData {
   otp: string;
 }
 
+export interface verifyEmailFormData {
+  email: string;
+  token: string;
+}
+
 export interface resetPasswordFormData {
   resetPassToken: string| null;
   newPass: string;
