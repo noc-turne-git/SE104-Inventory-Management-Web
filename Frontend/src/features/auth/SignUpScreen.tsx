@@ -105,7 +105,7 @@ const SignUpScreen = () => {
 
     try {
       await authApi.signUp(form);
-      toast.success("Account created successfully.");
+      toast.success("Account created. Please check your email to verify your account.");
       navigate("/signin");
     } catch (err: unknown) {
       if (!isAxiosError(err)) {
