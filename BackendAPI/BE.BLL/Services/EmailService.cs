@@ -74,7 +74,7 @@ public class EmailService : IEmailService
         string token = _tokenService.GenerateRandomStringToken();
 
         string frontendUrl = _configuration["Frontend:VerifyEmailUrl"] ?? "http://localhost:5173/verify-email";
-        string confirmationLink = $"{frontendUrl}?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(toEmail)}";
+        string confirmationLink = $"{frontendUrl}?token={token}&email={toEmail}";
     
         var emailMessage = new EmailMessageDTO
         {
