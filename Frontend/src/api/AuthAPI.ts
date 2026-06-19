@@ -1,5 +1,5 @@
 import axiosClient from './axiosClient';
-import {type refreshFormData, type forgotpasswordFormData, type SignInFormData, type SignupFormData, type verifyOtpFormData, type resetPasswordFormData, type verifyEmailFormData } from '../types/user';
+import {type refreshFormData, type forgotpasswordFormData, type SignInFormData, type SignupFormData, type verifyOtpFormData, type resetPasswordFormData } from '../types/user';
 
 const authApi = {
   signIn(data: SignInFormData) {
@@ -18,11 +18,6 @@ const authApi = {
   },
   verifyOtp(data: verifyOtpFormData) {
     const url = 'auth/forgotPassword/verify-otp';
-    return axiosClient.post(url, data);
-  },
-
-  verifyEmail(data: verifyEmailFormData) {
-    const url = '/auth/verify-email';
     return axiosClient.post(url, data);
   },
 
