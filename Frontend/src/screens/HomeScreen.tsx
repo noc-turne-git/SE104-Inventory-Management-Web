@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import type { HomeData } from '../types/home';
 import { ImageSlider } from '../features/home/imageSlider';
 import { Header } from '../features/home/header';
@@ -40,6 +41,15 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ data, themeColor }) => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+
+  const handleSignUpClick = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const trimmedEmail = email.trim();
+    navigate(trimmedEmail ? `/signup?email=${encodeURIComponent(trimmedEmail)}` : "/signup");
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0e14] text-[#dfe2eb] font-sans selection:bg-primary/30" style={{ '--primary-color': themeColor } as any}>
       <Header themeColor={themeColor} />
@@ -65,19 +75,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ data, themeColor }) => {
             <p className="text-xl text-slate-400 max-w-xl leading-relaxed font-medium">
               {data.hero.description}
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4">
+            <form className="flex flex-col sm:flex-row items-center gap-4" onSubmit={handleSignUpClick}>
               <div className="relative w-full sm:w-80">
                 <input 
                   className="w-full bg-[#05080c] border border-white/5 rounded-lg px-6 py-4 text-[#dfe2eb] focus:ring-0 focus:border-white/10 transition-all placeholder:text-slate-600" 
                   placeholder="Enter your email" 
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <button 
+                type="submit"
                 className="w-full sm:w-auto bg-linear-to-r from-[#afc6ff] to-[#1f6feb] text-[#002d6d] px-12 py-5 rounded-lg font-black text-2x1 hover:opacity-90 transition-all shadow-xl shadow-[#1f6feb]/20"              >
                 {data.hero.cta}
               </button>
-            </div>
+            </form>
             <div className="flex items-center gap-6">
               <button className="flex items-center gap-3 text-slate-400 hover:text-slate-100 transition-colors font-normal text-sm">
                 <InventoryIcon className="w-5 h-5" />
