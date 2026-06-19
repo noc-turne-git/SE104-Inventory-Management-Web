@@ -9,6 +9,7 @@ import SignUp from "./features/auth/SignUpScreen";
 import ForgotPasswordScreen from "./features/auth/ForgotPasswordScreen";
 import VerifyOtpScreen from "./features/auth/VerifyOtpScreen";
 import ResetPasswordScreen from "./features/auth/ResetPasswordScreen"
+import VerifyEmailScreen from "./features/auth/VerifyEmailScreen";
 import { MOCK_HOME_DATA } from './data/MOCK_HOME';
 
 // --- SELECTION ---
@@ -139,6 +140,7 @@ function App() {
             <Routes>
               {/*--- PUBLIC ROUTES (Không cần authentication) ---*/}
               <Route path="/home" element={<HomeScreen data={MOCK_HOME_DATA} themeColor="#1f6feb" />} />
+              <Route path="/verify-email" element={<VerifyEmailScreen />} />
 
               {/* --- AUTH ROUTES (Ngăn user đã login truy cập /signin, /signup) --- */}
               <Route element={<GuestOnlyRoute />}> 

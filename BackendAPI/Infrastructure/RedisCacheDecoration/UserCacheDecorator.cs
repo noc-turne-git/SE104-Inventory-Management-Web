@@ -38,4 +38,29 @@ public class UserCacheDecorator : GenericCacheDecorator<User>, IUserRepository
         return entity;
     }
 
+    public new async Task<bool> UpdateAsync(User entity, CancellationToken cancellationToken = default)
+    {
+        var existing = await _inner.GetByIdAsync(entity.UserId, cancellationToken);
+        var result = await base.UpdateAsync(entity, cancellationToken);
+        if (result)
+        {
+            if (existing != null)
+                await _cache.RemoveAsync($"User:Email:{existing.Email}", cancellationToken);
+
+            await _cache.RemoveAsync($"User:Email:{entity.Email}", cancellationToken);
+        }
+
+        return result;
+    }
+
+    public new async Task<bool> DeleteAsync(object id, CancellationToken cancellationToken = default)
+    {
+        var existing = await _inner.GetByIdAsync(id, cancellationToken);
+        var result = await base.DeleteAsync(id, cancellationToken);
+        if (result && existing != null)
+            await _cache.RemoveAsync($"User:Email:{existing.Email}", cancellationToken);
+
+        return result;
+    }
+
 }
